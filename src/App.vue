@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import Card from '@/volt/Card.vue'
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import Toast from "@/volt/Toast.vue"
+const router = useRouter();
+onMounted(() => {
+   router.push('/login');
+})
 </script>
 
 <template>
-  <Card>
-    <template #content>
-      <h2 class="text-5xl font-semibold m-auto max-w-fit">Hello World!</h2>
-    </template>
-  </Card>
+  <Toast/>
+  <router-view></router-view>
 </template>
 
 <style scoped></style>
