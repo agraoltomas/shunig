@@ -7,3 +7,4 @@ export const ptViewMerge = (globalPTProps = {} as any, selfPTProps = {} as any, 
 
     return mergeProps({ class: twMerge(globalClass, selfClass) }, globalRest, selfRest, datasets);
 };
+
