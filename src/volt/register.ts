@@ -11,6 +11,8 @@ import SecondaryButton from '@/volt/SecondaryButton.vue'
 import DangerButton from '@/volt/DangerButton.vue'
 import ContrastButton   from '@/volt/ContrastButton.vue'
 import Panel from "@/volt/Panel.vue"
+import InputNumber from '@/volt/InputNumber.vue'
+
 import type { App } from 'vue'
 export const registerAll = (app: App): App => {
     app.component('InputText', InputText)
@@ -25,5 +27,6 @@ export const registerAll = (app: App): App => {
     app.component('SecondaryButton',SecondaryButton);
     app.component('DangerButton',DangerButton);
     app.component('ContrastButton',ContrastButton);
+    app.component('InputNumber',InputNumber)
     return app;
 }

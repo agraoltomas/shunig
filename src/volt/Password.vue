@@ -34,7 +34,7 @@ const theme = ref<PasswordPassThroughOptions>({
         root: `appearance-none rounded-md outline-hidden
         bg-surface-0 dark:bg-surface-950
         p-filled:bg-surface-50 dark:p-filled:bg-surface-800
-        text-surface-700 dark:text-surface-0
+        text-surface-900 dark:text-surface-0
         placeholder:text-surface-500 dark:placeholder:text-surface-400
         border border-surface-300 dark:border-surface-700
         enabled:hover:border-surface-400 dark:enabled:hover:border-surface-600
@@ -51,7 +51,7 @@ const theme = ref<PasswordPassThroughOptions>({
     overlay: `p-3 rounded-md p-portal-self:min-w-full
         bg-surface-0 dark:bg-surface-900
         border border-surface-200 dark:border-surface-700
-        text-surface-700 dark:text-surface-0
+        text-surface-900 dark:text-surface-0
         shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]`,
     content: `flex flex-col gap-2`,
     meter: `h-3 bg-surface-200 dark:bg-surface-700 rounded-md`,

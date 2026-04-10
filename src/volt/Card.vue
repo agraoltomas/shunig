@@ -23,7 +23,7 @@ defineProps<Props>();
 const theme = ref<CardPassThroughOptions>({
     root: `flex flex-col rounded-xl
         bg-surface-0 dark:bg-surface-900 
-        text-surface-700 dark:text-surface-0
+        text-surface-900 dark:text-surface-0
         shadow-md`,
     header: ``,
     body: `p-5 flex flex-col gap-2`,

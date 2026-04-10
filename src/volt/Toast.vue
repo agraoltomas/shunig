@@ -39,7 +39,7 @@ const theme = ref<ToastPassThroughOptions>({
     messageIcon: `flex-shrink-0 text-lg w-[1.125rem] h-[1.125rem] mt-1`,
     messageText: `flex-auto flex flex-col gap-2`,
     summary: `font-medium text-base`,
-    detail: `font-medium text-sm text-surface-700 dark:text-surface-0
+    detail: `font-medium text-sm text-surface-900 dark:text-surface-0
         p-contrast:text-surface-0 dark:p-contrast:text-surface-950`,
     buttonContainer: ``,
     closeButton: `flex items-center justify-center overflow-hidden relative cursor-pointer bg-transparent select-none
