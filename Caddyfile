@@ -1,0 +1,9 @@
+:9000 {
+    handle_path /api/* {
+        reverse_proxy localhost:1234
+    }
+    handle /* {
+        reverse_proxy localhost:5173
+   }
+}
+
