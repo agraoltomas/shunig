@@ -4,10 +4,12 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import PrimeVue from 'primevue/config'
-
-import "@/assets/styles.css";
-
-
+import "@/assets/style/styles.css";
+import 'primeicons/primeicons.css';
+import Image from "primevue/image"
+import Column from "primevue/column";
+import InputText from "@/volt/InputText.vue"
+import Message from "@/volt/Message.vue";
 
 const app = createApp(App)
 app.use(createPinia())
@@ -16,24 +18,14 @@ app.use(router)
 app.use(PrimeVue, {
   unstyled: true,
 })
-import Tabs from '@/volt/Tabs.vue'
-import TabList from '@/volt/TabList.vue'
-import Tab from '@/volt/Tab.vue'
-import TabPanels from '@/volt/TabPanels.vue'
-import TabPanel from '@/volt/TabPanel.vue'
-import InputText from '@/volt/InputText.vue'
-import Password from '@/volt/Password.vue'
-import Button from '@/volt/Button.vue'
-import { ToastService } from 'primevue';
+app.component('Image',Image)
+app.component("Column",Column)
+app.component("InputText", InputText)
+app.component("Message", Message)
+import {  ToastService } from 'primevue'
+import { registerAll } from '@/volt/register.ts'
 
 app.use(ToastService);
-app.component('InputText', InputText)
-app.component('Tabs', Tabs)
-app.component('TabPanels', TabPanels)
-app.component('Password', Password)
-app.component('TabPanel', TabPanel)
-app.component('Tab',Tab)
-app.component('TabList',TabList)
-app.component('Button',Button)
+registerAll(app);
 
 app.mount('#app')

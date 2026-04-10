@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
 
+
 /* Primary and Surface Palettes */
 :root {
     --p-primary-50: #ecfdf5;
@@ -53,7 +54,7 @@
     --p-highlight-color: var(--p-primary-700);
     --p-highlight-focus-background: var(--p-primary-100);
     --p-highlight-focus-color: var(--p-primary-800);
-    --p-text-color: var(--p-surface-700);
+    --p-text-color: var(--p-surface-900);
     --p-text-hover-color: var(--p-surface-800);
     --p-text-muted-color: var(--p-surface-500);
     --p-text-hover-muted-color: var(--p-surface-600);
@@ -85,4 +86,30 @@
         --p-text-muted-color: var(--p-surface-400);
         --p-text-hover-muted-color: var(--p-surface-300);
     }
+}
+
+@theme {
+    --color-secondary-50: #fffaf0;
+    --color-secondary-100: #fff1d1;
+    --color-secondary-200: #ffe8b3;
+    --color-secondary-300: #ffdf94;
+    --color-secondary-400: #ffd675;
+    --color-secondary-500: #ffd166;
+    --color-secondary-600: #e6bc5c;
+    --color-secondary-700: #b39247;
+    --color-secondary-800: #806933;
+    --color-secondary-900: #4d3f1f;
+    --color-secondary-950: #332a14;
+    --color-surface-0: #ffffff;
+    --color-surface-50: #fcfaf5;
+    --color-surface-100: #f7efe0;
+    --color-surface-200: #f2e5cb;
+    --color-surface-300: #eddab6;
+    --color-surface-400: #e8cfa1;
+    --color-surface-500: #e5ca97;
+    --color-surface-600: #ceb688;
+    --color-surface-700: #89795b;
+    --color-surface-800: #5c513c;
+    --color-surface-900: #2e281e;
+    --color-surface-950: #17140f;
 }

@@ -1,13 +1,29 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '@/router/views/Login.vue'
 import Register from '@/router/views/Register.vue'
+import Home from '@/router/views/Home.vue'
+import Swap from '@/router/views/Swap.vue'
+import Refugio from '@/router/views/Refugio.vue'
+import RefugioHome from '@/router/views/refugio/RefugioHome.vue'
+import MascotasView from '@/router/views/refugio/MascotasView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {path: "/login", component: Login},
-    {path: "/register", component: Register},
-  ],
+    history: createWebHashHistory(import.meta.env.BASE_URL),
+    routes: [
+        { path: '/', component: Home },
+        { path: '/login', component: Login },
+        { path: '/register', component: Register },
+        { path: '/swap', component: Swap },
+        {
+            path: '/refugio', component: Refugio, children: [
+                { path: '', component: RefugioHome },
+                { path: 'mascotas', component: MascotasView },
+                { path: 'vacunas', component: MascotasView },
+                { path: 'stock', component: MascotasView },
+                { path: 'transito', component: MascotasView }
+            ]
+        }
+    ]
 })
 
 export default router
