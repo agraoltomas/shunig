@@ -6,6 +6,7 @@ import Swap from '@/router/views/Swap.vue'
 import Refugio from '@/router/views/Refugio.vue'
 import RefugioHome from '@/router/views/refugio/RefugioHome.vue'
 import MascotasView from '@/router/views/refugio/MascotasView.vue'
+import MascotaView from '@/router/views/refugio/MascotaView.vue'
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,7 @@ const router = createRouter({
             path: '/refugio', component: Refugio, children: [
                 { path: '', component: RefugioHome },
                 { path: 'mascotas', component: MascotasView },
+                { path: 'mascota/:id', component: MascotaView },
                 { path: 'vacunas', component: MascotasView },
                 { path: 'stock', component: MascotasView },
                 { path: 'transito', component: MascotasView }
@@ -25,5 +27,4 @@ const router = createRouter({
         }
     ]
 })
-
 export default router

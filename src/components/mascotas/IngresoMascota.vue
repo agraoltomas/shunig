@@ -2,7 +2,7 @@
 
 import { type Reactive, reactive, ref } from 'vue'
 import type { IMascota } from '@/lib/tipos/mascotas'
-import { Form, } from '@primevue/forms'
+import { Form } from '@primevue/forms'
 import axios from '@/lib/axios.ts'
 import type { Maybe } from '@/lib/tipos/generics'
 import { TablaEstatica } from '@/lib/tipos/estaticos.ts'
@@ -12,8 +12,9 @@ import FormCol from '@/components/forms/FormCol.vue'
 import Textarea from '@/volt/Textarea.vue'
 import ToggleSwitch from '@/volt/ToggleSwitch.vue'
 import TableSelect from '@/components/forms/TableSelect.vue'
-import FileUpload from 'primevue/fileupload'
+import FileUpload from '@/components/forms/FileUpload.vue'
 import { useToast } from 'primevue'
+import Label from '@/components/forms/Label.vue'
 const toast = useToast();
 
 type Optional<T> = { [K in keyof T]: Maybe<T[K]> }
@@ -25,21 +26,25 @@ const initialValues = reactive({
     id_sexo: null,
     imagen_url: null,
     observaciones: null,
-    raza: null
+    raza: null,
+    id_refugio: null,
+    foto: null
 })
 
 interface MascotaData {
-    nombre: null,
-    edad: null,
-    es_castrado: false,
-    id_especie: null,
-    id_sexo: null,
-    imagen_url: null,
-    observaciones: null,
-    raza: null
+    nombre: Maybe<string>,
+    edad: Maybe<number>,
+    es_castrado: boolean,
+    id_especie: Maybe<number>,
+    id_sexo: Maybe<number>,
+    imagen_url: Maybe<string>,
+    observaciones: Maybe<string>,
+    raza: Maybe<string>,
+    id_refugio: Maybe<number>,
+    foto: Maybe<File>
 }
 
-const data: Reactive<Partial<Optional<IMascota>>> = reactive({
+const data: Reactive<Partial<Optional<MascotaData>>> = reactive({
     nombre: null,
     edad: null,
     es_castrado: false,
@@ -47,18 +52,26 @@ const data: Reactive<Partial<Optional<IMascota>>> = reactive({
     id_sexo: null,
     imagen_url: null,
     observaciones: null,
-    raza: null
+    raza: null,
+    id_refugio: null,
+    foto: null
 })
 
-const validar = () => {
-    return true
-}
 
+const toBase64 = (f: File): Promise<any> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(f);
+    reader.onload = () => resolve(reader.result);
+});
 const emits = defineEmits<{close: []}>();
 const ingresar = async (d: any) => {
-        console.log('cargando',d)
+        let foto = null;
+        if(data.foto){
+             foto = await toBase64(data.foto)
+        }
         const r = await axios.post(`/animal/`, {
-            ...d.values
+            ...d.values,
+            foto
         });
         if([200,201].includes(r.status)){
             toast.add({severity:"success", summary:"Éxito!", detail: `${d.values.nombre} se ha dado de alta exitosamente`})
@@ -69,7 +82,7 @@ const ingresar = async (d: any) => {
 const resolver = ({ values }: { values: Partial<Optional<IMascota>> }) => {
     const errors: { [K in keyof MascotaData]: { message: string }[] } = {
         edad: [], es_castrado: [], id_especie: [], id_sexo: [], imagen_url: [], observaciones: [], raza: [],
-        nombre: []
+        nombre: [], id_refugio: [],foto: []
     }
 
     if (!values.nombre) {
@@ -107,14 +120,14 @@ const ptButton = ref({
         <!--        <div class="flex flex-col gap-7">-->
         <FormRow class="w-full">
             <FormCol :span="6">
-                <label>Nombre</label>
+                <Label required>Nombre</Label>
                 <InputText fluid name="nombre"></InputText>
                 <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.nombre.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="6">
-                <label>Raza</label>
+                <Label required>Raza</Label>
                 <InputText fluid name="raza"></InputText>
                 <Message v-if="$form.raza?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.raza.error?.message }}
@@ -123,21 +136,21 @@ const ptButton = ref({
         </FormRow>
         <FormRow>
             <FormCol :span="3">
-                <label>Especie</label>
+                <Label required>Especie</Label>
                 <TableSelect name="id_especie" v-model="data.id_especie" :tipo="TablaEstatica.Especie"></TableSelect>
                 <Message v-if="$form.id_especie?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.id_especie.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="3">
-                <label>Sexo</label>
+                <Label required>Sexo</Label>
                 <TableSelect name="id_sexo"  v-model="data.id_sexo" :tipo="TablaEstatica.Sexo"></TableSelect>
                 <Message v-if="$form.id_sexo?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.id_sexo.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="3">
-                <label>Edad (Aproximada)</label>
+                <Label required>Edad (Aproximada)</Label>
                 <InputNumber :min-fraction-digits="0" :max-fraction-digits="0" :min="0" :max="99" fluid
                              class="" name="edad"></InputNumber>
                 <Message v-if="$form.edad?.invalid" severity="error" size="small" variant="simple">
@@ -145,16 +158,16 @@ const ptButton = ref({
                 </Message>
             </FormCol>
             <FormCol :span="3" modo="vertical">
-                <label class="text-surface-50 select-none">.</label>
+                <Label class="text-surface-50 select-none">.</Label>
                 <div class="flex flex-row border rounded-lg h-full w-full mx-auto gap-3 border-surface-400">
-                    <label class="my-auto ml-3">Castrado</label>
+                    <Label class="my-auto ml-3">Castrado</Label>
                     <ToggleSwitch name="es_castrado" class="m-auto"></ToggleSwitch>
                 </div>
             </FormCol>
         </FormRow>
         <FormRow>
             <FormCol :span="12">
-                <label>Observaciones</label>
+                <Label>Observaciones</Label>
                 <Textarea name="observaciones"></Textarea>
                 <Message v-if="$form.observaciones?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.observaciones.error?.message }}
@@ -163,23 +176,8 @@ const ptButton = ref({
         </FormRow>
         <FormRow>
             <FormCol :span="12">
-                <label>Imagen</label>
-                <FileUpload :pt="{
-                    root: 'flex flex-row gap-3 border rounded-lg px-3 py-6 border-surface-400',
-                    input: 'hidden',
-                    header: 'flex flex-row gap-3',
-                    pcChooseButton: ptButton,
-                    pcUploadButton: ptButton,
-                    pcCancelButton: ptButton,
-                    content: 'w-full',
-
-                    file: {
-                        class:'flex flex-row w-full gap-3',
-                    },
-                    pcFileBadge: {
-                        root:'bg-orange-400 m-auto w-fit h-fit p-1 text-sm text-surface-200 rounded-lg',
-                    }
-                }"></FileUpload>
+                <Label>Imagen</Label>
+                <FileUpload v-model="data.foto"></FileUpload>
             </FormCol>
         </FormRow>
         <div class="flex flex-row justify-end gap-3">
@@ -189,7 +187,4 @@ const ptButton = ref({
 </template>
 
 <style scoped>
-label {
-    line-height: 0.5;
-}
 </style>

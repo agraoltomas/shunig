@@ -1,5 +1,6 @@
+
 export enum TipoUsuario {
-    Adoptante,
-    VoluntarioTransito,
-    Refugio
+    Adoptante= 1,
+    VoluntarioTransito =2,
+    Refugio = 3
 }

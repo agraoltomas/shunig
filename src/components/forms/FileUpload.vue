@@ -1,0 +1,76 @@
+<script setup lang="ts">
+import {  type Ref, ref, useTemplateRef } from 'vue'
+import Message from '@/volt/Message.vue'
+import type { Maybe } from '@/lib/tipos/generics'
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+const fileInput = useTemplateRef('fileInput')
+const file = defineModel<Maybe<File>>()
+const error: Ref<Maybe<string>> = ref(null)
+
+const handleFileSelection = (e: Event) => {
+    error.value = null
+    if (!(fileInput.value) || !fileInput.value.files || fileInput.value.files.length == 0) return
+    if (fileInput.value.files.length > 0) {
+        const newFile = Array.from(fileInput.value.files)[0]
+        if (newFile) {
+            if (newFile.size > MAX_FILE_SIZE) {
+                error.value = 'El archivo no puede ser mayor a 5MB'
+            } else {
+                file.value = newFile
+            }
+        }
+    }
+
+}
+const openFilePicker = () => {
+    console.log(fileInput.value)
+    fileInput.value?.click()
+}
+const sizeDisplay = (size: number): string => {
+    let currSize = size
+    if (currSize < 1000) {
+        return `${currSize} B`
+    }
+    currSize = currSize / 1024
+    if (currSize < 1000) {
+        return `${currSize.toPrecision(3)} KB`
+    }
+    currSize = currSize / 1024
+    if (currSize < 1000) {
+        return `${currSize.toPrecision(3)} MB`
+    }
+    currSize = currSize / 1024
+    return `${currSize.toPrecision(3)} GB`
+}
+const toURL = (f: File) => {
+    return URL.createObjectURL(f)
+}
+</script>
+
+<template>
+    <div class="flex flex-col overflow-y-auto">
+        <div class="flex flex-row gap-3 py-3">
+            <input hidden @change="handleFileSelection" type="file" ref="fileInput" />
+            <div class="flex flex-row gap-3">
+                <Button pt:label="max-h-fit" icon="pi pi-plus" label="Subir imagen" @click="openFilePicker"></Button>
+            </div>
+            <Message severity="error" v-if="error" fluid>{{ error }}</Message>
+            <div v-else-if="!file" class="my-auto">
+                No hay nada seleccionado
+            </div>
+            <div v-else class="flex flex-row gap-3">
+                <div class="not-last:after:content-[','] my-auto">
+                    <span class="rounded-lg bg-gray-100 p-1 ">
+                    {{ file.name }} ({{ sizeDisplay(file.size) }})
+                    </span>
+                </div>
+            </div>
+        </div>
+        <Image v-if="file" class="size-32" :src="toURL(file)"></Image>
+    </div>
+</template>
+
+<style scoped>
+
+</style>

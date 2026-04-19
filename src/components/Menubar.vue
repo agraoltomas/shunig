@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Image from 'primevue/image'
-import SecondaryButton from '@/volt/SecondaryButton.vue'
 import Menubar, { type MenubarPassThroughOptions } from 'primevue/menubar'
 
 import shunig from '@/assets/images/logo-shunig.png'

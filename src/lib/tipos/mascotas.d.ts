@@ -10,7 +10,7 @@ export interface IMascota{
     id_animal: string,
     id_especie: number,
     id_sexo: number,
-    imagen_url: Maybe<string>,
+    imagen: Maybe<string>,
     observaciones: Maybe<string>
     raza: Maybe<string>
     sexo: string
