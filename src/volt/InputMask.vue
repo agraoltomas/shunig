@@ -1,5 +1,5 @@
 <template>
-    <InputText
+    <InputMask
         unstyled
         :pt="theme"
         :ptOptions="{
@@ -9,14 +9,14 @@
 </template>
 
 <script setup lang="ts">
-import InputText, { type InputTextPassThroughOptions, type InputTextProps } from 'primevue/inputtext';
+import InputMask, { type InputMaskPassThroughOptions, type InputMaskProps } from 'primevue/inputmask';
 import { ref } from 'vue';
 import { ptViewMerge } from './utils';
 
-interface Props extends /* @vue-ignore */ InputTextProps {}
+interface Props extends /* @vue-ignore */ InputMaskProps {}
 defineProps<Props>();
 
-const theme = ref<InputTextPassThroughOptions>({
+const theme = ref<InputMaskPassThroughOptions>({
     root: `appearance-none rounded-md outline-hidden
         bg-surface-0 dark:bg-surface-950
         p-filled:bg-surface-50 dark:p-filled:bg-surface-800
@@ -25,8 +25,8 @@ const theme = ref<InputTextPassThroughOptions>({
         border border-surface-300 dark:border-surface-700
         enabled:hover:border-surface-400 dark:enabled:hover:border-surface-600
         enabled:focus:border-primary
-        disabled:bg-surface-200 disabled:text-surface-800
-        dark:disabled:bg-surface-600 dark:disabled:text-surface-400
+        disabled:bg-surface-200 disabled:text-surface-500
+        dark:disabled:bg-surface-700 dark:disabled:text-surface-400
         p-invalid:border-red-400 dark:p-invalid:border-red-300
         p-invalid:placeholder:text-red-600 dark:p-invalid:placeholder:text-red-400
         px-3 py-2 p-fluid:w-full
