@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    STOCK
+    EVENTOS
 </template>
 
 <style scoped>

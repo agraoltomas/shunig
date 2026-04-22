@@ -5,6 +5,8 @@ import IngresoMascota from '@/components/mascotas/IngresoMascota.vue'
 import { useModalStore } from '@/stores/modales.ts'
 import { ref } from 'vue'
 import FormAdopcion from '@/components/adopcion/FormAdopcion.vue'
+import FormTransito from '@/components/transito/FormTransito.vue'
+import Modal from '@/components/modal/Modal.vue'
 const store = useModalStore()
 const data = ref("")
 </script>
@@ -16,20 +18,19 @@ const data = ref("")
         <template #header>
             <div class="flex flex-col w-full">
                 <div class="font-semibold m-auto text-2xl pb-0!">
-                    Alta de Animal
+                    Alta de animal
                 </div>
             </div>
         </template>
         <IngresoMascota class="mt-3" @close="() => store.cerrar('nuevoAnimal')"></IngresoMascota>
     </Dialog>
-    <Dialog v-model:visible="store.modales.nuevoTransito">Transito</Dialog>
     <Dialog v-model:visible="store.modales.vacunacion">Vacunación</Dialog>
-    <Dialog v-model:visible="store.modales.adopcion" class="max-w-[80%]!">
-        <template #header>
-            <div class="text-2xl font-bold m-auto">Formulario de adopción</div>
+    <Modal v-if="store.context.adopcion" nombre="adopcion" class="max-w-[80%]!" title="Formulario de adopción">
+        <template #default="{   context, closeFn}">
+            <FormAdopcion v-if="context.adopcion" :mascota="context.adopcion" @close="closeFn"></FormAdopcion>
         </template>
-        <FormAdopcion @close="() => store.cerrar('adopcion')"></FormAdopcion>
-    </Dialog>
+    </Modal>
+
 </template>
 
 <style scoped>

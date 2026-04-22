@@ -1,9 +1,10 @@
 import type { Maybe } from '@/lib/tipos/generics'
+import type { IDomicilio } from '@/lib/tipos/domicilio'
 
 export interface User {
     apellido: string,
     cuit: string
-    direccion: string
+    domicilio: IDomicilio,
     email: string
     fecha_alta: string
     fecha_modificacion: string

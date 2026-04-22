@@ -15,3 +15,7 @@ export interface IMascota{
     raza: Maybe<string>
     sexo: string
 }
+
+export interface IMascotaVoluntario extends IMascota{
+    tipo: ('adopcion'|'transito')
+}

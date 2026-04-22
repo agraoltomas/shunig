@@ -3,6 +3,7 @@
 import FormRow from '@/components/forms/FormRow.vue'
 import Label from '@/components/forms/Label.vue'
 import { onMounted, type Reactive, reactive, type Ref, ref, watch } from 'vue'
+import {Form} from "@primevue/forms"
 import FormCol from '@/components/forms/FormCol.vue'
 import ToggleButton from '@/volt/ToggleButton.vue'
 import Textarea from '@/volt/Textarea.vue'
@@ -10,7 +11,7 @@ import CheckBox from '@/volt/CheckBox.vue'
 import type { User } from '@/lib/tipos/usuarios'
 import { useAxios } from '@/lib/axios.ts'
 import { AxiosError } from 'axios'
-import { useToast } from 'primevue'
+import { useToast } from '@/lib/toast/toast.ts'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 
 const toast = useToast()

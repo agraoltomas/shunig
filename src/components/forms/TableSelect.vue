@@ -6,7 +6,7 @@ import Select from "@/volt/Select.vue"
 const model = defineModel();
 
 
-const props = defineProps<{ tipo: TablaEstatica, name?: string }>();
+const props = defineProps<{ tipo: TablaEstatica, name?: string, fluid?: boolean }>();
 interface ITablaEstatica {
     id: number,
 
@@ -18,7 +18,7 @@ onMounted(async () => {
     if(r.status === 200) {
         data.value = r.data.map((d: any) =>({
             // AAAAAAAAAA
-            id: d[`id_${props.tipo}`],
+            id: isNaN(Number(d[`id_${props.tipo}`])) ? 0 : Number(d[`id_${props.tipo}`]),
             descripcion: d['descripcion'],
         }));
         console.log(r.data);
@@ -27,7 +27,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Select :name="name" placeholder="Seleccione" v-model="model" :options="data" option-label="descripcion" option-value="id"></Select>
+    <Select :fluid :name="name" placeholder="Seleccione" v-model="model" :options="data" option-label="descripcion" option-value="id"></Select>
 </template>
 
 <style scoped>

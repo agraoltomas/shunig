@@ -13,8 +13,9 @@ import Textarea from '@/volt/Textarea.vue'
 import ToggleSwitch from '@/volt/ToggleSwitch.vue'
 import TableSelect from '@/components/forms/TableSelect.vue'
 import FileUpload from '@/components/forms/FileUpload.vue'
-import { useToast } from 'primevue'
+import { useToast } from '@/lib/toast/toast.ts'
 import Label from '@/components/forms/Label.vue'
+import { toBase64 } from '@/lib/utils/files.ts'
 const toast = useToast();
 
 type Optional<T> = { [K in keyof T]: Maybe<T[K]> }
@@ -58,11 +59,7 @@ const data: Reactive<Partial<Optional<MascotaData>>> = reactive({
 })
 
 
-const toBase64 = (f: File): Promise<any> => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(f);
-    reader.onload = () => resolve(reader.result);
-});
+
 const emits = defineEmits<{close: []}>();
 const ingresar = async (d: any) => {
         let foto = null;

@@ -28,13 +28,12 @@ const ingresadoUsuario = (u: User) => {
 </script>
 
 <template>
-    <Menubar></Menubar>
     <Panel v-if="ingresando == EForm.Usuario" class="bg-white flex flex-col gap-3 w-[75%] m-auto p-5!"
-           header="Registro de Usuario"
-           pt:header="m-auto text-xl font-semibold w-fit py-3">
+           header="Registro de usuario">
+
         <UsuarioIngreso @ingresado="(user) => ingresadoUsuario(user)" v-model:tipo="tipo"></UsuarioIngreso>
     </Panel>
-    <Panel v-else class="bg-white flex flex-col gap-3 w-[75%] m-auto p-5!" header="Registro de Refugio"
+    <Panel v-else class="bg-white flex flex-col gap-3 w-[75%] m-auto p-5!" header="Registro de refugio"
            pt:header="m-auto text-xl font-semibold w-fit py-3">
         <RefugioIngreso v-if="newUser" :admin="newUser"></RefugioIngreso>
     </Panel>

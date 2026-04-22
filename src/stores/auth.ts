@@ -14,11 +14,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const jwt_token = computed(() => getToken())
     const user: Ref<Maybe<User>> = ref(null)
+    const estaLogueado = () => {
+        return !!localStorage.getItem(TOKEN_KEY)
+    }
 
     return {
         user,
         jwt_token,
         saveToken,
-        getToken
+        getToken,
+        estaLogueado
     }
 })

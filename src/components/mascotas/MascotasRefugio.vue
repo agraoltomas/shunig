@@ -8,15 +8,9 @@ import type { MessageResponse } from '@/lib/tipos/generics'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const mascotas: Ref<IMascota[]> = ref([])
-onMounted(async () => {
-    const r = await axios.get(`/animal/`)
-    if (r.status == 200) {
-        let response: MessageResponse<IMascota[]> = r.data
-        mascotas.value = response.data
-        console.log(response)
-    }
-})
+const props = defineProps<{ mascotas: IMascota[]}>()
+// const mascotas: Ref<IMascota[]> = ref([])
+
 </script>
 
 <template>
@@ -48,7 +42,7 @@ onMounted(async () => {
             <Column header="Raza" field="raza"></Column>
             <Column>
                 <template #body="{data}">
-                    <Button icon="pi pi-arrow-up-right" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
+                    <Button icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
                 </template>
             </Column>
         </DataTable>

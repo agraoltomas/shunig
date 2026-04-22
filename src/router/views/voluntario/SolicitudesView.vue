@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    STOCK
+    SOLICITUDES
 </template>
 
 <style scoped>

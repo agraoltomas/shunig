@@ -19,7 +19,7 @@ import graph from "C:\\Users\\tomot\\Downloads\\WhatsApp Image 2026-04-08 at 17.
 <!--            <hr>-->
 <!--            <div class="text-2xl font-semibold py-5">Campañas</div>-->
 <!--            <div class="flex flex-row gap-3 justify-around px-3 pb-5">-->
-<!--                <span class="border border-gray-800 rounded p-2 bg-secondary-600 text-white">De Adopcion:10</span>-->
+<!--                <span class="border border-gray-800 rounded p-2 bg-secondary-600 text-white">De Adopción:10</span>-->
 <!--                <span class="border border-gray-800 rounded p-2 bg-secondary-600 text-white">De Donaciones: 1</span>-->
 <!--                <span class="border border-gray-800 rounded p-2 bg-secondary-600 text-white">De Voluntarios: 3</span>-->
 <!--            </div>-->

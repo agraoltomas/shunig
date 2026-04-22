@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Ref, ref } from 'vue'
+import { onMounted, type Ref, ref } from 'vue'
 import Menubar from '@/components/Menubar.vue'
 import { useRouter } from 'vue-router'
 import { rutas_api } from '@/rutas_api.ts'
@@ -7,7 +7,7 @@ import axios from '@/lib/axios.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
-import { useToast } from 'primevue'
+import { useToast } from '@/lib/toast/toast.ts'
 import { AxiosError } from 'axios'
 
 
@@ -46,15 +46,17 @@ const login = async () => {
 </script>
 
 <template>
-    <Menubar/>
-    <Panel class="w-96 m-auto bg-white">
-        <div class="flex flex-col max-w-fit m-auto p-3 gap-3" >
-            <div class="text-xl font-semibold px-2 py-3 m-auto">Ingresar</div>
-            <InputText required placeholder="Mail" v-model="usuario"></InputText>
-            <Password required :feedback="false" placeholder="Contraseña" v-model="password"></Password>
-            <Button :disabled="!(usuario && password)" label="Ingresar" @click="login"></Button>
-            <RouterLink :to="{path: '/register', query: {r: 'voluntario'}}" class="link my-3 text-primary-400"
-            >¿No tenés Cuenta? Registrate
+    <Panel class="w-[28vw] m-auto bg-white">
+        <div class="flex flex-col  m-auto py-3 gap-3 px-10" >
+            <div class="text-3xl font-semibold px-2 py-3 m-auto">Ingresar</div>
+            <InputText size="large" required placeholder="Mail" v-model="usuario"></InputText>
+            <Password size="large" required :feedback="false" placeholder="Contraseña" v-model="password" fluid></Password>
+            <Button size="large" :disabled="!(usuario && password)" label="Ingresar" @click="login"></Button>
+            <RouterLink :to="{path: '/register', query: {r: 'voluntario'}}" class="link m-auto text-primary-400"
+            >¿No tenés cuenta? Registrate
+            </RouterLink>
+            <RouterLink :to="{path: '/recuperar-pass', query:{u: usuario}}" class="link  text-primary-400 m-auto"
+            >¿Olvidaste tu contraseña?
             </RouterLink>
         </div>
     </Panel>

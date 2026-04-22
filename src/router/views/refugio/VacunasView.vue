@@ -3,7 +3,7 @@
 </script>
 
 <template>
-
+    VACUNAS
 </template>
 
 <style scoped>

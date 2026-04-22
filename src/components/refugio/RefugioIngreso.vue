@@ -12,15 +12,18 @@ import FormRow from '@/components/forms/FormRow.vue'
 import { reactive, type Reactive } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
-import { useToast } from 'primevue'
+import { useToast } from '@/lib/toast/toast.ts'
+import Domicilio from '@/components/forms/Domicilio.vue'
+import type { IDomicilio } from '@/lib/tipos/domicilio'
+import { domicilioSchema } from '@/validations/domicilio.ts'
 
 const props = defineProps<{ admin: User }>()
-const toast = useToast();
+const toast = useToast()
 const yupRefugioSchema = yup.object().shape({
-    cuit: yup.string().required("Campo obligatorio").test('valid-cuil', 'El CUIT es invalido', value => CUILValidator(value)).transform(value => value.replaceAll('-', '')),
+    cuit: yup.string().required('Campo obligatorio').test('valid-cuil', 'El CUIT es invalido', value => CUILValidator(value)).transform(value => value ? value.replaceAll('-', '') : value),
     nombre: yup.string().required('Campo obligatorio'),
     email: yup.string().email('Ingrese un mail valido').required('Campo obligatorio'),
-    direccion: yup.string().required('Campo obligatorio'),
+    domicilio: domicilioSchema,
     telefono: yup.object().shape({
         numero: yup.string().transform(value => String(value).replace('-', '')).matches(/(\d)+/g),
         codigo: yup.number()
@@ -31,27 +34,30 @@ interface DatosRefugio {
     cuit: Maybe<string>,
     nombre: Maybe<string>,
     email: Maybe<string>,
-    direccion: Maybe<string>,
     telefono: {
         numero: Maybe<string>,
         codigo: Maybe<string>
     },
 }
+
 const datosRefugio: Reactive<DatosRefugio> = reactive({
     cuit: null,
     nombre: null,
-    email: 't@t',
-    direccion: 'Piedras 535 4to D',
+    email: null,
+    domicilio: null,
     telefono: {
         numero: '4440-8492',
         codigo: '11'
     }
 })
-interface IRefugio{
+
+interface IRefugio {
 
 }
+
 const refugioResolver = yupResolver(yupRefugioSchema)
 const ingresarRefugio = async (e: FormSubmitEvent) => {
+    if(!e.valid)return
     console.log(e, props.admin)
     if (!props.admin) {
         return
@@ -63,45 +69,57 @@ const ingresarRefugio = async (e: FormSubmitEvent) => {
     })
     if (r.status == 200) {
         const response: MessageResponse<IRefugio> = r.data
-        emits("ingresado", response.data)
-        toast.add({ detail: `'${e.values.nombre}' ingresado correctamente `, severity: "success" })
+        emits('ingresado', response.data)
+        toast.add({ detail: `'${e.values.nombre}' ingresado correctamente `, severity: 'success' })
     }
 }
-const emits = defineEmits<{ ingresado: [refugio: any] }>();
+const emits = defineEmits<{ ingresado: [refugio: any] }>()
 </script>
 
 <template>
     <Form v-slot="$form" :initialValues="datosRefugio" :resolver="refugioResolver" @submit="ingresarRefugio"
           class="flex flex-col gap-4 w-full">
         <FormRow>
-            <FormCol :span="12">
+            <FormCol :span="8">
                 <Label required>Nombre</label>
                 <InputText name="nombre" fluid placeholder="Nombre" :maxlength="100"></InputText>
-            </FormCol>
-            <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
-                {{ $form.nombre?.error?.message }}
-            </Message>
-        </FormRow>
-        <FormRow>
-            <FormCol :span="8">
-                <Label required>Direccion</label>
-                <InputText name="direccion" placeholder="Domicilio" :maxlength="11"></InputText>
-                <Message v-if="$form.direccion?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.direccion?.error?.message }}
+                <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
+                    {{ $form.nombre?.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="4">
                 <Label required>Capacidad total</Label>
                 <InputNumber name="capacidad_total" :min="0"></InputNumber>
+                <Message v-if="$form.capacidad_total?.invalid" severity="error" size="small" variant="simple">
+                    {{ $form.capacidad_total?.error?.message }}
+                </Message>
             </FormCol>
         </FormRow>
         <FormRow>
+            <!--            <FormCol :span="8">-->
+            <!--                <Label required>Direccion</label>-->
+            <!--                <InputText name="direccion" placeholder="Domicilio" :maxlength="11"></InputText>-->
+            <!--                <Message v-if="$form.direccion?.invalid" severity="error" size="small" variant="simple">-->
+            <!--                    {{ $form.direccion?.error?.message }}-->
+            <!--                </Message>-->
+            <!--            </FormCol>-->
+        </FormRow>
+        <Domicilio name="domicilio"></Domicilio>
+        <div class="flex flex-row flex-wrap gap-2">
+            <div v-for="field in ['direccion','codigo_postal','localidad','ciudad','provincia']">
+                <Message v-if="$form.domicilio ? !!$form.domicilio[field].invalid : false " severity="error" pt:content="min-w-fit!" variant="outlined">
+                    {{ $form.domicilio ? $form.domicilio[field].error?.message : 'error' }}
+                </Message>
+            </div>
+
+        </div>
+
+        <FormRow>
             <FormCol :span="12">
-                <Label required>CUIT/CUIL</label>
+                <Label required>CUIT</label>
                 <div class="flex items-stretch w-full">
                     <InputMask name="cuit" fluid mask="99-99999999-9"
                                class="rounded-e-none rounded-s-md"></InputMask>
-                    <Button disabled icon="pi pi-search" class="rounded-s-none"></Button>
                 </div>
                 <Message v-if="$form.cuit?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.cuit?.error?.message }}

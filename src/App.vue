@@ -3,12 +3,23 @@ import { useRoute, useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import Toast from '@/volt/Toast.vue'
 import Modales from '@/components/Modales.vue'
+import { useAuthStore } from '@/stores/auth.ts'
 
 const router = useRouter()
 const route = useRoute()
 console.log(router, route)
+const authStore = useAuthStore()
 onMounted(() => {
-    router.push('/login')
+    const route = window.location.hash.substring(1);
+    if(route != "/"){
+        router.push(route);
+    }else{
+        if(!authStore.user){
+            router.push('/login')
+        }else{
+
+        }
+    }
 })
 
 </script>

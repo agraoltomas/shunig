@@ -2,13 +2,14 @@
 import Menubar from '@/components/Menubar.vue'
 import Menu from '@/volt/Menu.vue'
 import type { MenuItem } from 'primevue/menuitem'
-import {  ref, type Ref, useTemplateRef } from 'vue'
+import { ref, type Ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import UsuarioTag from '@/components/generales/UsuarioTag.vue'
 import { useRefugioStore } from '@/stores/refugio.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useModalStore } from '@/stores/modales.ts'
+
+const router = useRouter()
 
 const modalesStore = useModalStore()
 const refugioStore = useRefugioStore()
@@ -27,23 +28,22 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
             },
             {
                 label: 'Eventos de Vacunación',
-                command: () => router.push('refugio/vacunas')
+                command: () => router.push('/refugio/vacunas')
             },
             {
                 label: 'Control de Stock',
-                command: () => router.push('refugio/stock')
+                command: () => router.push('/refugio/stock')
             }
         ]
     }
 ])
-const menuAccesoRapido = useTemplateRef('menuAccesoRapido')
 const toggle = (event: Event) => {
     menuAccesoRapido.value?.toggle(event)
 }
+const menuAccesoRapido = useTemplateRef('menuAccesoRapido')
 if (!authStore.user) {
     router.push('/login')
 }
-
 
 
 </script>
@@ -55,13 +55,7 @@ if (!authStore.user) {
                 <div class="font-semibold text-3xl text-white m-auto px-5">
                     {{ refugioStore.refugio?.nombre }}
                 </div>
-                <div v-if="authStore.user" class="flex flex-col">
-                    <div class="size-10 rounded-full border-2 border-white mx-3 p-2.5 bg-[#eadec6] text-3xl pb-3 leading-[0.5]">
-                        {{ authStore.user.nombre[0] }}
-                    </div>
-                    <span class="font-semibold text-white text-xs">{{ authStore.user.nombre }}</span>
-                    <span class="font-semibold text-white text-xs">{{ authStore.user.apellido }}</span>
-                </div>
+                <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>
     </Menubar>
@@ -72,14 +66,17 @@ if (!authStore.user) {
                   id="overlay_menu" :model="itemsMenuAccesoRapido" :popup="true">
             </Menu>
         </div>
-                <div class="flex flex-row gap-3">
-                    <Button icon="pi pi-plus" icon-pos="left" label="Animal" @click="() => modalesStore.abrir('nuevoAnimal')"></Button>
-                    <Button disabled icon="pi pi-plus" icon-pos="left" label="Tránsito" @click="() => modalesStore.abrir('nuevoTransito')"></Button>
-                    <Button disabled icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación" @click="() => modalesStore.abrir('vacunacion')"></Button>
-                </div>
-<!--                <Dialog :visible="true" modal class="bg-white!">-->
-<!--                    hola-->
-<!--                </Dialog>-->
+        <div class="flex flex-row gap-3">
+            <Button icon="pi pi-plus" icon-pos="left" label="Animal"
+                    @click="() => modalesStore.abrir('nuevoAnimal')"></Button>
+            <Button disabled icon="pi pi-plus" icon-pos="left" label="Tránsito"
+                    @click="() => modalesStore.abrir('nuevoTransito')"></Button>
+            <Button disabled icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"
+                    @click="() => modalesStore.abrir('vacunacion')"></Button>
+        </div>
+        <!--                <Dialog :visible="true" modal class="bg-white!">-->
+        <!--                    hola-->
+        <!--                </Dialog>-->
     </div>
     <RouterView>
     </RouterView>

@@ -3,7 +3,7 @@
 </script>
 
 <template>
-
+    TRANSITO
 </template>
 
 <style scoped>

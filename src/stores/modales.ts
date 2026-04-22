@@ -1,7 +1,14 @@
 import { defineStore } from 'pinia'
 import { type Reactive, reactive, type Ref } from 'vue'
+import type { IMascota } from '@/lib/tipos/mascotas'
+import type { Maybe } from '@/lib/tipos/generics'
 
-
+export interface IModalesContext {
+    adopcion: Maybe<IMascota>,
+    nuevoAnimal: any,
+    nuevoTransito: Maybe<IMascota>,
+    vacunacion: any
+}
 export const useModalStore = defineStore('modales',() => {
     const modales: Reactive<{[k: string]: boolean}> = reactive({
         nuevoAnimal: false,
@@ -9,10 +16,11 @@ export const useModalStore = defineStore('modales',() => {
         vacunacion: false,
         adopcion: false
     });
-    const context: Reactive<{ [k in keyof typeof modales]?: any }> = reactive({
-
+    const context: Reactive<IModalesContext> = reactive({
+        adopcion: null, nuevoTransito: null,
+        nuevoAnimal: null, vacunacion: null
     })
-    const abrir = <T>(name: string, c?: Ref<T>) => {
+    const abrir = <T>(name: keyof IModalesContext, c?: T) => {
         Object.keys(modales).forEach((k) => {
             modales[k] = false
         })

@@ -4,7 +4,7 @@ import { TipoUsuario } from '@/lib/tipos/usuario.ts'
 import Label from '@/components/forms/Label.vue'
 import Select from '@/volt/Select.vue'
 import InputMask from '@/volt/InputMask.vue'
-import { Form } from '@primevue/forms'
+import { Form, FormField } from '@primevue/forms'
 import FormCol from '@/components/forms/FormCol.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import type { FormSubmitEvent } from '@primevue/forms/form'
@@ -15,7 +15,9 @@ import { reactive, type Reactive } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import { CUILValidator } from '@/lib/utils/cuil.ts'
-import { useToast } from 'primevue'
+import { useToast } from '@/lib/toast/toast.ts'
+import Domicilio from '@/components/forms/Domicilio.vue'
+import { domicilioSchema } from '@/validations/domicilio.ts'
 
 
 interface DatosUsuario {
@@ -47,12 +49,12 @@ const datosUsuario: Reactive<DatosUsuario> = reactive({
 })
 
 const yupUserSchema = yup.object().shape({
-    cuit: yup.string().required('Campo obligatorio').test('valid-cuil', 'El CUIL es inválido', value => CUILValidator(value)).transform(value => value.replaceAll('-', '')),
+    cuit: yup.string().required('Campo obligatorio').test('valid-cuil', 'El CUIL es inválido', value => CUILValidator(value)).transform(value => value ? value.replaceAll('-', '') : value),
     nombre: yup.string().required('Campo obligatorio'),
     apellido: yup.string().required('Campo obligatorio'),
     email: yup.string().email('Ingrese un mail valido').required('Campo obligatorio'),
     password: yup.string().required('Campo obligatorio').min(8, 'Ingrese al menos 8 caracteres'),
-    direccion: yup.string().required('Campo obligatorio'),
+    domicilio: domicilioSchema,
     telefono: yup.object().shape({
         numero: yup.string().transform(value => String(value).replace('-', '')).matches(/(\d)+/g),
         codigo: yup.number()
@@ -62,6 +64,8 @@ const userResolver = yupResolver(yupUserSchema)
 
 const emits = defineEmits<{ ingresado: [e: User] }>()
 const ingresarUsuario = async (e: FormSubmitEvent) => {
+    if(!e.valid)return;
+    console.log(e)
     const r = await axios.post('/auth', {
         ...e.values,
         telefono: e.values?.telefono.numero ? `${e.values.telefono.codigo}${e.values.telefono.numero}` : null
@@ -117,14 +121,7 @@ const ingresarUsuario = async (e: FormSubmitEvent) => {
             </FormCol>
         </FormRow>
         <FormRow :cols="12" :gap="3">
-            <FormCol :span="7">
-                <Label required>Direccion</label>
-                <InputText name="direccion" placeholder="Direccion" :maxlength="100"></InputText>
-                <Message v-if="$form.direccion?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.direccion?.error?.message }}
-                </Message>
-            </FormCol>
-            <FormCol :span="5">
+            <FormCol :span="6">
                 <Label required>Teléfono</label>
                 <FormRow class="w-full grid grid-cols-12 gap-3">
                     <!--                        <Select class="col-span-3" :options="[]"></Select>-->
@@ -140,9 +137,18 @@ const ingresarUsuario = async (e: FormSubmitEvent) => {
                 <!--                <InputText placeholder="Telefono" v-model="data.telefono"></InputText>-->
             </FormCol>
         </FormRow>
+        <hr />
+        <Domicilio name="domicilio"></Domicilio>
+        <div v-for="field in ['direccion','codigo_postal','localidad','ciudad','provincia']">
+            <Message  v-if="$form.domicilio ? !!$form.domicilio[field].invalid : false " severity="error" size="large">
+                {{ $form.domicilio ? $form.domicilio[field].error?.message : 'error' }}
+            </Message>
+        </div>
+
+        <hr />
         <FormRow>
             <FormCol :span="12">
-                <Label>Registrarme como</Label>
+                <Label required>Registrarme como</Label>
                 <Select class="max-w-fit" v-model="tipo" option-label="descripcion" option-value="id"
                         placeholder="Seleccione una opción"
                         :options="[ {id: TipoUsuario.Adoptante, descripcion: 'Adoptante'},{id: TipoUsuario.VoluntarioTransito, descripcion: 'Voluntario de Tránsito'},{ id: TipoUsuario.Refugio, descripcion: 'Refugio'}]"></Select>

@@ -7,7 +7,9 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024
 const fileInput = useTemplateRef('fileInput')
 const file = defineModel<Maybe<File>>()
 const error: Ref<Maybe<string>> = ref(null)
-
+const props = withDefaults(defineProps<{ preview?: boolean }>(), {
+    preview: true,
+})
 const handleFileSelection = (e: Event) => {
     error.value = null
     if (!(fileInput.value) || !fileInput.value.files || fileInput.value.files.length == 0) return
@@ -24,7 +26,6 @@ const handleFileSelection = (e: Event) => {
 
 }
 const openFilePicker = () => {
-    console.log(fileInput.value)
     fileInput.value?.click()
 }
 const sizeDisplay = (size: number): string => {
@@ -60,14 +61,17 @@ const toURL = (f: File) => {
                 No hay nada seleccionado
             </div>
             <div v-else class="flex flex-row gap-3">
-                <div class="not-last:after:content-[','] my-auto">
+                <div class="flex flex-row  my-auto">
+                    <span class="rounded-lg max-w-60 bg-gray-100 p-1 overflow-hidden whitespace-nowrap text-ellipsis">
+                        {{ file.name }}
+                    </span>
                     <span class="rounded-lg bg-gray-100 p-1 ">
-                    {{ file.name }} ({{ sizeDisplay(file.size) }})
+                     ({{ sizeDisplay(file.size) }})
                     </span>
                 </div>
             </div>
         </div>
-        <Image v-if="file" class="size-32" :src="toURL(file)"></Image>
+        <Image v-if="preview && file" class="size-32" :src="toURL(file)"></Image>
     </div>
 </template>
 

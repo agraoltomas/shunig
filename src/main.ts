@@ -3,7 +3,6 @@ import { createPinia } from 'pinia'
 
 
 import App from './App.vue'
-import router from './router'
 import PrimeVue from 'primevue/config'
 import "@/assets/style/styles.css";
 import 'primeicons/primeicons.css';
@@ -14,6 +13,8 @@ import Message from "@/volt/Message.vue";
 import Select from "@/volt/Select.vue"
 const app = createApp(App)
 app.use(createPinia())
+console.log("!!!")
+import router from './router'
 app.use(router)
 app.use(PrimeVue, {
   unstyled: true,
