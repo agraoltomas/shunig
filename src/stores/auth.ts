@@ -1,28 +1,75 @@
 import { ref, computed, type Ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Maybe } from '@/lib/tipos/generics'
+import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
+import { useAxios } from '@/lib/axios.ts'
+import { rutas_api } from '@/rutas_api.ts'
+import { AxiosError } from 'axios'
+import { useJWTToken } from '@/lib/token.ts'
 
-const TOKEN_KEY = 'jwt_token'
+const token = useJWTToken()
+const { axios } = useAxios()
 
 export const useAuthStore = defineStore('auth', () => {
-    const saveToken = (token: string ) => {
-        localStorage.setItem(TOKEN_KEY, token)
-    }
-    const getToken = () => {
-        return localStorage.getItem(TOKEN_KEY)
-    }
-    const jwt_token = computed(() => getToken())
+
+
     const user: Ref<Maybe<User>> = ref(null)
-    const estaLogueado = () => {
-        return !!localStorage.getItem(TOKEN_KEY)
+    const login = async (usuario: string, password: string): Promise<Maybe<string>> => {
+        try {
+            const r = await axios.value.post(rutas_api.auth.LOGIN(), {
+                email: usuario,
+                password: password
+            })
+            const response: MessageResponse<{ token: string, usuario: User }> = r.data
+                console.log(response)
+            if (response.ok) {
+                token.saveToken(response.data.token)
+                user.value = response.data.usuario
+            }
+            return null
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                const r: MessageResponse<never> = error.response?.data
+                return r?.message
+            } else if (error instanceof Error) {
+                return error.toString()
+            } else {
+                console.log(error)
+                return 'Error desconocido'
+            }
+        }
     }
+    const revalidarUsuario = async (): Promise<Maybe<User>> => {
+        try {
+            const r = await axios.value.get(rutas_api.auth.SESSION())
+            const response: MessageResponse<User> = r.data
+            console.log(response)
+            user.value = response.data
+            return user.value
+        } catch (error) {
+            return null
+            // if(error instanceof AxiosError){
+            // }
+        }
+    }
+
+    const revalidarCondicional = async (): Promise<Maybe<User>> => {
+        if (user.value) return null
+        return await revalidarUsuario()
+
+    }
+
+    const logout = () => {
+        user.value = null
+        token.deleteToken()
+    }
+
 
     return {
         user,
-        jwt_token,
-        saveToken,
-        getToken,
-        estaLogueado
+        login,
+        revalidarUsuario,
+        revalidarCondicional,
+        logout
     }
 })

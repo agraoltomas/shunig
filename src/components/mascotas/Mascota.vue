@@ -111,7 +111,7 @@ const actualizar = () =>{
         </div>
         <div v-else class="flex flex-row gap-4 pt-3">
             <div class="flex flex-col gap-3 mx-3">
-                <Image v-if="newValues.imagen" class="" pt:image="max-w-72!" :src="newValues.imagen"></Image>
+                <Image v-if="mascota.imagen" class="" pt:image="max-w-72!" :src="mascota.imagen"></Image>
                 <div v-else class="w-"></div>
                 <div class="flex flex-row gap-3 justify-around">
                     <Button label="Adoptar" icon-pos="left"

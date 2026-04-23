@@ -2,7 +2,7 @@
 
 import FormRow from '@/components/forms/FormRow.vue'
 import Label from '@/components/forms/Label.vue'
-import { onMounted, type Reactive, reactive, type Ref, ref, watch } from 'vue'
+import { onMounted, type Reactive, reactive, type Ref, ref, watch, defineExpose } from 'vue'
 import {Form} from "@primevue/forms"
 import FormCol from '@/components/forms/FormCol.vue'
 import ToggleButton from '@/volt/ToggleButton.vue'
@@ -14,33 +14,6 @@ import { AxiosError } from 'axios'
 import { useToast } from '@/lib/toast/toast.ts'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 
-const toast = useToast()
-const axiosService = useAxios()
-
-const props = defineProps<{ usuario: User }>();
-
-const solicitudAnterior: Ref<Maybe<IDetalleSolicitud>> = ref(null);
-const getSolicitud = async () => {
-    try{
-        const r = await axiosService.axios.value.get(`/usuario/${props.usuario.id_usuario}/detalle_solicitud/`)
-        const response: MessageResponse<IDetalleSolicitud> = r.data;
-        solicitudAnterior.value = response.data;
-    }catch(e){
-        if(e instanceof AxiosError){
-            if (e.response && e.response.status === 404){
-                toast.add({ detail: e.response.data.message, severity: 'error' })
-                solicitudAnterior.value = null
-            }
-        }
-    }
-}
-onMounted(async () => {
-    await getSolicitud()
-})
-
-watch(() => props.usuario, async () => {
-    await getSolicitud()
-})
 export interface IDetalleSolicitud {
     fecha?: string,
     id_usuario: number,
@@ -81,9 +54,49 @@ export interface ISolicitud {
     responsable_solicitud: string,
     compromiso: boolean
 }
+
+const toast = useToast()
+const axiosService = useAxios()
+
+const props = defineProps<{ usuario: User }>();
+
+const solicitudAnterior: Ref<Maybe<IDetalleSolicitud>> = ref(null);
+const getSolicitud = async () => {
+    try{
+        const r = await axiosService.axios.value.get(`/usuario/${props.usuario.id_usuario}/detalle_solicitud/`)
+        const response: MessageResponse<IDetalleSolicitud> = r.data;
+        solicitudAnterior.value = response.data;
+    }catch(e){
+        if(e instanceof AxiosError){
+            if (e.response && e.response.status === 404){
+                toast.add({ detail: e.response.data.message, severity: 'error' })
+                solicitudAnterior.value = null
+            }
+        }
+    }
+}
+onMounted(async () => {
+    await getSolicitud()
+})
+
+watch(() => props.usuario, async () => {
+    await getSolicitud()
+})
+
 const datosForm: Reactive<Partial<ISolicitud>> = reactive({})
 const optionsTipoVivienda = ref(['Departamento','Casa'])
 
+
+const guardar = async () => {
+    const r = await axiosService.axios.value.post(`/usuario/${props.usuario.id_usuario}/detalle_solicitud/`,{
+
+    })
+    return null
+}
+
+defineExpose({
+    guardar
+})
 </script>
 
 <template>
@@ -176,7 +189,7 @@ const optionsTipoVivienda = ref(['Departamento','Casa'])
                 <CheckBox class="m-auto" v-model="datosForm.compromiso" binary></CheckBox>
             </FormCol>
         </FormRow>
-        <Button label="Cargar Detalles"></Button>
+        <Button type="submit" label="Cargar Detalles"></Button>
     </Form>
 </template>
 

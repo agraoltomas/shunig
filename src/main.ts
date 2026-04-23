@@ -13,7 +13,6 @@ import Message from "@/volt/Message.vue";
 import Select from "@/volt/Select.vue"
 const app = createApp(App)
 app.use(createPinia())
-console.log("!!!")
 import router from './router'
 app.use(router)
 app.use(PrimeVue, {

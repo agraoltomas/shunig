@@ -65,7 +65,7 @@ const config = {
 </script>
 
 <template>
-    <div class="grid grid-cols-4 grid-rows-12 max-h-[80vw] gap-3">
+    <div class="grid grid-cols-4 grid-rows-12 max-h-[80vw] gap-5 shadow-amber-50">
         <Panel class="col-span-2  row-span-3" header="Mis adopciones">
                 <DataTable :value="adopciones">
                     <Column header="Nombre" field="nombre">
@@ -75,13 +75,13 @@ const config = {
                     <Column header="Raza" field="raza"></Column>
                     <Column>
                         <template #body="{data}">
-                            <Button icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
+                            <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
                         </template>
                     </Column>
                 </DataTable>
         </Panel>
 
-        <Panel class="col-span-2  row-start-4 row-span-3" header="Mis tránsitos">
+        <Panel class="col-span-2  row-start-4 row-span-3 bg-surface-50!" header="Mis tránsitos">
             <DataTable :value="transitos">
                 <Column header="Nombre" field="nombre">
                 </Column>
@@ -90,7 +90,7 @@ const config = {
                 <Column header="Raza" field="raza"></Column>
                 <Column>
                     <template #body="{data}">
-                        <Button icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
+                        <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
                     </template>
                 </Column>
             </DataTable>

@@ -13,13 +13,14 @@ import VoluntarioHome from '@/router/views/voluntario/VoluntarioHome.vue'
 import VoluntarioMascotasView from '@/router/views/voluntario/MascotasView.vue'
 import SolicitudesView from '@/router/views/voluntario/SolicitudesView.vue'
 import EventosView from '@/router/views/voluntario/EventosView.vue'
-import TransitoView from '@/router/views/refugio/TransitoView.vue'
+import TransitoView from '@/router/views/refugio/transito/TransitoView.vue'
 import StockView from '@/router/views/refugio/StockView.vue'
 import VacunasView from '@/router/views/refugio/VacunasView.vue'
 import RecoverPassword from '@/router/views/ppales/RecoverPassword.vue'
 import OutsideView from '@/router/views/OutsideView.vue'
 import { useAuthStore } from '@/stores/auth.ts'
 import ChangePassword from '@/router/views/ppales/ChangePassword.vue'
+import MascotaTransitoView from '@/router/views/refugio/transito/MascotaTransitoView.vue'
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -40,23 +41,28 @@ const router = createRouter({
                 { path: 'mascota/:id', component: MascotaView },
                 { path: 'vacunas', component: VacunasView },
                 { path: 'stock', component: StockView },
-                { path: 'transito', component: TransitoView }
+                { path: 'transito', component: TransitoView },
+                { path: 'transito/:id_animal', component: MascotaTransitoView }
             ]
         }, {
             path: '/usuario', component: VoluntarioView, children: [
                 { path: '', component: VoluntarioHome },
                 { path: 'mascotas', component: VoluntarioMascotasView },
+                { path: 'mascota/:id', component: MascotaView },
                 { path: 'solicitudes', component: SolicitudesView },
                 { path: 'eventos', component: EventosView }
             ]
         }
     ]
 })
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
     const authStore = useAuthStore()
-    if(!to.meta.external){
+    if(!to.meta.external && from.path != '/login'){
         if(!authStore.user){
-            return { path: '/login'};
+            const r = await authStore.revalidarUsuario()
+            if(!r){
+                return { path: '/login'};
+            }
         }
     }
 });

@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { onMounted, type Ref, ref } from 'vue'
-import Menubar from '@/components/Menubar.vue'
 import { useRouter } from 'vue-router'
-import { rutas_api } from '@/rutas_api.ts'
-import axios from '@/lib/axios.ts'
 import { useAuthStore } from '@/stores/auth.ts'
-import type { MessageResponse } from '@/lib/tipos/generics'
-import type { User } from '@/lib/tipos/usuarios'
 import { useToast } from '@/lib/toast/toast.ts'
-import { AxiosError } from 'axios'
-
+import ProgressSpinner from "primevue/progressspinner"
+import { useJWTToken } from '@/lib/token.ts'
 
 const router = useRouter();
 const toast = useToast();
@@ -17,28 +12,40 @@ const toast = useToast();
 const usuario: Ref<string | null> = ref(null)
 const password: Ref<string | null> = ref(null)
 const authStore = useAuthStore()
+const {jwt_token} = useJWTToken()
+const ingresando = ref(false)
+onMounted(async () => {
+    if(!jwt_token.value)return;
+    if(authStore.user){
+        ingresando.value = true
+        toast.add({ detail: "Ya se encuentra logeado! redireccionando", severity: "success"})
+        setTimeout(async () => {
+            await router.push('/swap')
+        },2000)
+    }else{
 
-const login = async () => {
-    if(!(usuario.value||password.value)){
-        return;
+        const u = await authStore.revalidarUsuario()
+        ingresando.value = true
+        if(u){
+            toast.add({ detail: "Revalidacion correcta! redireccionando", severity: "success"})
+            setTimeout(async () => {
+                await router.push('/swap')
+            },2000)
+        }else{
+            toast.add({ detail: "Se ha vencido su sesion, por favor vuelva a ingresar", severity: "warn"})
+            ingresando.value = false
+        }
     }
-    try{
-        const r = await axios.post(rutas_api.auth.LOGIN(), {
-            email: usuario.value,
-            password: password.value,
-        });
-        if(r.status === 200){
-            const response: MessageResponse<{ token: string, usuario: User}> = r.data
-            authStore.saveToken(response.data.token)
-            authStore.user = response.data.usuario
-            await router.push("/swap")
-        }
-    }catch(error){
-        if(error instanceof AxiosError){
-            const r: MessageResponse<never> = error.response?.data
-            toast.add({ summary: "Error en login", detail: r?.message, severity: "error" })
-        }
-
+})
+const login = async () => {
+    if(!usuario.value) return
+    if(!password.value) return
+    const error = await authStore.login(usuario.value, password.value)
+    console.log(error)
+    if(error){
+        toast.add({ summary: "Error de login", detail: error, severity:"error"})
+    }else{
+        await router.push('/swap')
     }
 
 
@@ -47,7 +54,7 @@ const login = async () => {
 
 <template>
     <Panel class="w-[28vw] m-auto bg-white">
-        <div class="flex flex-col  m-auto py-3 gap-3 px-10" >
+        <div v-if="!ingresando" class="flex flex-col  m-auto py-3 gap-3 px-10" >
             <div class="text-3xl font-semibold px-2 py-3 m-auto">Ingresar</div>
             <InputText size="large" required placeholder="Mail" v-model="usuario"></InputText>
             <Password size="large" required :feedback="false" placeholder="Contraseña" v-model="password" fluid></Password>
@@ -58,6 +65,10 @@ const login = async () => {
             <RouterLink :to="{path: '/recuperar-pass', query:{u: usuario}}" class="link  text-primary-400 m-auto"
             >¿Olvidaste tu contraseña?
             </RouterLink>
+        </div>
+
+        <div v-else class="flex flex-col  m-auto py-3 gap-3 px-10" >
+            <ProgressSpinner class="m-auto h-40! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin"></ProgressSpinner>
         </div>
     </Panel>
 </template>
