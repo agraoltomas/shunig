@@ -10,6 +10,7 @@ import ProgressSpinner from 'primevue/progressspinner'
 import moment from 'moment'
 import DataTable from '@/volt/DataTable.vue'
 import Column from 'primevue/column'
+import Label from '@/components/forms/Label.vue'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
 const mascota: Ref<Maybe<IMascota>> = ref(null)
@@ -49,19 +50,38 @@ const actualizaciones = ref([
 </script>
 
 <template>
-    <Panel v-if="mascota" class="w-[75%] m-auto ">
-        <div class="flex flex-row">
-            <div class="max-w-96! flex flex-col gap-3">
-                <div class="m-auto text-3xl text-semibold w-fit">{{ mascota.nombre }}</div>
-                <Image class="" v-if="mascota.imagen" :src="mascota.imagen"></Image>
-                <div class="row-span-3">
-                    <h1>Detalles de Transito</h1>
-                    <p>.</p>
-                    <p>.</p>
+    <Panel v-if="mascota" class="w-[75%] m-auto border-white! border-0 overflow-auto" pt:header="p-0!">
+        <template #header>
+                <div v-if="mascota" class="w-full h-full">
+                    <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
+                        {{ mascota.nombre }}
+                    </div>
+                </div>
+        </template>
+        <div class="flex flex-col pt-3">
+
+            <div class=" flex flex-row gap-3">
+                <div class="max-w-72! m-auto">
+                    <Image pt:image=" rounded-lg " v-if="mascota.imagen" :src="mascota.imagen"></Image>
+                </div>
+                <div class="border-surface-500 p-3 rounded-lg w-full border rounded-lg">
+                    <h1 class="text-2xl pb-3 text-center font-semibold">Detalles de Transito</h1>
+                    <p class="text-xl font-semibold pl-1">Datos del voluntario</p>
+                    <div class="flex flex-col pb-3">
+                        <Label>Nombre:</Label>
+                        <div class="text-lg">Hermione Granger</div></div>
+                    <div class="flex flex-col pb-3">
+                        <Label>Domicilio:</Label>
+                        <div class="text-lg">Peru 123, CABA,CABA,CABA</div></div>
+                    <div class="flex flex-col pb-3">
+                        <Label>Mail:</Label>
+                        <div class="text-lg">hg@gmail.com</div></div>
+                    <div class="flex flex-col pb-3">
+                        <Label>Alta:</Label>
+                        <div class="text-lg">21/09/1991</div></div>
                     <p>.</p>
                     <p>.</p>
                 </div>
-
             </div>
             <div class="m-auto w-full h-full">
                 <DataTable :value="actualizaciones">

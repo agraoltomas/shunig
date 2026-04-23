@@ -14,7 +14,7 @@ const props = defineProps<{ mascotas: IMascota[]}>()
 
 </script>
 
-<template>
+<template>|
     <div>
         <DataTable :value="mascotas">
             <template #empty>
