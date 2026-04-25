@@ -42,7 +42,7 @@ const router = createRouter({
                 { path: 'vacunas', component: VacunasView },
                 { path: 'stock', component: StockView },
                 { path: 'transito', component: TransitoView },
-                { path: 'transito/:id_animal', component: MascotaTransitoView }
+                { path: 'transito/:id', component: MascotaTransitoView }
             ]
         }, {
             path: '/usuario', component: VoluntarioView, children: [

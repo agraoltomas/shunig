@@ -3,7 +3,7 @@ import { onMounted, type Ref, ref } from 'vue'
 import { Qalendar } from 'qalendar'
 import DataTable from '@/volt/DataTable.vue'
 import type { MessageResponse } from '@/lib/tipos/generics'
-import type { IMascota, IMascotaVoluntario } from '@/lib/tipos/mascotas'
+import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useAxios } from '@/lib/axios.ts'
 import { useRouter } from 'vue-router'
@@ -19,9 +19,9 @@ onMounted(async () => {
 
     const r = await axiosService.axios.value.get(`/animal/usuario/${authStore.user.id_usuario}/`)
     if (r.status == 200) {
-        let response: MessageResponse<IMascotaVoluntario[]> = r.data
-        adopciones.value = response.data.filter((v: IMascotaVoluntario) => v.tipo == 'adopcion')
-        transitos.value = response.data.filter((v: IMascotaVoluntario) => v.tipo == 'transito')
+        let response: MessageResponse<IMascotaTransito[]> = r.data
+        adopciones.value = response.data.filter((v: IMascotaTransito) => v.tipo == 'adopcion')
+        transitos.value = response.data.filter((v: IMascotaTransito) => v.tipo == 'transito')
         console.log(response)
     }
 })

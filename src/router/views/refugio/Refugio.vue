@@ -64,7 +64,7 @@ if (!authStore.user) {
             </div>
         </template>
     </Menubar>
-    <div class="mx-3 rounded-lg flex flex-row justify-between">
+    <div class="mx-3 rounded-lg flex flex-row justify-between my-2">
         <div class="w-[50%] my-auto">
             <Button type="button" icon="pi pi-bars" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
             <Menu pt:submenulabel="text-black font-semibold text-center bg-gray-100" ref="menuAccesoRapido"

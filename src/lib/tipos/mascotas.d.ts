@@ -16,6 +16,7 @@ export interface IMascota{
     sexo: string
 }
 
-export interface IMascotaVoluntario extends IMascota{
-    tipo: ('adopcion'|'transito')
+export interface IMascotaTransito extends IMascota{
+    tipo: ('adopcion'|'transito'),
+    id_vinculo: number
 }

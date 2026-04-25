@@ -3,14 +3,14 @@ import { onMounted, type Ref, ref } from 'vue'
 import DataTable from '@/volt/DataTable.vue'
 import axios from '@/lib/axios.ts'
 
-import type { IMascota, IMascotaVoluntario } from '@/lib/tipos/mascotas'
+import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import { useRouter } from 'vue-router'
 import handshake from "@/assets/images/handshake-regular-full.svg"
 import paw from "@/assets/images/paw-solid-full-black.svg"
 
 const router = useRouter()
-const props = defineProps<{ mascotas: IMascotaVoluntario[]}>()
+const props = defineProps<{ mascotas: IMascotaTransito[]}>()
 // const mascotas: Ref<IMascota[]> = ref([])
 
 </script>

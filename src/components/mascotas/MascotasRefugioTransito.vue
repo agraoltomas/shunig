@@ -3,18 +3,18 @@ import { onMounted, type Ref, ref } from 'vue'
 import DataTable from '@/volt/DataTable.vue'
 import axios, { useAxios } from '@/lib/axios.ts'
 
-import type { IMascota } from '@/lib/tipos/mascotas'
+import type { IMascota, IMascotaVoluntario } from '@/lib/tipos/mascotas'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import { useRouter } from 'vue-router'
 import { useRefugioStore } from '@/stores/refugio.ts'
 
 const router = useRouter()
-const props = defineProps<{ mascotas: IMascota[]}>()
+const props = defineProps<{ mascotas: IMascotaVoluntario[]}>()
 // const mascotas: Ref<IMascota[]> = ref([])
 
 </script>
 
-<template>|
+<template>
     <div>
         <DataTable :value="mascotas">
             <template #empty>
@@ -46,7 +46,7 @@ const props = defineProps<{ mascotas: IMascota[]}>()
             <Column header="Raza" field="raza"></Column>
             <Column>
                 <template #body="{data}">
-                    <Button label="Gestionar" @click="() => router.push(`/refugio/transito/${data.id_animal}`)"></Button>
+                    <Button label="Gestionar" @click="() => router.push(`/refugio/transito/${data.id_vinculo}`)"></Button>
                 </template>
             </Column>
             <Column>

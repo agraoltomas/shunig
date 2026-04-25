@@ -31,7 +31,7 @@ import graph from "C:\\Users\\tomot\\Downloads\\WhatsApp Image 2026-04-08 at 17.
 <!--                <span class="border border-gray-800 rounded p-2 bg-surface-200 text-slate-500">?: ?</span>-->
 <!--            </div>-->
         </Panel>
-        <Panel class="col-span-2  m-3  bg-gray-200/30! border-surface-800 border-2 shadow-2xl overflow-y-auto max-h-[75vh]!">
+        <Panel class="col-span-2  m-3    border-2 shadow-2xl overflow-y-auto max-h-[75vh]!">
             <template #header>
                 <div class="flex flex-row gap-3">
                     <span class="text-lg font-semibold">Alertas</span>
