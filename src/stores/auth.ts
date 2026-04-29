@@ -1,4 +1,4 @@
-import { ref, computed, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
                 password: password
             })
             const response: MessageResponse<{ token: string, usuario: User }> = r.data
-                console.log(response)
+            console.log(response)
             if (response.ok) {
                 token.saveToken(response.data.token)
                 user.value = response.data.usuario
@@ -64,12 +64,23 @@ export const useAuthStore = defineStore('auth', () => {
         token.deleteToken()
     }
 
+    const validarRoles = (rs: number[]) => {
+        if (!user.value) return false
+        const misRoles = user.value.roles.map(r => r.id_rol)
+        for (const rol_id of rs) {
+            if (misRoles.includes(rol_id.toString())) {
+                return true
+            }
+        }
+        return false
+    }
 
     return {
         user,
         login,
         revalidarUsuario,
         revalidarCondicional,
-        logout
+        logout,
+        validarRoles,
     }
 })

@@ -1,7 +1,5 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-
-
 import App from './App.vue'
 import PrimeVue from 'primevue/config'
 import "@/assets/style/styles.css";
@@ -11,9 +9,14 @@ import Column from "primevue/column";
 import InputText from "@/volt/InputText.vue"
 import Message from "@/volt/Message.vue";
 import Select from "@/volt/Select.vue"
+import router from './router'
+import {  ToastService } from 'primevue'
+import { registerAll } from '@/volt/register.ts'
+import Textarea from '@/volt/Textarea.vue'
 const app = createApp(App)
 app.use(createPinia())
-import router from './router'
+
+
 app.use(router)
 app.use(PrimeVue, {
   unstyled: true,
@@ -23,8 +26,7 @@ app.component("Column",Column)
 app.component("InputText", InputText)
 app.component("Message", Message)
 app.component("Select", Select)
-import {  ToastService } from 'primevue'
-import { registerAll } from '@/volt/register.ts'
+app.component('Textarea', Textarea)
 
 app.use(ToastService);
 registerAll(app);

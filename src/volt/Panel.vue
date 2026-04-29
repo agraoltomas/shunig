@@ -35,7 +35,7 @@ const theme = ref<PanelPassThroughOptions>({
     root: `border border-surface-200 dark:border-surface-700 rounded-md
         bg-surface-0 dark:bg-surface-900
         text-surface-900 dark:text-surface-0`,
-    header: `flex justify-between items-center p-[1.125rem] p-toggleable:py-[0.375rem] p-toggleable:px-[1.125rem] empty:p-0! text-2xl! font-bold m-auto`,
+    header: `flex justify-between items-center p-[1.125rem] p-toggleable:py-[0.375rem] p-toggleable:px-[1.125rem] empty:p-none! empty:m-none! empty:h-none! text-2xl! font-bold m-auto`,
     title: `leading-none font-semibold`,
     headerActions: `flex items-center gap-1`,
     contentContainer: ``,

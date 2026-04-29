@@ -2,7 +2,7 @@
 import Label from '@/components/forms/Label.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import CheckBox from '@/volt/CheckBox.vue'
-import { onMounted, reactive } from 'vue'
+import { onMounted } from 'vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import type { Maybe } from '@/lib/tipos/generics'
 import type { IDomicilio } from '@/lib/tipos/domicilio'
@@ -10,7 +10,15 @@ import { FormField} from "@primevue/forms"
 import { domicilioSchema } from '@/validations/domicilio.ts'
 
 
-const props = withDefaults(defineProps<{ disabled?: boolean }>(), { disabled: false });
+const props = withDefaults(defineProps<{
+    disabled?: boolean,
+    label?: Maybe<string>|boolean,
+    border?: boolean,
+    background?: boolean }>(), {
+    disabled: false,
+    label: "Domicilio",
+    border: true,
+    background: true});
 const domicilio = defineModel<IDomicilio>("value",{
     default: {
         direccion: null,
@@ -32,8 +40,8 @@ const validate = async () => {
 </script>
 
 <template>
-    <Label class="text-2xl! m-auto bg-surface-50 w-full text-center rounded-lg ">Domicilio</Label>
-    <div class="border rounded-lg p-3 border-surface-300 flex flex-col gap-6">
+    <Label v-if="label" :class="['text-2xl! m-auto  w-full text-center rounded-lg', background ? 'bg-surface-50' : ''] ">{{ typeof label == 'string' ? label : ''}}</Label>
+    <div :class="[' rounded-lg py-3 flex flex-col gap-6',border ? 'border border-surface-300 px-3' : '']">
         <FormRow>
             <FormCol :span="6" :gap="4">
                 <Label required>Dirección</Label>
@@ -59,6 +67,8 @@ const validate = async () => {
                 <FormField as-child name="domicilio.localidad">
                 <InputText placeholder="Ej. CABA" v-model="domicilio.localidad"></InputText>
                 </FormField>
+                <div class="pb-7 text-white">.</div>
+
             </FormCol>
         </FormRow>
         <FormRow>

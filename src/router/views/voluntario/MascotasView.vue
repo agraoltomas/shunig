@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-import MascotasRefugio from '@/components/mascotas/MascotasRefugio.vue'
 import { onMounted, ref, type Ref } from 'vue'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import type {  IMascotaTransito } from '@/lib/tipos/mascotas'
@@ -25,10 +23,10 @@ onMounted(async () => {
 
 <template>
     <div class="grid  gap-3 p-3 h-screen ">
-        <Panel class="border-white! border-2 overflow-auto">
-            <template #header></template>
             <MascotasVoluntario :mascotas="mascotas"></MascotasVoluntario>
-        </Panel>
+<!--        <Panel class="border-white! border-2 overflow-auto">-->
+<!--            <template #header></template>-->
+<!--        </Panel>-->
     </div>
 </template>
 

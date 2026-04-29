@@ -7,10 +7,11 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024
 const fileInput = useTemplateRef('fileInput')
 const file = defineModel<Maybe<File>>()
 const error: Ref<Maybe<string>> = ref(null)
-const props = withDefaults(defineProps<{ preview?: boolean }>(), {
+const props = withDefaults(defineProps<{ preview?: boolean, name?: string }>(), {
     preview: true,
+
 })
-const handleFileSelection = (e: Event) => {
+const handleFileSelection = () => {
     error.value = null
     if (!(fileInput.value) || !fileInput.value.files || fileInput.value.files.length == 0) return
     if (fileInput.value.files.length > 0) {
@@ -52,7 +53,7 @@ const toURL = (f: File) => {
 <template>
     <div class="flex flex-col overflow-y-auto">
         <div class="flex flex-row gap-3 py-3">
-            <input hidden @change="handleFileSelection" type="file" ref="fileInput" />
+            <input :name="name" hidden @change="handleFileSelection" type="file" ref="fileInput" />
             <div class="flex flex-row gap-3">
                 <Button pt:label="max-h-fit" icon="pi pi-plus" label="Subir imagen" @click="openFilePicker"></Button>
             </div>

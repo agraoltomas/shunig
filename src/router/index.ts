@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '@/router/views/Login.vue'
 import Register from '@/router/views/Register.vue'
-import Home from '@/router/views/Home.vue'
 import Swap from '@/router/views/Swap.vue'
 import Refugio from '@/router/views/refugio/Refugio.vue'
 import RefugioHome from '@/router/views/refugio/RefugioHome.vue'
@@ -21,6 +20,9 @@ import OutsideView from '@/router/views/OutsideView.vue'
 import { useAuthStore } from '@/stores/auth.ts'
 import ChangePassword from '@/router/views/ppales/ChangePassword.vue'
 import MascotaTransitoView from '@/router/views/refugio/transito/MascotaTransitoView.vue'
+import AdministrarUsuarioView from '@/router/views/voluntario/AdministrarUsuarioView.vue'
+import { useRefugioStore } from '@/stores/refugio.ts'
+import AdministrarRefugioView from '@/router/views/refugio/AdministrarRefugioView.vue'
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -42,10 +44,12 @@ const router = createRouter({
                 { path: 'vacunas', component: VacunasView },
                 { path: 'stock', component: StockView },
                 { path: 'transito', component: TransitoView },
-                { path: 'transito/:id', component: MascotaTransitoView }
+                { path: 'transito/:id', component: MascotaTransitoView },
+                { path: 'administrar', component: AdministrarRefugioView },
             ]
         }, {
             path: '/usuario', component: VoluntarioView, children: [
+                { path: "administrar", component: AdministrarUsuarioView },
                 { path: '', component: VoluntarioHome },
                 { path: 'mascotas', component: VoluntarioMascotasView },
                 { path: 'mascota/:id', component: MascotaView },
@@ -55,13 +59,18 @@ const router = createRouter({
         }
     ]
 })
+
 router.beforeEach(async (to, from) => {
     const authStore = useAuthStore()
+
     if(!to.meta.external && from.path != '/login'){
         if(!authStore.user){
             const r = await authStore.revalidarUsuario()
             if(!r){
                 return { path: '/login'};
+            }else{
+                const refugioStore = useRefugioStore()
+                await refugioStore.loadContextRefugio(r);
             }
         }
     }

@@ -23,7 +23,6 @@ onMounted(async () => {
             await router.push('/swap')
         },2000)
     }else{
-
         const u = await authStore.revalidarUsuario()
         ingresando.value = true
         if(u){

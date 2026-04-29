@@ -14,7 +14,6 @@ import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import { useToast } from '@/lib/toast/toast.ts'
 import Domicilio from '@/components/forms/Domicilio.vue'
-import type { IDomicilio } from '@/lib/tipos/domicilio'
 import { domicilioSchema } from '@/validations/domicilio.ts'
 
 const props = defineProps<{ admin: User }>()
@@ -56,6 +55,8 @@ interface IRefugio {
 }
 
 const refugioResolver = yupResolver(yupRefugioSchema)
+const emits = defineEmits<{ ingresado: [refugio: any] }>()
+
 const ingresarRefugio = async (e: FormSubmitEvent) => {
     if(!e.valid)return
     console.log(e, props.admin)
@@ -73,7 +74,6 @@ const ingresarRefugio = async (e: FormSubmitEvent) => {
         toast.add({ detail: `'${e.values.nombre}' ingresado correctamente `, severity: 'success' })
     }
 }
-const emits = defineEmits<{ ingresado: [refugio: any] }>()
 </script>
 
 <template>

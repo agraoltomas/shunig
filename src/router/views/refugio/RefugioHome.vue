@@ -1,14 +1,32 @@
 <script setup lang="ts">
 import Alerta from '@/components/generales/Alerta.vue'
 import { EAlerta } from '@/components/generales/alertas.ts'
-import Image from "primevue/image"
-import graph from "C:\\Users\\tomot\\Downloads\\WhatsApp Image 2026-04-08 at 17.31.20.jpeg";
 </script>
 
 <template>
     <div class="grid grid-cols-4">
-        <Panel class="col-span-2 m-3  b-white border-surface-800 border-2 shadow-2xl max-h-[75vh]!" pt:header="h-none p-0">
-            <Image :src="graph"></Image>
+        <Panel class="col-span-2 m-3  b-white shadow-2xl max-h-[75vh]!"  header="Refugio - resumen">
+<!--            <Image :src="graph"></Image>-->
+            <div class="grid grid-cols-12 grid-rows-5 gap-0.5 h-56 content-center">
+                <Panel pt:content="p-0" pt:header="p-0! m-0!" class="col-span-2 row-span-2 flex flex-col py-3">
+                    <div class="text-2xl font-bold mx-auto text-center">50</div>
+                    <div class="text-[6px] text-center">Animales en refugio</div>
+                </Panel>
+                <Panel pt:content="p-0" pt:header="p-0! m-0!" class="col-span-2 row-span-2  flex flex-col py-3">
+                    <div class="text-2xl font-bold mx-auto text-center">6</div>
+                    <div class="text-[6px] text-center">Razas diferentes</div>
+                </Panel>
+                <Panel pt:content="p-0" pt:header="p-0! m-0!" class="col-span-2 row-span-2  flex flex-col py-3">
+                    <div class="text-2xl font-bold mx-auto text-center">2</div>
+                    <div class="text-[6px] text-center">Especies diferentes</div>
+                </Panel>
+                <Panel pt:content="p-0" header="Ingreso animales por mes y año" pt:header="text-[8px]! p-1" class="col-span-6 row-span-3 row-start-3">
+                    <div class="text-2xl font-bold mx-auto text-center pt-5">GRAFICO</div>
+                </Panel>
+                <Panel pt:content="p-0 text-center m-auto" pt:contentcontainer="m-auto h-full content-center" pt:contentwrapper="m-auto" header="Animales por sexo, raza y especie" pt:header="text-[8px]! p-1" class="col-span-6 row-span-5">
+                    <div class="text-2xl font-bold mx-auto text-center h-full py-auto my-auto">GRAFICO</div>
+                </Panel>
+            </div>
 <!--            <hr>-->
 <!--            <div class="text-2xl font-semibold py-5">Mascotas</div>-->
 <!--            <div class="flex flex-row gap-3 justify-around px-3 pb-5">-->

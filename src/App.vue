@@ -7,7 +7,6 @@ import { useAuthStore } from '@/stores/auth.ts'
 
 const router = useRouter()
 const route = useRoute()
-console.log(router, route)
 const authStore = useAuthStore()
 onMounted(() => {
     const route = window.location.hash.substring(1);

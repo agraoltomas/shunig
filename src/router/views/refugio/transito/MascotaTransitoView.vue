@@ -3,40 +3,40 @@ import { onMounted, type Ref, ref, watch } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { IMascota } from '@/lib/tipos/mascotas'
 import axios from '@/lib/axios.ts'
-import { AxiosError } from 'axios'
 import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { useRoute } from 'vue-router'
 import ProgressSpinner from 'primevue/progressspinner'
 import moment from 'moment'
 import DataTable from '@/volt/DataTable.vue'
 import Column from 'primevue/column'
-import Label from '@/components/forms/Label.vue'
 import type { User } from '@/lib/tipos/usuarios'
-
+import DataBlock from '@/components/generales/DataBlock.vue'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
 
 interface Reporte {
     imagenes: string[]
 }
+
 interface DetalleTransito {
     transito: {},
     animal: IMascota,
     usuario: User,
     reportes: {}[]
 }
+
 const transito: Ref<Maybe<DetalleTransito>> = ref(null)
 const route = useRoute()
 const getTransito = async () => {
     startLoading()
-    if(isNaN(Number(route.params.id)))return;
-    try{
+    if (isNaN(Number(route.params.id))) return
+    try {
         const r = await axios.get(`/transito/${route.params.id}/`, {})
         const response: MessageResponse<DetalleTransito> = r.data
-        transito.value = response.data;
-    }catch (error){
+        transito.value = response.data
+    } catch (error) {
 
-    }finally{
+    } finally {
         stopLoading()
     }
 }
@@ -59,6 +59,24 @@ const actualizaciones = ref([
         descripcion: 'se convirtio en un demonio lovecraftiano y me hizo temerle a la existencia misma'
     }
 ])
+
+export interface HistorialMascota {
+    fecha_desde: moment.Moment,
+    fecha_hasta: Maybe<moment.Moment>,
+    descripcion: string,
+    tipo: ('refugio' | 'adopcion' | 'transito')
+}
+
+const historial: Ref<HistorialMascota[]> = ref([
+    {   fecha_desde: moment('2025-12-01'),
+        fecha_hasta: moment('2026-03-05'),
+        descripcion: 'Juan Basañez',
+        tipo: 'transito' },
+    {   fecha_desde: moment('2026-03-06'),
+        fecha_hasta: null,
+        descripcion: 'PATITAS',
+        tipo: 'refugio' }
+])
 </script>
 
 <template>
@@ -70,51 +88,56 @@ const actualizaciones = ref([
                 </div>
             </div>
         </template>
-        <div class="flex flex-col pt-3">
-            <div class=" flex flex-row gap-3">
-                <div class="max-w-72! m-auto">
-                    <Image pt:image=" rounded-lg " v-if="transito.animal.imagen" :src="transito.animal.imagen"></Image>
+        <div class="p-2 grid gap-2 grid-cols-12 grid-rows-3">
+            <Panel class="col-span-4 row-span-2">
+                <h1 class="text-2xl pb-3  font-semibold underline text-center">Voluntario</h1>
+                <DataBlock label="Nombre" data="Hermione Granger"></DataBlock>
+                <DataBlock label="Domicilio" data="Peru 123, CABA,CABA,CABA"></DataBlock>
+                <DataBlock label="Mail" data="hg@gmail.com"></DataBlock>
+                <DataBlock label="Alta" data="21/09/1991"></DataBlock>
+            </Panel>
+            <Panel class="col-span-4 row-span-1 row-start-3">
+                <h1 class="text-2xl pb-3  font-semibold underline text-center">Detalle del transito</h1>
+                <div class="flex flex-row  gap-5 ">
+                    <DataBlock label="Inicio" data="30/09/1991"></DataBlock>
+                    <DataBlock label="Fin" data="N/A"></DataBlock>
                 </div>
-                <div class="border-surface-500 p-6 w-full border rounded-lg">
-                    <div class="flex flex-col align-middhle">
-                        <h1 class="text-2xl pb-3  font-semibold underline text-center">Voluntario</h1>
-                        <div class="flex flex-col pb-3">
-                            <Label>Nombre</Label>
-                            <div class="text-lg">Hermione Granger</div>
-                        </div>
-                        <div class="flex flex-col pb-3">
-                            <Label>Domicilio</Label>
-                            <div class="text-lg">Peru 123, CABA,CABA,CABA</div>
-                        </div>
-                        <div class="flex flex-col pb-3">
-                            <Label>Mail</Label>
-                            <div class="text-lg">hg@gmail.com</div>
-                        </div>
-                        <div class="flex flex-col pb-3">
-                            <Label>Alta</Label>
-                            <div class="text-lg">21/09/1991</div>
-                        </div>
-                        <h1 class="text-2xl pb-3  font-semibold underline text-center">Detalle del transito</h1>
-                        <div class="flex flex-row  gap-5 ">
-                            <div class="flex flex-col pb-3">
-                                <Label>Inicio</Label>
-                                <div class="text-lg">30/09/1991</div>
-                            </div>
-                            <div class="flex flex-col pb-3">
-                                <Label>Fin</Label>
-                                <div class="text-lg">N/A</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </Panel>
+            <Panel header="historial" class="col-span-12 row-span-4 col-start-5">
+                <DataTable :value="historial">
+                    <Column header="Desde" field="fecha_desde">
+                        <template #body="{data, field}">
+                            {{ data[field].format("DD/MM/YYYY")}}
+                        </template>
+                    </Column>
+                    <Column header="Hasta" field="fecha_hasta">
+                        <template #body="{data, field}">
+                            {{ data[field] ? data[field].format("DD/MM/YYYY") :"-" }}
+                        </template>
+                    </Column>
+                    <Column header="Tipo" field="tipo"></Column>
+                    <Column header="Detalle" field="descripcion"></Column>
+                </DataTable>
+            </Panel>
+            <!--        <div class="flex flex-col pt-3">-->
+            <!--            <div class=" flex flex-row gap-3">-->
+            <!--&lt;!&ndash;                <div class="max-w-72! m-auto">&ndash;&gt;-->
+            <!--&lt;!&ndash;                    <Image pt:image=" rounded-lg "  :src="imagenTerrier"></Image>&ndash;&gt;-->
+            <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+            <!--                <div class="border-surface-500 p-6 w-full border rounded-lg">-->
+            <!--                    <div class="flex flex-col align-middhle">-->
 
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <!--        </div>-->
         </div>
     </Panel>
-    <Panel class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" header="Reporte semanal">
-<!--        <template #header>-->
-<!--            <div class="m-auto text-3xl font-semibold text-center"></div>-->
-<!--        </template>-->
+    <Panel v-if="transito" class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" header="Reporte semanal">
+        <!--        <template #header>-->
+        <!--            <div class="m-auto text-3xl font-semibold text-center"></div>-->
+        <!--        </template>-->
         <div class="m-auto w-full h-full">
             <DataTable :value="actualizaciones">
 
@@ -143,8 +166,11 @@ const actualizaciones = ref([
 
     </Panel>
     <Panel v-if="loading">
-        <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle"
-                         pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
+        <ProgressSpinner
+            class="m-auto h-20! text-center"
+            pt:circle="stroke-red-100 p-progressspinner-circle"
+            pt:root="p-progressspinner w-full!"
+            pt:spin="p-progressspinner-spin" />
     </Panel>
 </template>
 

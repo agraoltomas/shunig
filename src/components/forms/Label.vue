@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-        <label :class="['font-semibold text-lg whitespace-nowrap', required ? 'after:pl-1 after:content-[\'*\'] after:font-bold after:text-red-500' : '']">
+        <label :class="['font-semibold text-lg whitespace-nowrap my-auto', required ? 'after:pl-1 after:content-[\'*\'] after:font-bold after:text-red-500' : '']">
         <slot></slot>
     </label>
 </template>

@@ -15,8 +15,7 @@ export const useRefugioStore = defineStore('refugio', () => {
     const loadContextRefugio = async (user: User) => {
         refugio.value = null;
         try{
-            const r = await axiosService.axios.value.get(rutas_api
-              .auth.REFUGIOS_USUARIO({user_id: user.id_usuario}));
+            const r = await axiosService.axios.value.get(rutas_api.auth.REFUGIOS_USUARIO({user_id: user.id_usuario}));
             const response: MessageResponse<IRefugio> = r.data;
             if(response.ok){
                 refugio.value = response.data;

@@ -1,5 +1,6 @@
 import type { Maybe } from '@/lib/tipos/generics'
 import type { IDomicilio } from '@/lib/tipos/domicilio'
+import type { Rol } from '@/lib/tipos/roles'
 
 export interface User {
     apellido: string,
@@ -12,5 +13,6 @@ export interface User {
     id_usuario: string
     nombre: string
     password_hash: string
-    telefono: string
+    telefono: string,
+    roles: Rol[]
 }

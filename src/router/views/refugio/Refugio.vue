@@ -8,7 +8,7 @@ import UsuarioTag from '@/components/generales/UsuarioTag.vue'
 import { useRefugioStore } from '@/stores/refugio.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useModalStore } from '@/stores/modales.ts'
-import Logout from '@/router/views/Logout.vue'
+import Settings from '@/router/views/Settings.vue'
 
 const router = useRouter()
 
@@ -54,13 +54,16 @@ if (!authStore.user) {
         <template #end>
 
             <div class="flex flex-row">
-                <Logout></Logout>
-                <div v-if="refugioStore.refugio" class="h-full w-full text-center flex flex-row justify-start">
+                <div v-if="refugioStore.refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
                     <div class="font-semibold text-3xl text-white m-auto px-5">
                         {{ refugioStore.refugio?.nombre }}
                     </div>
-                    <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
                 </div>
+                <div class="flex flex-row m-auto">
+                    <Settings title="Configuración"></Settings>
+<!--                    <Logout title="Cerrar sesión"></Logout>-->
+                </div>
+                <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>
     </Menubar>

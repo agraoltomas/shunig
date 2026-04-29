@@ -10,7 +10,7 @@ import type { MenuItem } from 'primevue/menuitem'
 import { useRouter } from 'vue-router'
 import OverlayBadge from "@/volt/OverlayBadge.vue"
 import Badge from "@/volt/Badge.vue"
-import Logout from '@/router/views/Logout.vue'
+import Settings from '@/router/views/Settings.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -50,7 +50,7 @@ const toggle = (event: Event) => {
         <template #end>
             <div class="flex flex-row gap-3">
                 <div class="align-middle m-auto text-white font-bold text-3xl">VISTA VOLUNTARIO</div>
-                <Logout></Logout>
+                <Settings title="Configuración"></Settings>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>

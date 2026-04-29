@@ -1,29 +1,50 @@
 <script setup lang="ts">
-import { onMounted, type Ref, ref } from 'vue'
+import { computed, onMounted, type Ref, ref } from 'vue'
 import DataTable from '@/volt/DataTable.vue'
-import axios, { useAxios } from '@/lib/axios.ts'
+import { useAxios } from '@/lib/axios.ts'
 
-import type { IMascota, IMascotaVoluntario } from '@/lib/tipos/mascotas'
-import type { MessageResponse } from '@/lib/tipos/generics'
+import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
+import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import { useRouter } from 'vue-router'
 import { useRefugioStore } from '@/stores/refugio.ts'
+import { useLoadingComposable } from '@/lib/utils/loading.ts'
 
 const router = useRouter()
-const props = defineProps<{ mascotas: IMascotaVoluntario[]}>()
 // const mascotas: Ref<IMascota[]> = ref([])
+const mascotas: Ref<IMascota[]> = ref([]);
+const refugioStore = useRefugioStore()
+const axiosService = useAxios()
+const {startLoading, stopLoading, loading} = useLoadingComposable()
+onMounted(async () => {
+    startLoading()
+    console.log(refugioStore.refugio)
+    if(!refugioStore.refugio)return;
+    try{
+        const r = await axiosService.axios.value.get(`animal/refugio/${refugioStore.refugio.id_refugio}/transitos/`)
+        const response: MessageResponse<IMascotaTransito[]> = r.data;
+        mascotas.value = response.data;
+    }catch (error) {
 
+    }finally {
+        stopLoading()
+    }
+})
+const filtroNombre: Ref<Maybe<string>> = ref(null);
+const mascotasWithFilters = computed(() => {
+    return filtroNombre.value ? mascotas.value.filter(m => m.nombre.startsWith(filtroNombre.value ?? "")) : mascotas.value
+})
 </script>
 
 <template>
     <div>
-        <DataTable :value="mascotas">
+        <DataTable :value="mascotasWithFilters" :loading="loading">
             <template #empty>
                 <div class="m-auto text-gray-500 w-fit p-3">No hay resultados</div>
             </template>
             <template #header>
                 <div class="flex flex-row bg-surface-50 gap-3">
                     <div class="flex flex-row py-1 pl-3">
-                        <InputText class="rounded-e-none"></InputText>
+                        <InputText v-model="filtroNombre" class="rounded-e-none"></InputText>
                     </div>
                     <div class="my-auto">
                         <Button>Filtrar
