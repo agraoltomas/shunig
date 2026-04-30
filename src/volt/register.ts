@@ -12,6 +12,12 @@ import DangerButton from '@/volt/DangerButton.vue'
 import ContrastButton   from '@/volt/ContrastButton.vue'
 import Panel from "@/volt/Panel.vue"
 import InputNumber from '@/volt/InputNumber.vue'
+import Textarea from '@/volt/Textarea.vue'
+import Image from "primevue/image"
+import Column from "primevue/column";
+import Message from "@/volt/Message.vue";
+import Select from "@/volt/Select.vue"
+
 
 import type { App } from 'vue'
 export const registerAll = (app: App): App => {
@@ -28,5 +34,12 @@ export const registerAll = (app: App): App => {
     app.component('DangerButton',DangerButton);
     app.component('ContrastButton',ContrastButton);
     app.component('InputNumber',InputNumber)
+    app.component("Message", Message)
+    app.component("Select", Select)
+    app.component('Textarea', Textarea)
+    app.component('Image',Image)
+    app.component("Column",Column)
+
+
     return app;
 }
