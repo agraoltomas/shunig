@@ -2,6 +2,7 @@
 import {  type Ref, ref, useTemplateRef } from 'vue'
 import Message from '@/volt/Message.vue'
 import type { Maybe } from '@/lib/tipos/generics'
+import {FormField} from '@primevue/forms'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const fileInput = useTemplateRef('fileInput')
@@ -11,7 +12,7 @@ const props = withDefaults(defineProps<{ preview?: boolean, name?: string }>(), 
     preview: true,
 
 })
-const handleFileSelection = () => {
+const handleFileSelection = (f: any) => {
     error.value = null
     if (!(fileInput.value) || !fileInput.value.files || fileInput.value.files.length == 0) return
     if (fileInput.value.files.length > 0) {
@@ -53,7 +54,7 @@ const toURL = (f: File) => {
 <template>
     <div class="flex flex-col overflow-y-auto">
         <div class="flex flex-row gap-3 py-3">
-            <input :name="name" hidden @change="handleFileSelection" type="file" ref="fileInput" />
+                <input  hidden @change="handleFileSelection" type="file" ref="fileInput" />
             <div class="flex flex-row gap-3">
                 <Button pt:label="max-h-fit" icon="pi pi-plus" label="Subir imagen" @click="openFilePicker"></Button>
             </div>

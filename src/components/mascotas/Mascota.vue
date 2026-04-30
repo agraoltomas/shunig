@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import Tag from '@/volt/Tag.vue'
 import type { IMascota } from '@/lib/tipos/mascotas'
 import moment from 'moment'
-import handshake from '@/assets/images/handshake-regular-full-white.svg'
-import paw from '@/assets/images/paw-solid-full.svg'
 import { useModalStore } from '@/stores/modales.ts'
 import FormTransito from '@/components/transito/FormTransito.vue'
 import Modal from '@/components/modal/Modal.vue'
-import { type Reactive, reactive, ref } from 'vue'
+import { type Reactive, reactive, type Ref, ref, type TemplateRef, useTemplateRef } from 'vue'
+import { Form } from '@primevue/forms'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import TableSelect from '@/components/forms/TableSelect.vue'
@@ -16,13 +14,20 @@ import Label from '@/components/forms/Label.vue'
 import ToggleSwitch from '@/volt/ToggleSwitch.vue'
 import FileUpload from '@/components/forms/FileUpload.vue'
 import * as yup from 'yup'
-import DataBlock from '@/components/generales/DataBlock.vue'
 import SinImagen from '@/components/generales/SinImagen.vue'
+import MascotaDetalle from '@/components/mascotas/MascotaDetalle.vue'
+import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
+import type { FormSubmitEvent } from '@primevue/forms/form'
+import { useAxios } from '@/lib/axios.ts'
+import { toBase64 } from '@/lib/utils/files.ts'
+import { AxiosError } from 'axios'
+import { useToast } from '@/lib/toast/toast.ts'
 
 const props = defineProps<{ mascota: IMascota }>()
 const modalStore = useModalStore()
 const editando = ref(false)
 const newValues: Reactive<{ [k in keyof IMascota]?: any }> = reactive({})
+const { axios } = useAxios();
 
 const toImageSource = (f: File): string => {
     return URL.createObjectURL(f)
@@ -31,7 +36,7 @@ const toImageSource = (f: File): string => {
 const updateNew = (l: keyof IMascota, v: any) => {
     newValues[l] = v
 }
-
+const toast = useToast();
 const updateAnimalSchema = yup.object({
     nombre: yup.string().trim().min(3),
     edad: yup.number().min(1)
@@ -42,9 +47,37 @@ const updateAnimalSchema = yup.object({
     // observaciones: null,
     // raza: null,
 } satisfies { [k in keyof IMascota]?: any })
-const actualizar = () => {
 
+const actualizar = async (e: FormSubmitEvent) => {
+    if(!props.mascota) return
+    const dirty = Object.keys(e.states).filter(k => e.states[k]?.dirty)
+    console.log(dirty)
+    const datos: {[k: string]: any} = {}
+    dirty.forEach((k) => {
+        datos[k] = e.values[k];
+        console.log(typeof datos[k]);
+    })
+    console.log(datos);
+    if(newImage.value){
+        datos['imagen'] = await toBase64( newImage.value)
+    }
+    try{
+
+        const r = await axios.value.patch(`/animal/${props.mascota.id_animal}/`,{
+            ...datos
+        });
+        const response: MessageResponse<any> = r.data;
+        toast.add({})
+    }catch(e){
+        if(e instanceof AxiosError){
+
+        }
+    }
 }
+const form: TemplateRef<typeof Form> = useTemplateRef("form");
+
+const newImage: Ref<Maybe<File>> = ref(null);
+const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array.from(props.mascota.imagen), "imagen") : null)
 </script>
 
 <template>
@@ -52,115 +85,71 @@ const actualizar = () => {
         <template #header>
             <div v-if="mascota"
                  class="w-full h-full">
-                <div v-if="editando"
-                     class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
-                    <InputText @update:model-value="(v) => updateNew('nombre', v)" :value="mascota.nombre"></InputText>
-                </div>
-                <div v-else class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
+                <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
                     {{ mascota.nombre }}
                 </div>
             </div>
         </template>
         <div v-if="editando" class="flex flex-row gap-4 pt-3">
-            <div class="flex flex-col gap-3 mx-3">
-                <Image v-if="newValues.imagen" class="m-auto" pt:image="max-w-72!"
-                       :src="toImageSource(newValues.imagen)">
-                </Image>
-                <SinImagen v-else/>
-                <div class="flex flex-row gap-3 justify-around">
-                    <FileUpload :preview="false" :value="mascota.imagen"
-                                @update:model-value="(i) => updateNew('imagen', i)"></FileUpload>
+            <Form ref="form" v-slot="$form" @submit="actualizar" :initial-values="mascota"  class="flex flex-row">
+                <div class="flex flex-col gap-3 mx-3">
+                    <Image v-if="newImage" class="m-auto" pt:image="max-w-72!"
+                           :src="toImageSource(newImage)">
+                    </Image>
+                    <SinImagen v-else/>
+                    <div class="flex flex-row gap-3 justify-around">
+                        <FileUpload v-model="newImage" @update:model-value="(f) => {
+                            if(f === undefined) return
+                            newImage = f;
+                            imageDisplay = f;
+                        }"  :preview="false" ></FileUpload>
+                    </div>
+                    <!--                <div :hidden="" class=""></div>-->
                 </div>
-                <!--                <div :hidden="" class=""></div>-->
-            </div>
-            <div class="flex flex-col mx-6 gap-3">
-                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
-                    Fecha de ingreso | {{  moment(mascota.fecha_ingreso).format('DD-MM-YYYY')  }}
+                <div class="flex flex-col mx-6 gap-3" >
+                    <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
+                        Fecha de ingreso | {{  moment(mascota.fecha_ingreso).format('DD-MM-YYYY')  }}
+                    </div>
+                    <FormRow class="text-start text-lg font-semibold">
+                        <FormCol modo="horizontal" :span="6">
+                            <Label>Sexo</Label>
+                            <TableSelect name="id_sexo" :tipo="TablaEstatica.Sexo"></TableSelect>
+                        </FormCol>
+                        <FormCol modo="horizontal" :span="6">
+                            <Label class="my-auto ml-3">Castrado</Label>
+                            <ToggleSwitch name="es_castrado" class="m-auto"></ToggleSwitch>
+                        </FormCol>
+                    </FormRow>
+                    <FormRow class="text-start text-lg font-semibold">
+                        <FormCol modo="horizontal" :span="12">
+                            <Label>Edad</Label>
+                            <InputNumber fluid name="edad"></InputNumber>
+                        </FormCol>
+                    </FormRow>
+                    <FormRow class="text-start text-lg font-semibold">
+                        <FormCol modo="horizontal" :span="12">
+                            <Label>Raza</Label>
+                            <InputText fluid name="raza"></InputText>
+                        </FormCol>
+                    </FormRow>
+                    <FormRow class="text-start text-lg font-semibold">
+                        <FormCol modo="horizontal" :span="12">
+                            <Label>Especie</Label>
+                            <TableSelect fluid name="id_especie" :tipo="TablaEstatica.Especie"></TableSelect>
+                        </FormCol>
+                    </FormRow>
+                    <FormRow class="text-start text-lg font-semibold">
+                        <FormCol  :span="12">
+                            <Label>Observaciones</Label>
+                            <Textarea name="observaciones"></Textarea>
+                        </FormCol>
+                    </FormRow>
                 </div>
-                <FormRow class="text-start text-lg font-semibold">
-                    <FormCol modo="horizontal" :span="6">
-                        <Label>Sexo</Label>
-                        <TableSelect @update:modelValue="(t) => updateNew('id_sexo', t)" fluid :modelValue="mascota.id_sexo"
-                                     :tipo="TablaEstatica.Sexo"></TableSelect>
-                    </FormCol>
-                    <FormCol modo="horizontal" :span="6">
-                        <Label class="my-auto ml-3">Castrado</Label>
-                        <ToggleSwitch :modelValue="mascota.es_castrado"
-                                      @update:modelValue="(e: boolean) => updateNew('es_castrado',e)"
-                                      class="m-auto"></ToggleSwitch>
-                    </FormCol>
-                </FormRow>
-                <FormRow class="text-start text-lg font-semibold">
-                    <FormCol modo="horizontal" :span="12">
-                        <Label>Edad</Label>
-                        <InputNumber fluid :modelValue="mascota.edad"
-                                     @update:modelValue="(t) => updateNew('edad', t)"></InputNumber>
-                    </FormCol>
-                </FormRow>
-                <FormRow class="text-start text-lg font-semibold">
-                    <FormCol modo="horizontal" :span="12">
-                        <Label>Raza</Label>
-                        <InputText fluid :value="mascota.raza" @update:modelValue="(t) => updateNew('raza', t)"></InputText>
-                    </FormCol>
-                </FormRow>
-                <FormRow class="text-start text-lg font-semibold">
-                    <FormCol modo="horizontal" :span="12">
-                        <Label>Especie</Label>
-                        <TableSelect fluid :modelValue="mascota.id_especie" :tipo="TablaEstatica.Especie"
-                                     @update:modelValue="(t) => updateNew('id_especie', t)"></TableSelect>
-                    </FormCol>
-                </FormRow>
-                <FormRow class="text-start text-lg font-semibold">
-                    <FormCol  :span="12">
-                        <Label>Observaciones</Label>
-                        <Textarea :modelValue="mascota.observaciones"
-                                   @update:modelValue="(t) => updateNew('observaciones', t)"></Textarea>
-                    </FormCol>
-                </FormRow>
-            </div>
+            </Form>
         </div>
-        <div v-else class="flex flex-row gap-4 pt-3">
-            <div class="flex flex-col gap-3 mx-3">
-                <Image v-if="mascota.imagen" class="" pt:image="max-w-72!" :src="mascota.imagen"></Image>
-                <SinImagen v-else></SinImagen>
-                <div class="flex flex-row gap-3 justify-around">
-                    <Button label="Adoptar" icon-pos="left"
-                            @click="() => modalStore.abrir<IMascota>('adopcion', mascota)">
-                        <template #icon>
-                            <img class="size-5 text-white" :src="paw"></img>
-                        </template>
-                    </Button>
-                    <Button label="Asignar tránsito" icon-pos="left"
-                            @click="() => modalStore.abrir('nuevoTransito', mascota)">
-                        <template #icon>
-                            <img class="size-5 text-white" :src="handshake"></img>
-                        </template>
-                    </Button>
-                </div>
-                <!--                <div :hidden="" class=""></div>-->
-            </div>
-            <div class="flex flex-col mx-6 gap-3">
-                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
-                    Fecha de ingreso | {{ moment(mascota.fecha_ingreso).format('DD-MM-YYYY') }}
-                </div>
-                <div class="w-full flex flex-row gap-3">
-                    <Tag pt:label="text-lg " pt:icon="text-lg mr-2 mb-1" size="large"
-                         :severity="mascota.es_castrado ? 'success' : 'danger'"
-                         :icon="mascota.es_castrado ? 'pi pi-check' : 'pi pi-times'" value="Castrado"></Tag>
-                </div>
-                <DataBlock label="Sexo" :data="mascota.sexo" />
-                <hr class="border-surface-500/80!" />
-                <DataBlock label="Edad" :data="mascota.edad" />
-                <hr class="border-surface-500/80!" />
-                <DataBlock label="Raza" :data="mascota.raza" />
-                <hr class="border-surface-500/80!" />
-                <DataBlock label="Especie" :data="mascota.especie" />
-                <hr class="border-surface-500/80!" />
-                <DataBlock label="Observaciones" :data="mascota.observaciones ?? '-'" />
-            </div>
-        </div>
+        <MascotaDetalle v-else :mascota="mascota"></MascotaDetalle>
         <div :class="['absolute top-[85%]  flex flex-row gap-3', editando ? 'left-[80%]' : 'left-[92%]']">
-            <Button v-if="editando" icon="pi pi-check" label="Guardar"></Button>
+            <Button v-if="editando" icon="pi pi-check" label="Guardar" @click="() => form?.submit()"></Button>
                     <Button class=""
                             :icon="editando ? 'pi pi-times' : 'pi pi-pencil' "
                             :label=" editando ? 'Cancelar' : 'Editar'"

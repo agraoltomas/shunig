@@ -16,24 +16,16 @@ const {jwt_token} = useJWTToken()
 const ingresando = ref(false)
 onMounted(async () => {
     if(!jwt_token.value)return;
-    if(authStore.user){
-        ingresando.value = true
-        toast.add({ detail: "Ya se encuentra logeado! redireccionando", severity: "success"})
+    const u = await authStore.revalidarUsuario()
+    ingresando.value = true
+    if(u){
+        toast.add({ detail: "Revalidacion correcta! redireccionando", severity: "success"})
         setTimeout(async () => {
             await router.push('/swap')
         },2000)
     }else{
-        const u = await authStore.revalidarUsuario()
-        ingresando.value = true
-        if(u){
-            toast.add({ detail: "Revalidacion correcta! redireccionando", severity: "success"})
-            setTimeout(async () => {
-                await router.push('/swap')
-            },2000)
-        }else{
-            toast.add({ detail: "Se ha vencido su sesion, por favor vuelva a ingresar", severity: "warn"})
-            ingresando.value = false
-        }
+        toast.add({ detail: "Se ha vencido su sesion, por favor vuelva a ingresar", severity: "warn"})
+        ingresando.value = false
     }
 })
 const login = async () => {
