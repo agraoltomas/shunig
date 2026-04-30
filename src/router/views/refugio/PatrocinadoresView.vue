@@ -1,21 +1,22 @@
+
 <script setup lang="ts">
-import MascotasRefugio from '@/components/mascotas/MascotasRefugio.vue'
+import Patrocinadores from '@/components/patrocinadores/PatrocinadoresRefugio.vue'
 import { onMounted, type Ref, ref } from 'vue'
 import { useAxios } from '@/lib/axios.ts'
 import type { MessageResponse } from '@/lib/tipos/generics'
-import type { IMascota } from '@/lib/tipos/mascotas'
+import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useRefugioStore } from '@/stores/refugio.ts'
-const mascotas: Ref<IMascota[]> = ref([]);
+
+const patrocinadores: Ref<IPatrocinador[]> = ref([]);
 const axiosStore = useAxios()
-const authStore = useAuthStore()
 const refugioStore = useRefugioStore()
 onMounted(async () => {
     if(!refugioStore.refugio)return;
-    const r = await axiosStore.axios.value.get(`animal/refugio/${refugioStore.refugio.id_refugio}/`)
+    const r = await axiosStore.axios.value.get(`patrocinador`)
     if (r.status == 200) {
-        let response: MessageResponse<IMascota[]> = r.data
-        mascotas.value = response.data
+        let response: MessageResponse<IPatrocinador[]> = r.data
+        patrocinadores.value = response.data
         console.log(response)
     }
 })
@@ -28,12 +29,12 @@ onMounted(async () => {
                 <template #header>
                     <div class="w-full h-full">
                          <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4">
-                            <span class="text-white">Mis animales</span>
+                            <span class="text-white">Patrocinadores</span>
                         
                         </div>
                     </div>
                 </template>
-                <MascotasRefugio :mascotas="mascotas"></MascotasRefugio>
+                <Patrocinadores :patrocinadores="patrocinadores"></Patrocinadores>
             </Panel>
         </div>
     </div>

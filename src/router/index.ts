@@ -23,6 +23,8 @@ import MascotaTransitoView from '@/router/views/refugio/transito/MascotaTransito
 import AdministrarUsuarioView from '@/router/views/voluntario/AdministrarUsuarioView.vue'
 import { useRefugioStore } from '@/stores/refugio.ts'
 import AdministrarRefugioView from '@/router/views/refugio/AdministrarRefugioView.vue'
+import PatrocinadoresView from '@/router/views/refugio/PatrocinadoresView.vue'
+import PatrocinadorView from '@/router/views/refugio/PatrocinadorView.vue'
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -46,6 +48,8 @@ const router = createRouter({
                 { path: 'transito', component: TransitoView },
                 { path: 'transito/:id', component: MascotaTransitoView },
                 { path: 'administrar', component: AdministrarRefugioView },
+                { path: 'patrocinadores', component: PatrocinadoresView },
+                { path: 'patrocinador/:id', component: PatrocinadorView },
             ]
         }, {
             path: '/usuario', component: VoluntarioView, children: [

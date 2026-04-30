@@ -5,7 +5,7 @@ import type { IMascotaTransito } from '@/lib/tipos/mascotas'
 import { useRouter } from 'vue-router'
 import handshake from "@/assets/images/handshake-regular-full.svg"
 import paw from "@/assets/images/paw-solid-full-black.svg"
-import cryingDog from '@/assets/images/crying_dog_2.jpeg'
+//import cryingDog from '@/assets/images/crying_dog_2.jpeg'
 
 const router = useRouter()
 const props = defineProps<{ mascotas: IMascotaTransito[]}>()
@@ -16,7 +16,7 @@ const props = defineProps<{ mascotas: IMascotaTransito[]}>()
 <template>
 
     <Panel class="mx-auto h-fit w-80!" v-if="mascotas.length == 0">
-        <Image  pt:root="m-auto text-center" :src="cryingDog"/>
+        <!--<Image  pt:root="m-auto text-center" :src="cryingDog"/>-->
         <div class="text-lg my-2 text-center">No tenés animales asociados</div>
     </Panel>
     <Panel v-else class="border-white! border-2 overflow-auto">

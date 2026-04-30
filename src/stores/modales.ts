@@ -7,18 +7,20 @@ export interface IModalesContext {
     adopcion: Maybe<IMascota>,
     nuevoAnimal: any,
     nuevoTransito: Maybe<IMascota>,
-    vacunacion: any
+    vacunacion: any,
+    nuevoPatrocinador: any
 }
 export const useModalStore = defineStore('modales',() => {
     const modales: Reactive<{[k: string]: boolean}> = reactive({
         nuevoAnimal: false,
         nuevoTransito: false,
         vacunacion: false,
-        adopcion: false
+        adopcion: false,
+        nuevoPatrocinador: false
     });
     const context: Reactive<IModalesContext> = reactive({
         adopcion: null, nuevoTransito: null,
-        nuevoAnimal: null, vacunacion: null
+        nuevoAnimal: null, vacunacion: null, nuevoPatrocinador: null
     })
     const abrir = <T>(name: keyof IModalesContext, c?: T) => {
         Object.keys(modales).forEach((k) => {
