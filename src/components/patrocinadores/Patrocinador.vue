@@ -6,10 +6,21 @@ import DataBlock from '@/components/generales/DataBlock.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Label from '@/components/forms/Label.vue'
+import axios from '@/lib/axios.ts'
+import { useToast } from '@/lib/toast/toast.ts'
+import { useModalStore } from '@/stores/modales'
+
+const toast = useToast();
+const modalesStore = useModalStore();
 
 const props = defineProps<{
     patrocinador: IPatrocinador
 }>()
+
+const emits = defineEmits<{
+    actualizado: [patrocinador: IPatrocinador]
+    eliminado: []
+}>();
 
 const editando = ref(false)
 
@@ -19,17 +30,32 @@ const updateNew = (campo: keyof IPatrocinador, valor: any) => {
     newValues[campo] = valor
 }
 
-const actualizar = () => {
+const actualizarPatrocinador = async () => {
     console.log('Valores modificados del patrocinador:', newValues)
+    const r = await axios.patch(`/patrocinador/${props.patrocinador.id_patrocinador}`, 
+        {...newValues
+        });
+    if([200,201].includes(r.status)){
+        const patrocinadorActualizado = r.data.data;
+        toast.add({severity:"success", summary:"Éxito!", detail: 
+        `${patrocinadorActualizado.nombre} se modificó exitosamente`
+        })
+        editando.value = false;
+        emits('actualizado', patrocinadorActualizado)
+    }
+}
+
+const eliminarPatrocinador = async()=>{
 }
 </script>
 
 <template>
+    <div class="flex justify-center mt-3">
     <Panel
         v-if="patrocinador"
-        class="border-white! border-0 overflow-auto m-3"
-        pt:header="p-0!"
-    >
+        class="border-white! border-0 overflow-auto m-3 w-[60%]"
+        pt:header="p-0!">
+        
         <template #header>
             <div class="w-full h-full">
                 <div
@@ -113,7 +139,7 @@ const actualizar = () => {
                 v-if="editando"
                 icon="pi pi-check"
                 label="Guardar"
-                @click="actualizar"
+                @click="actualizarPatrocinador"
             />
 
             <Button
@@ -121,8 +147,16 @@ const actualizar = () => {
                 :label="editando ? 'Cancelar' : 'Editar'"
                 @click="() => editando = !editando"
             />
+            <DangerButton v-if="!editando" icon="pi pi-trash" label="Eliminar" 
+            @click="() => modalesStore.abrir('eliminar', {
+                nombre: patrocinador.nombre,
+                endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
+                volverPrincipal: '/refugio/patrocinadores'
+            })"></DangerButton>
         </div>
+
     </Panel>
+</div>
 </template>
 
 <style scoped>

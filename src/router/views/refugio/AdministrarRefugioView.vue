@@ -28,7 +28,7 @@ const menuSelected: Ref<('general'|'datos'|'permisos')> = ref('general')
             <div class="border border-surface-500 p-3 rounded-lg">
                 <div class="flex flex-row justify-between">
                     <DataBlock class="max-w-[75%]" label="Desactivar el refugio" data="Se marcará el refugio como inactivo y no se podrán realizar acciones en éste"></DataBlock>
-                    <DangerButton label="Desactivar" class="h-fit! my-auto mr-5!"></DangerButton>
+                    <DangerButton label="Desactivar" class="h-fit! my-auto mr-5!" icon="pi pi-trash"></DangerButton>
                 </div>
             </div>
         </Panel>

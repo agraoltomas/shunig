@@ -48,7 +48,8 @@ watch(() => route.params.id, async () => {
         <div class="text-center align-middle p-3">Cargando</div>
         <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
     </Panel>
-    <Patrocinador  v-if="patrocinador" :patrocinador="patrocinador"></Patrocinador>
+    <Patrocinador  v-if="patrocinador" :patrocinador="patrocinador" @actualizado="(patrocinadorActualizado) => 
+        patrocinador = patrocinadorActualizado"></Patrocinador>
     <Panel class="m-auto! text-center max-w-fit" v-else-if="!loading">
         <div class="p-5 flex justify-center">
             <Image pt:root="m-auto text-center" class="" :src="cryingDog"/>

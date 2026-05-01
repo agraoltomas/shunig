@@ -9,6 +9,8 @@ import FormAdopcion from '@/components/adopcion/FormAdopcion.vue'
 import FormTransito from '@/components/transito/FormTransito.vue'
 import Modal from '@/components/modal/Modal.vue'
 import IngresoPatrocinador from './patrocinadores/IngresoPatrocinador.vue'
+import Eliminar from './generales/Eliminar.vue'
+
 const store = useModalStore()
 const data = ref("")
 </script>
@@ -55,6 +57,10 @@ const data = ref("")
             </div>
         </template>
         <IngresoPatrocinador class="mt-3" @close="() => store.cerrar('nuevoPatrocinador')"></IngresoPatrocinador>
+    </Dialog>
+
+    <Dialog v-model:visible="store.modales.eliminar" modal :show-header="false" class="w-[30%]">
+        <Eliminar class="mt-3" @close="() => store.cerrar('eliminar')"></Eliminar>
     </Dialog>
 
 </template>
