@@ -11,9 +11,10 @@ import { useRefugioStore } from '@/stores/refugio.ts'
 const patrocinadores: Ref<IPatrocinador[]> = ref([]);
 const axiosStore = useAxios()
 const refugioStore = useRefugioStore()
+
 onMounted(async () => {
     if(!refugioStore.refugio)return;
-    const r = await axiosStore.axios.value.get(`patrocinador`)
+    const r = await axiosStore.axios.value.get(`patrocinador/refugio/${refugioStore.refugio.id_refugio}/`)
     if (r.status == 200) {
         let response: MessageResponse<IPatrocinador[]> = r.data
         patrocinadores.value = response.data

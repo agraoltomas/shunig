@@ -62,13 +62,6 @@ const resolver = ({ values }: { values: Partial<Optional<IPatrocinador>> }) => {
     }
 }
 
-const ptButton = ref({
-    root: 'bg-secondary-500 px-3 py-2 rounded-lg flex flex-row gap-3 cursor-pointer max-h-fit disabled:pointer-events-none disabled:opacity-60 ',
-    icon: 'm-auto text-surface-800',
-    label: 'text-surface-800 m-auto'
-})
-
-
 </script>
 
 <template>

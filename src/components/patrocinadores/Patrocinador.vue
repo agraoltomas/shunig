@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, type Reactive } from 'vue'
+import { ref, reactive, type Reactive, useTemplateRef, type TemplateRef } from 'vue'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import moment from 'moment'
 import DataBlock from '@/components/generales/DataBlock.vue'
@@ -9,6 +9,8 @@ import Label from '@/components/forms/Label.vue'
 import axios from '@/lib/axios.ts'
 import { useToast } from '@/lib/toast/toast.ts'
 import { useModalStore } from '@/stores/modales'
+import { Form, type FormResolverOptions} from '@primevue/forms'
+import type { FormSubmitEvent } from '@primevue/forms/form'
 
 const toast = useToast();
 const modalesStore = useModalStore();
@@ -22,75 +24,98 @@ const emits = defineEmits<{
     eliminado: []
 }>();
 
-const editando = ref(false)
+const editando = ref(false);
+const form: TemplateRef<typeof Form> = useTemplateRef("form");
 
-const newValues: Reactive<{ [K in keyof IPatrocinador]?: any }> = reactive({})
+const valores = reactive({
+    nombre: props.patrocinador.nombre,
+    contacto: props.patrocinador.contacto,
+    email: props.patrocinador.email,
+    descripcion: props.patrocinador.descripcion
+})
 
-const updateNew = (campo: keyof IPatrocinador, valor: any) => {
-    newValues[campo] = valor
-}
-
-const actualizarPatrocinador = async () => {
-    console.log('Valores modificados del patrocinador:', newValues)
-    const r = await axios.patch(`/patrocinador/${props.patrocinador.id_patrocinador}`, 
-        {...newValues
-        });
+const actualizarPatrocinador = async (e: FormSubmitEvent) => {
+    if (!props.patrocinador) return;
+    console.log('Valores modificados del patrocinador:', valores)
+    const r = await axios.patch(`/patrocinador/${props.patrocinador.id_patrocinador}`, e.values);
     if([200,201].includes(r.status)){
         const patrocinadorActualizado = r.data.data;
+        Object.assign(valores, {
+            nombre: patrocinadorActualizado.nombre,
+            contacto: patrocinadorActualizado.contacto,
+            email: patrocinadorActualizado.email,
+            descripcion: patrocinadorActualizado.descripcion,
+        });
         toast.add({severity:"success", summary:"Éxito!", detail: 
-        `${patrocinadorActualizado.nombre} se modificó exitosamente`
+        `${e.values.nombre} se modificó exitosamente`
         })
         editando.value = false;
         emits('actualizado', patrocinadorActualizado)
     }
 }
 
-const eliminarPatrocinador = async()=>{
+const resolver = ({ values }: FormResolverOptions) => {
+    const errors: { [K in keyof typeof valores]: { message: string }[] } = {
+        nombre: [], contacto: [], email: [], descripcion: []
+    }
+
+    if (!values.nombre) {
+        errors.nombre.push({ message: 'El nombre es obligatorio' })
+    }
+    if (!values.contacto) {
+        errors.contacto.push({ message: 'Los datos de contacto son obligatorios' })
+    }
+    if (!values.email) {
+        errors.email.push({ message: 'El email es obligatorio' })
+    }
+    if (!values.descripcion) {
+        errors.descripcion.push({ message: 'La descripción es obligatoria' })
+    }
+    return {
+        values, // (Optional) Used to pass current form values to submit event.
+        errors
+    }
 }
+
 </script>
 
 <template>
     <div class="flex justify-center mt-3">
-    <Panel
-        v-if="patrocinador"
-        class="border-white! border-0 overflow-auto m-3 w-[60%]"
-        pt:header="p-0!">
-        
+    <Panel v-if="patrocinador" class="border-white! border-0 overflow-auto m-3 w-[60%]" pt:header="p-0!">        
         <template #header>
             <div class="w-full h-full">
-                <div
-                    v-if="editando"
-                    class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white"
-                >
-                    <InputText
-                        :value="patrocinador.nombre"
-                        @update:model-value="(valor) => updateNew('nombre', valor)"
-                    />
-                </div>
-
-                <div
-                    v-else
-                    class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white"
-                >
-                    {{ patrocinador.nombre }}
+               <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
+                        {{ editando ? valores.nombre : patrocinador.nombre }}
                 </div>
             </div>
         </template>
 
         <div v-if="editando" class="flex justify-center">
-            <div class="flex flex-col mx-6 gap-3 pt-5 ">
+            <Form ref="form" v-slot="$form" :initialValues="valores" :resolver @submit="actualizarPatrocinador" class="flex flex-col mx-6 gap-3 pt-5">
+
             <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
                 Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
             </div>
 
             <FormRow class="text-start text-lg font-semibold">
                 <FormCol modo="horizontal" :span="12">
+                    <Label>Nombre</Label>
+                    <InputText fluid name="nombre" />
+                    <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
+                        {{ $form.nombre.error?.message }}
+                    </Message>
+                </FormCol>
+            </FormRow>
+
+            <FormRow class="text-start text-lg font-semibold">
+                <FormCol modo="horizontal" :span="12">
                     <Label>Contacto</Label>
                     <InputText
-                        fluid
-                        :value="patrocinador.contacto"
-                        @update:model-value="(valor) => updateNew('contacto', valor)"
+                        fluid name="contacto"
                     />
+                    <Message v-if="$form.contacto?.invalid" severity="error" size="small" variant="simple">
+                         {{ $form.contacto.error?.message }}
+                        </Message>
                 </FormCol>
             </FormRow>
 
@@ -98,65 +123,58 @@ const eliminarPatrocinador = async()=>{
                 <FormCol modo="horizontal" :span="12">
                     <Label>Email</Label>
                     <InputText
-                        fluid
-                        :value="patrocinador.email"
-                        @update:model-value="(valor) => updateNew('email', valor)"
+                        fluid name="email"
                     />
+                    <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
+                                {{ $form.email.error?.message }}
+                    </Message>
                 </FormCol>
             </FormRow>
 
             <FormRow class="text-start text-lg font-semibold">
                 <FormCol :span="12">
                     <Label>Descripción</Label>
-                    <Textarea
-                        :model-value="patrocinador.descripcion"
-                        @update:model-value="(valor) => updateNew('descripcion', valor)"
+                    <Textarea name="descripcion"
                     />
+                    <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
+                         {{ $form.descripcion.error?.message }}
+                    </Message>
                 </FormCol>
             </FormRow>
-        </div></div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <Button type="submit" icon="pi pi-check" label="Guardar"/>
+                <Button icon="pi pi-times" label="Cancelar" @click="editando = false" />
+           
+            </div>
+        </Form>
+        </div>
 
         <div v-else class="flex justify-center">
             <div class="flex flex-col mx-6 gap-3 pt-5 ">
-            <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
-                Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
-            </div>
-
-            <DataBlock label="Contacto" :data="patrocinador.contacto" />
-
-            <hr class="border-surface-500/80!" />
-
-            <DataBlock label="Email" :data="patrocinador.email" />
-
-            <hr class="border-surface-500/80!" />
-
-            <DataBlock label="Descripción" :data="patrocinador.descripcion" />
-            </div>
+                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
+                    Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
+                </div>
+                <DataBlock label="Contacto" :data="patrocinador.contacto" />
+                <hr class="border-surface-500/80!" />
+                <DataBlock label="Email" :data="patrocinador.email" />
+                <hr class="border-surface-500/80!" />
+                <DataBlock label="Descripción" :data="patrocinador.descripcion" />
+               
+            </div>          
+            
         </div>
-
-        <div class="flex justify-end gap-3 px-6 py-4">
-            <Button
-                v-if="editando"
-                icon="pi pi-check"
-                label="Guardar"
-                @click="actualizarPatrocinador"
-            />
-
-            <Button
-                :icon="editando ? 'pi pi-times' : 'pi pi-pencil'"
-                :label="editando ? 'Cancelar' : 'Editar'"
-                @click="() => editando = !editando"
-            />
-            <DangerButton v-if="!editando" icon="pi pi-trash" label="Eliminar" 
-            @click="() => modalesStore.abrir('eliminar', {
+         <div v-if="!editando" class="flex justify-end gap-3 px-6 py-4">
+            <Button icon="pi pi-pencil" label="Editar" @click="editando = true" />
+            <DangerButton icon="pi pi-trash" label="Eliminar" @click="modalesStore.abrir('eliminar', {
                 nombre: patrocinador.nombre,
                 endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
-                volverPrincipal: '/refugio/patrocinadores'
-            })"></DangerButton>
+                volverPrincipal: '/refugio/patrocinadores'})">
+            </DangerButton>
         </div>
-
+        
     </Panel>
-</div>
+    </div>
 </template>
 
 <style scoped>
