@@ -20,20 +20,24 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
         label: 'Gestiones',
         items: [
             {
-                label: 'Mis Animales',
+                label: 'Mis animales',
                 command: () => router.push('/refugio/mascotas')
             },
             {
-                label: 'Animales en Tránsito',
+                label: 'Animales en tránsito',
                 command: () => router.push('/refugio/transito')
             },
             {
-                label: 'Eventos de Vacunación',
+                label: 'Eventos de vacunación',
                 command: () => router.push('/refugio/vacunas')
             },
             {
-                label: 'Control de Stock',
+                label: 'Control de stock',
                 command: () => router.push('/refugio/stock')
+            },
+            {
+                label: 'Patrocinadores',
+                command: () => router.push('/refugio/patrocinadores')
             }
         ]
     }
@@ -81,6 +85,7 @@ if (!authStore.user) {
                     @click="() => modalesStore.abrir('nuevoTransito')"></Button>
             <Button disabled icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"
                     @click="() => modalesStore.abrir('vacunacion')"></Button>
+            
         </div>
         <!--                <Dialog :visible="true" modal class="bg-white!">-->
         <!--                    hola-->
