@@ -58,7 +58,7 @@ const validate = async () => {
                 <div class="flex flex-row gap-3 min-h-12.5">
                     <Label required class="text-sm!">Mi domicilio no tiene altura</Label>
                     <FormField as-child name="domicilio.no_tiene_altura">
-                    <CheckBox v-model="domicilio.no_tiene_altura" binary></CheckBox>
+                    <CheckBox class="my-auto" v-model="domicilio.no_tiene_altura" binary></CheckBox>
                     </FormField>
                 </div>
             </FormCol>

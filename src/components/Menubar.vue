@@ -17,7 +17,9 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
     itemLabel: ``,
     itemIcon: `pr-1 text-black`,
     button: `hidden`,
-    buttonIcon: `size-6 text-primary-800`
+    buttonIcon: `size-6 text-primary-800`,
+    start: "min-w-55",
+    end: "w-full"
 })
 </script>
 
@@ -26,7 +28,6 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
              class="mb-3 p-3 border-gray-300 bg-primary-500 flex flex-row justify-between  "
              :pt="pt">
         <template #item="{ item }">
-            <RouterLink :to="{ path: item.route}">{{item.label}}</RouterLink>
         </template>
         <template #start>
             <RouterLink :to="{ path: '/'}" class="pl-4 flex flex-row gap-3">

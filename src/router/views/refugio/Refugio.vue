@@ -56,11 +56,11 @@ if (!authStore.user) {
             <div class="flex flex-row">
                 <div v-if="refugioStore.refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
                     <div class="font-semibold text-3xl text-white m-auto px-5">
-                        {{ refugioStore.refugio?.nombre }}
+                        ¡Hola, {{ refugioStore.refugio?.nombre }}!
                     </div>
                 </div>
                 <div class="flex flex-row m-auto">
-                    <Settings title="Configuración"></Settings>
+<!--                    <Settings title="Configuración"></Settings>-->
 <!--                    <Logout title="Cerrar sesión"></Logout>-->
                 </div>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>

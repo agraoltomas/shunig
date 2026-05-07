@@ -4,4 +4,5 @@ export enum EAlerta{
     AnimalCritico ,
     VacunaVencida,
     AnimalEnTratamiento,
+    SolicitudPendiente
 }

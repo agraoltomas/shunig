@@ -8,12 +8,32 @@ import Menu from "@/volt/Menu.vue"
 import { type Ref, ref } from 'vue'
 import CambiarAdministrador from '@/components/refugio/CambiarAdministrador.vue'
 import AdministrarUsuariosRefugio from '@/components/refugio/AdministrarUsuariosRefugio.vue'
+import { useAxios } from '@/lib/axios.ts'
+import { useRefugioStore } from '@/stores/refugio.ts'
+import { AxiosError } from 'axios'
+import { useToast } from '@/lib/toast/toast.ts'
+import type { MessageResponse } from '@/lib/tipos/generics'
 const opciones: MenuItem[] = [
     {label: "General", active: true, icon: "pi pi-cog", command: () => menuSelected.value = 'general'},
     {label: "Actualizar datos", icon: "pi pi-sync", command: () => menuSelected.value = 'datos'},
     {label: "Administrar permisos", icon: "pi pi-lock", command: () => menuSelected.value = 'permisos'},
 ]
 const menuSelected: Ref<('general'|'datos'|'permisos')> = ref('general')
+const {axios} = useAxios();
+const refugioStore = useRefugioStore();
+const toast = useToast();
+const desactivarRefugio = async () => {
+    if(!confirm("Confirmar desactivacion del refugio?"))return;
+    if(!refugioStore.refugio) return;
+    try{
+        const r = await axios.value.post(`refugio/${refugioStore.refugio.id_refugio}/desactivar/`, {})
+    }catch (e){
+        if(e instanceof AxiosError){
+            const response: MessageResponse<never> = e.response?.data;
+            toast.add({ detail: response.message, severity: 'error' });
+        }
+    }
+}
 </script>
 
 <template>
@@ -28,7 +48,7 @@ const menuSelected: Ref<('general'|'datos'|'permisos')> = ref('general')
             <div class="border border-surface-500 p-3 rounded-lg">
                 <div class="flex flex-row justify-between">
                     <DataBlock class="max-w-[75%]" label="Desactivar el refugio" data="Se marcará el refugio como inactivo y no se podrán realizar acciones en éste"></DataBlock>
-                    <DangerButton label="Desactivar" class="h-fit! my-auto mr-5!"></DangerButton>
+                    <DangerButton label="Desactivar" class="h-fit! my-auto mr-5!" @click="desactivarRefugio"></DangerButton>
                 </div>
             </div>
         </Panel>

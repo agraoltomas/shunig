@@ -24,6 +24,7 @@ import { AxiosError } from 'axios'
 import { useToast } from '@/lib/toast/toast.ts'
 
 const props = defineProps<{ mascota: IMascota }>()
+const emit = defineEmits<{ actualizado: []}>()
 const modalStore = useModalStore()
 const editando = ref(false)
 const newValues: Reactive<{ [k in keyof IMascota]?: any }> = reactive({})
@@ -48,6 +49,8 @@ const updateAnimalSchema = yup.object({
     // raza: null,
 } satisfies { [k in keyof IMascota]?: any })
 
+
+
 const actualizar = async (e: FormSubmitEvent) => {
     if(!props.mascota) return
     const dirty = Object.keys(e.states).filter(k => e.states[k]?.dirty)
@@ -67,7 +70,9 @@ const actualizar = async (e: FormSubmitEvent) => {
             ...datos
         });
         const response: MessageResponse<any> = r.data;
-        toast.add({})
+        toast.add({ detail: "Animal actualizado exitosamente", severity:"success" });
+        editando.value = false
+        emit('actualizado');
     }catch(e){
         if(e instanceof AxiosError){
 
@@ -81,7 +86,7 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
 </script>
 
 <template>
-    <Panel v-if="mascota" class="border-white! border-0 overflow-auto m-3" pt:header="p-0!">
+    <Panel v-if="mascota" class="border-white! border-0 overflow-auto w-[75%] m-auto" pt:header="p-0!">
         <template #header>
             <div v-if="mascota"
                  class="w-full h-full">
@@ -92,7 +97,7 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
         </template>
         <div v-if="editando" class="flex flex-row gap-4 pt-3">
             <Form ref="form" v-slot="$form" @submit="actualizar" :initial-values="mascota"  class="flex flex-row">
-                <div class="flex flex-col gap-3 mx-3">
+                <div class="flex flex-col gap-3 mx-3 min-w-96 justify-between h-full">
                     <Image v-if="newImage" class="m-auto" pt:image="max-w-72!"
                            :src="toImageSource(newImage)">
                     </Image>
@@ -106,37 +111,32 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                     </div>
                     <!--                <div :hidden="" class=""></div>-->
                 </div>
-                <div class="flex flex-col mx-6 gap-3" >
-                    <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
-                        Fecha de ingreso | {{  moment(mascota.fecha_ingreso).format('DD-MM-YYYY')  }}
-                    </div>
-                    <FormRow class="text-start text-lg font-semibold">
-                        <FormCol modo="horizontal" :span="6">
+                <div class="flex flex-col mx-6 gap-3 " >
+                    <FormRow class="text-start text-lg font-semibold" :gap="5">
+                        <FormCol :span="3">
                             <Label>Sexo</Label>
                             <TableSelect name="id_sexo" :tipo="TablaEstatica.Sexo"></TableSelect>
                         </FormCol>
-                        <FormCol modo="horizontal" :span="6">
+                        <FormCol :span="6">
+                            <Label>Raza</Label>
+                            <InputText fluid name="raza"></InputText>
+                        </FormCol>
+                        <FormCol :span="3">
                             <Label class="my-auto ml-3">Castrado</Label>
                             <ToggleSwitch name="es_castrado" class="m-auto"></ToggleSwitch>
                         </FormCol>
                     </FormRow>
                     <FormRow class="text-start text-lg font-semibold">
-                        <FormCol modo="horizontal" :span="12">
+                        <FormCol :span="2">
                             <Label>Edad</Label>
                             <InputNumber fluid name="edad"></InputNumber>
                         </FormCol>
-                    </FormRow>
-                    <FormRow class="text-start text-lg font-semibold">
-                        <FormCol modo="horizontal" :span="12">
-                            <Label>Raza</Label>
-                            <InputText fluid name="raza"></InputText>
-                        </FormCol>
-                    </FormRow>
-                    <FormRow class="text-start text-lg font-semibold">
-                        <FormCol modo="horizontal" :span="12">
+                        <FormCol :span="10">
                             <Label>Especie</Label>
-                            <TableSelect fluid name="id_especie" :tipo="TablaEstatica.Especie"></TableSelect>
+                            <TableSelect class="w-fit" name="id_especie" :tipo="TablaEstatica.Especie"></TableSelect>
                         </FormCol>
+                    </FormRow>
+                    <FormRow class="text-start text-lg font-semibold">
                     </FormRow>
                     <FormRow class="text-start text-lg font-semibold">
                         <FormCol  :span="12">
@@ -148,12 +148,12 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
             </Form>
         </div>
         <MascotaDetalle v-else :mascota="mascota"></MascotaDetalle>
-        <div :class="['absolute top-[85%]  flex flex-row gap-3', editando ? 'left-[80%]' : 'left-[92%]']">
+        <div class="flex-row flex gap-3 justify-end py-5">
             <Button v-if="editando" icon="pi pi-check" label="Guardar" @click="() => form?.submit()"></Button>
-                    <Button class=""
-                            :icon="editando ? 'pi pi-times' : 'pi pi-pencil' "
-                            :label=" editando ? 'Cancelar' : 'Editar'"
-                            @click="() => editando = !editando"></Button>
+            <Button class=""
+                    :icon="editando ? 'pi pi-times' : 'pi pi-pencil' "
+                    :label=" editando ? 'Cancelar' : 'Editar'"
+                    @click="() => editando = !editando"></Button>
         </div>
     </Panel>
     <Modal nombre="nuevoTransito" title="Nuevo Transito">

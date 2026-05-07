@@ -17,9 +17,9 @@ import Image from "primevue/image"
 import Column from "primevue/column";
 import Message from "@/volt/Message.vue";
 import Select from "@/volt/Select.vue"
-
-
 import type { App } from 'vue'
+import Tag from '@/volt/Tag.vue'
+
 export const registerAll = (app: App): App => {
     app.component('InputText', InputText)
     app.component('Tabs', Tabs)
@@ -30,6 +30,7 @@ export const registerAll = (app: App): App => {
     app.component('TabList',TabList)
     app.component('Button',Button)
     app.component('Panel',Panel)
+    app.component('Tag', Tag)
     app.component('SecondaryButton',SecondaryButton);
     app.component('DangerButton',DangerButton);
     app.component('ContrastButton',ContrastButton);

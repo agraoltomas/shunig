@@ -8,18 +8,26 @@ import { useModalStore } from '@/stores/modales.ts'
 import handshake from '@/assets/images/handshake-regular-full-white.svg'
 import paw from '@/assets/images/paw-solid-full.svg'
 import moment from 'moment'
+import { useRouter } from 'vue-router'
+import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
 
 const modalStore = useModalStore()
 const props = defineProps<{ mascota: IMascota }>()
+const router = useRouter()
 
 </script>
 
 <template>
     <div class="flex flex-row gap-4 pt-3">
-        <div class="flex flex-col gap-3 mx-3">
+        <div class="flex flex-col gap-3 mx-3 h-full">
             <Image v-if="mascota.imagen" class="" pt:image="max-w-72!" :src="mascota.imagen"></Image>
             <SinImagen v-else></SinImagen>
-            <div class="flex flex-row gap-3 justify-around">
+            <div v-if="mascota.transito">
+                <Button label="En tránsito" icon="pi pi-eye" icon-pos="right" @click="() => router.push(`/refugio/transito/${mascota.transito}`)"></Button>
+            </div>
+            <Tag v-else-if="mascota.adopcion"> ADOPTADA</Tag>
+            <Tag v-else-if="mascota.solicitud">Solicitud {{ mascota.solicitud.tipo_solicitud ==TipoSolicitud.Adopcion ? 'de adopcion' : 'de transito' }} pendiente</Tag>
+            <div v-else class="flex flex-row gap-3 justify-around">
                 <Button label="Adoptar" icon-pos="left"
                         @click="() => modalStore.abrir<IMascota>('adopcion', mascota)">
                     <template #icon>

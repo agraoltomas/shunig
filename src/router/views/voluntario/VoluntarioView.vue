@@ -11,9 +11,11 @@ import { useRouter } from 'vue-router'
 import OverlayBadge from "@/volt/OverlayBadge.vue"
 import Badge from "@/volt/Badge.vue"
 import Settings from '@/router/views/Settings.vue'
+import { useRefugioStore } from '@/stores/refugio.ts'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const refugioStore = useRefugioStore();
 const menuAccesoRapido = useTemplateRef('menuAccesoRapido')
 
 const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
@@ -43,14 +45,18 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
 const toggle = (event: Event) => {
     menuAccesoRapido.value?.toggle(event)
 }
+
 </script>
 
 <template>
     <Menubar>
         <template #end>
-            <div class="flex flex-row gap-3">
-                <div class="align-middle m-auto text-white font-bold text-3xl">VISTA VOLUNTARIO</div>
-                <Settings title="Configuración"></Settings>
+            <div class="flex flex-row gap-3 w-full justify-end">
+                <div v-if="authStore.user" class="font-semibold text-3xl text-white m-auto px-5">
+                    ¡Hola, {{ authStore.user.nombre }}!
+                </div>
+<!--                <Settings title="Configuración"></Settings>-->
+                <Button :title="`ir a ${refugioStore.refugio.nombre}`" v-if="refugioStore.refugio" icon="pi pi-home" class="flex-col! h-fit my-auto" @click="() => router.push('/refugio')" ></Button>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>
@@ -73,7 +79,7 @@ const toggle = (event: Event) => {
         </div>
         <div class="flex flex-row gap-3">
             <Button  label="Quiero adoptar" disabled></Button>
-            <Button disabled icon-pos="left" label="Quiero Transitar" ></Button>
+            <Button disabled icon-pos="left" label="Quiero transitar" ></Button>
         </div>
         <!--                <Dialog :visible="true" modal class="bg-white!">-->
         <!--                    hola-->

@@ -27,7 +27,7 @@ const data = ref("")
     <Dialog v-model:visible="store.modales.vacunacion">Vacunación</Dialog>
     <Modal v-if="store.context.adopcion" nombre="adopcion" class="max-w-[80%]!" title="Formulario de adopción">
         <template #default="{   context, closeFn}">
-            <FormAdopcion v-if="context.adopcion" :mascota="context.adopcion" @close="closeFn"></FormAdopcion>
+            <FormAdopcion v-if="context.adopcion" :mascota="context.adopcion" @close="closeFn" @cargada="closeFn"></FormAdopcion>
         </template>
     </Modal>
 

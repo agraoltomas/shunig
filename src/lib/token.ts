@@ -14,6 +14,7 @@ export const useJWTToken = () => {
         localStorage.removeItem(TOKEN_KEY)
     }
     const saveToken = (token: string) => {
+        console.log("token update", token)
         localStorage.setItem(TOKEN_KEY, token)
         jwt_token.value = token
     }

@@ -32,14 +32,11 @@ const loadMascota = async () => {
 
 }
 onMounted(async () => {
-    console.log(route.params.id)
     await loadMascota()
 });
 
 watch(() => route.params.id, async () => {
-    startLoading();
     await loadMascota()
-    stopLoading();
 })
 </script>
 
@@ -48,7 +45,7 @@ watch(() => route.params.id, async () => {
         <div class="text-center align-middle p-3">Cargando</div>
         <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
     </Panel>
-    <Mascota  v-if="mascota" :mascota="mascota"></Mascota>
+    <Mascota  v-if="mascota" :mascota="mascota" @actualizado="loadMascota"></Mascota>
     <Panel class="m-auto! text-center max-w-fit" v-else-if="!loading">
         <div class="p-5">
             <Image pt:root="m-auto text-center" class="" :src="cryingDog"/>

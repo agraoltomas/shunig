@@ -1,4 +1,6 @@
 import type { Maybe } from '@/lib/tipos/generics'
+import type { ISolicitud } from '@/components/solicitud/Solicitud.vue'
+import type { IDatosSolicitud } from '@/components/adopcion/FormAdopcion.vue'
 
 export interface IMascota{
     nombre: string,
@@ -13,7 +15,10 @@ export interface IMascota{
     imagen: Maybe<string>,
     observaciones: Maybe<string>
     raza: Maybe<string>
-    sexo: string
+    sexo: string,
+    transito: Maybe<number>,
+    adopcion: Maybe<number>,
+    solicitud: Maybe<IDatosSolicitud>
 }
 
 export interface IMascotaTransito extends IMascota{

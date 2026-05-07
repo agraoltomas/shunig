@@ -29,23 +29,32 @@ const userResolver = yupResolver(yupUserSchema);
 </script>
 
 <template>
-    <Panel class="w-[50%]! m-auto" header="Actualizar datos de contacto" pt:title="m-auto!">
-        <div class=" grid grid-cols-12 justify-between pl-2 text-2xl font-semibold py-5">
-            <DataBlock class="col-span-6" label="Nombre y Apellido" data="Juana de Azurduy"></DataBlock>
-            <DataBlock class="col-span-6" label="CUIL " data="27-33454665-1"></DataBlock>
+    <Panel class="w-[65%]! m-auto" header="" pt:header="p-0!">
+        <template #header>
+            <div class="w-full h-full">
+                <div class="bg-surface-800 w-full h-full text-center text-3xl font-bold pl-3 py-4 text-white">
+                    Actualizar datos de contacto
+                </div>
+            </div>
+        </template>
+        <div class=" grid grid-cols-12 pl-2 text-2xl font-semibold py-5">
+            <DataBlock class="col-span-3" label="Nombre y apellido" data="Juana de Azurduy"></DataBlock>
+            <DataBlock class="col-span-3" label="CUIL " data="27-33454665-1"></DataBlock>
         </div>
         <Form v-slot="$form" :initialValues="datosUsuario" :resolver="userResolver"
               @submit="() => {}"
               class="flex flex-col gap-4">
-            <FormRow :cols="12" :gap="3">
-                <FormCol :span="6">
+            <FormRow  :gap="3">
+                <FormCol :span="12">
                     <Label required>Mail</label>
                     <InputText name="email" placeholder="E-mail"></InputText>
                     <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
                         {{ $form.email?.error?.message }}
                     </Message>
                 </FormCol>
-                <FormCol :span="6">
+            </FormRow>
+            <FormRow :gap="3">
+                <FormCol :span="12">
                     <Label required>Teléfono</label>
                     <FormRow class="w-full grid grid-cols-12 gap-3">
                         <!--                        <Select class="col-span-3" :options="[]"></Select>-->
@@ -65,7 +74,7 @@ const userResolver = yupResolver(yupUserSchema);
                 <Button type="submit"  label="Actualizar"></Button>
             </div>
         </Form>
-        <hr class="m-10 border-surface-500"/>
+        <hr class="m-10 border-surface-800 border-1  w-full mx-0"/>
         <div class="flex flex-col gap-3">
             <Domicilio v-model:value="datosUsuario.domicilio" label="Datos de domicilio" name="domicilio" :border="false" :background="false"></Domicilio>
             <div class="flex flex-row justify-end">
