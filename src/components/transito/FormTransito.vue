@@ -11,20 +11,43 @@ import { useAxios } from '@/lib/axios.ts'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import type { IMascota } from '@/lib/tipos/mascotas'
-
+import type { IDomicilio } from '@/lib/tipos/domicilio'
+import { useToast } from 'primevue'
+import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
+import type { IDatosSolicitud } from '@/components/adopcion/FormAdopcion.vue'
+import domicilio from '@/lib/modelos/domicilio.ts'
 const props = defineProps<{ mascota: IMascota }>()
 const authStore = useAuthStore()
 
 const usuarios: Ref<User[]> = ref([])
-const axiosService = useAxios()
+const { axios } = useAxios()
 onMounted(async () => {
-    const r = await axiosService.axios.value.get('/usuario')
+    const r = await axios.value.get('/usuario')
 
     const response: MessageResponse<User[]> = r.data
     usuarios.value = response.data
     console.log(usuarios.value)
 })
 const usuario: Ref<Maybe<User>> = ref(null)
+
+
+const toast = useToast()
+const emit = defineEmits<{ cargada: []}>()
+const iniciarSolicitud =  async () => {
+    if(!usuario.value)return;
+    try{
+        const r = await axios.value.post('/solicitud',{
+            id_animal:props.mascota.id_animal,
+            id_usuario: usuario.value.id_usuario,
+            compromiso: true,
+            tipo_solicitud: TipoSolicitud.Transito,
+            responsable_principal: usuario.value.nombre
+        } satisfies Partial<{[ r in keyof IDatosSolicitud]: any}>);
+        toast.add({ detail: "Solicitud iniciada correctamente", severity:"success"})
+        emit('cargada')
+    }catch (error) {}
+
+}
 </script>
 
 <template>
@@ -51,7 +74,7 @@ const usuario: Ref<Maybe<User>> = ref(null)
                 <FormCol :span="12">
                     <Label>Direccion</Label>
                     <InputText disabled
-                               :value="usuario?.domicilio ? `${usuario?.domicilio.direccion},${usuario?.domicilio.codigo_postal} ${usuario?.domicilio.ciudad}, ${usuario?.domicilio.localidad},${usuario?.domicilio.provincia}` : 'N/A'"></InputText>
+                               :value="domicilio.toText(usuario?.domicilio)"></InputText>
                 </FormCol>
             </FormRow>
             <FormRow>
@@ -59,8 +82,8 @@ const usuario: Ref<Maybe<User>> = ref(null)
         </Form>
         <!--    <Solicitud v-if="usuario" :usuario="usuario">-->
         <!--    </Solicitud>-->
-        <div class="flex flex-row ">
-            <Button click="" label="Iniciar solicitud"></Button>
+        <div class="flex flex-row gap-3 my-3 justify-center">
+            <Button click="" label="Iniciar solicitud" @click="iniciarSolicitud" :disabled="!usuario"></Button>
         </div>
     </div>
 </template>

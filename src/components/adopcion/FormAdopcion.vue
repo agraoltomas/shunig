@@ -14,6 +14,7 @@ import type { IMascota } from '@/lib/tipos/mascotas'
 import type { IDomicilio } from '@/lib/tipos/domicilio'
 import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
 import { useToast } from 'primevue'
+import domicilio from '@/lib/modelos/domicilio.ts'
 
 
 export interface IDatosSolicitud {
@@ -40,9 +41,6 @@ onMounted(async () => {
     console.log(usuarios.value)
 })
 const usuario: Ref<Maybe<User>> = ref(null)
-const toText = (d?: IDomicilio): string => {
-        return d ? `${d.direccion}, ${d.codigo_postal},${d.localidad}, ${d.provincia}` : ""
-}
 
 const toast = useToast()
 const emit = defineEmits<{ cargada: []}>()
@@ -85,7 +83,7 @@ const iniciarSolicitud =  async () => {
             <FormRow>
                 <FormCol :span="12">
                     <Label>Direccion</Label>
-                    <InputText disabled :value="toText(usuario?.domicilio)"></InputText>
+                    <InputText disabled :value="domicilio.toText(usuario?.domicilio)"></InputText>
                 </FormCol>
             </FormRow>
             <FormRow>

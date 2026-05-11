@@ -6,9 +6,12 @@ import shunig from '@/assets/images/logo-shunig.png'
 import { useRouter } from 'vue-router'
 import type { MenuItem } from 'primevue/menuitem'
 import { ref, type Ref } from 'vue'
+import { useRefugioStore } from '@/stores/refugio.ts'
 
 const router = useRouter()
 const props = withDefaults(defineProps<{ model?: MenuItem[] }>(),{ model: () => []});
+
+const {refugio} = useRefugioStore();
 const pt: Ref<MenubarPassThroughOptions> = ref({
     root: ``,
     rootList: `gap-3 items-center flex flex-row
@@ -21,6 +24,7 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
     start: "min-w-55",
     end: "w-full"
 })
+const to = { path: refugio ? '/refugio' : '/usuario'}
 </script>
 
 <template>
@@ -30,7 +34,7 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
         <template #item="{ item }">
         </template>
         <template #start>
-            <RouterLink :to="{ path: '/'}" class="pl-4 flex flex-row gap-3">
+            <RouterLink :to="to" class="pl-4 flex flex-row gap-3">
                 <div class="rounded-full w-fit overflow-hidden">
                     <Image width="60" :src="shunig"></Image>
                 </div>

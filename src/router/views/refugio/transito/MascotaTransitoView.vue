@@ -1,39 +1,39 @@
 <script setup lang="ts">
 import { onMounted, type Ref, ref, watch } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
-import type { IMascota } from '@/lib/tipos/mascotas'
-import axios from '@/lib/axios.ts'
+import type { HistorialAnimal, IMascota } from '@/lib/tipos/mascotas'
 import { useLoadingComposable } from '@/lib/utils/loading.ts'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ProgressSpinner from 'primevue/progressspinner'
 import moment from 'moment'
 import DataTable from '@/volt/DataTable.vue'
 import Column from 'primevue/column'
 import type { User } from '@/lib/tipos/usuarios'
 import DataBlock from '@/components/generales/DataBlock.vue'
+import { useAxios } from '@/lib/axios.ts'
+import domicilio from '@/lib/modelos/domicilio.ts'
+import type { DetalleTransito } from '@/lib/tipos/transito'
+import TransitoDetalle from '@/components/transito/TransitoDetalle.vue'
+import SecondaryButton from '@/volt/SecondaryButton.vue'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
-
+const {axios} = useAxios()
 interface Reporte {
     imagenes: string[]
 }
 
-interface DetalleTransito {
-    transito: {},
-    animal: IMascota,
-    usuario: User,
-    reportes: {}[]
-}
-
+const historial: Ref<HistorialAnimal[]> = ref([]);
 const transito: Ref<Maybe<DetalleTransito>> = ref(null)
 const route = useRoute()
+const router = useRouter()
 const getTransito = async () => {
     startLoading()
     if (isNaN(Number(route.params.id))) return
     try {
-        const r = await axios.get(`/transito/${route.params.id}/`, {})
+        const r = await axios.value.get(`/transito/${route.params.id}/`, {})
         const response: MessageResponse<DetalleTransito> = r.data
         transito.value = response.data
+        await getHistorial();
     } catch (error) {
 
     } finally {
@@ -42,11 +42,23 @@ const getTransito = async () => {
 }
 
 onMounted(async () => {
-    await getTransito()
+    getTransito()
 })
 
-watch(() => route.params.id, () => {
+const getHistorial = async () =>{
+    if(!transito.value)return;
+    startLoading()
+    try {
+        const r = await axios.value.get(`/animal/${transito.value.animal.id_animal}/historial/`)
+        const response: MessageResponse<HistorialAnimal[]> = r.data
+        historial.value = response.data
+    } catch (error) {
 
+    } finally {
+        stopLoading()
+    }
+}
+watch(() => route.params.id, () => {
     getTransito()
 })
 const STRING_LENGTH = 40
@@ -59,64 +71,63 @@ const actualizaciones = ref([
         descripcion: 'se convirtio en un demonio lovecraftiano y me hizo temerle a la existencia misma'
     }
 ])
-
-export interface HistorialMascota {
-    fecha_desde: moment.Moment,
-    fecha_hasta: Maybe<moment.Moment>,
-    descripcion: string,
-    tipo: ('refugio' | 'adopcion' | 'transito')
-}
-
-const historial: Ref<HistorialMascota[]> = ref([
-    {   fecha_desde: moment('2025-12-01'),
-        fecha_hasta: moment('2026-03-05'),
-        descripcion: 'Juan Basañez',
-        tipo: 'transito' },
-    {   fecha_desde: moment('2026-03-06'),
-        fecha_hasta: null,
-        descripcion: 'PATITAS',
-        tipo: 'refugio' }
-])
+console.log(route);
 </script>
 
 <template>
     <Panel v-if="transito" class="w-[75%] m-auto border-white! border-0 overflow-auto " pt:header="p-0!">
         <template #header>
-            <div class="w-full h-full">
-                <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
+            <div class="w-full h-full" v-if="transito.animal">
+                <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center">
                     {{ transito.animal.nombre }}
+                    <SecondaryButton icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!" @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></SecondaryButton>
                 </div>
             </div>
         </template>
         <div class="p-2 grid gap-2 grid-cols-12 grid-rows-3">
-            <Panel class="col-span-4 row-span-2">
+            <Panel class="col-span-4 row-span-2" v-if="loading">
+                <ProgressSpinner
+                    class="m-auto h-20! text-center"
+                    pt:circle="stroke-red-100 p-progressspinner-circle"
+                    pt:root="p-progressspinner w-full!"
+                    pt:spin="p-progressspinner-spin" />
+            </Panel>
+            <Panel class="col-span-4 row-span-2" v-else-if="transito?.usuario">
                 <h1 class="text-2xl pb-3  font-semibold underline text-center">Voluntario</h1>
-                <DataBlock label="Nombre" data="Hermione Granger"></DataBlock>
-                <DataBlock label="Domicilio" data="Peru 123, CABA,CABA,CABA"></DataBlock>
-                <DataBlock label="Mail" data="hg@gmail.com"></DataBlock>
-                <DataBlock label="Alta" data="21/09/1991"></DataBlock>
+                <DataBlock label="Nombre" :data="`${transito?.usuario.nombre} ${transito?.usuario.apellido}`"></DataBlock>
+                <DataBlock label="Domicilio" :data="domicilio.toText(transito?.usuario.domicilio)"></DataBlock>
+                <DataBlock label="Mail" :data="transito?.usuario.email"></DataBlock>
+                <DataBlock label="Alta" :data="moment(transito?.usuario.fecha_alta).format('DD/MM/YYYY')"></DataBlock>
             </Panel>
-            <Panel class="col-span-4 row-span-1 row-start-3">
-                <h1 class="text-2xl pb-3  font-semibold underline text-center">Detalle del transito</h1>
-                <div class="flex flex-row  gap-5 ">
-                    <DataBlock label="Inicio" data="30/09/1991"></DataBlock>
-                    <DataBlock label="Fin" data="N/A"></DataBlock>
-                </div>
+            <Panel class="col-span-4 row-span-1 row-start-3" v-if="loading">
+                <ProgressSpinner
+                    class="m-auto h-20! text-center"
+                    pt:circle="stroke-red-100 p-progressspinner-circle"
+                    pt:root="p-progressspinner w-full!"
+                    pt:spin="p-progressspinner-spin" />
             </Panel>
-            <Panel header="historial" class="col-span-12 row-span-4 col-start-5">
+            <TransitoDetalle v-else-if="transito?.transito" class="col-span-4 row-span-1 row-start-3" :detalle="transito?.transito"></TransitoDetalle>
+            <Panel v-if="loading"  class="col-span-12 row-span-4 col-start-5">
+                <ProgressSpinner
+                    class="m-auto h-20! text-center"
+                    pt:circle="stroke-red-100 p-progressspinner-circle"
+                    pt:root="p-progressspinner w-full!"
+                    pt:spin="p-progressspinner-spin" />
+            </Panel>
+            <Panel v-else header="historial" class="col-span-12 row-span-4 col-start-5">
                 <DataTable :value="historial">
                     <Column header="Desde" field="fecha_desde">
                         <template #body="{data, field}">
-                            {{ data[field].format("DD/MM/YYYY")}}
+                            {{ moment(data[field]).format("DD/MM/YYYY")}}
                         </template>
                     </Column>
                     <Column header="Hasta" field="fecha_hasta">
                         <template #body="{data, field}">
-                            {{ data[field] ? data[field].format("DD/MM/YYYY") :"-" }}
+                            {{ data[field] ? moment(data[field]).format("DD/MM/YYYY") :"-" }}
                         </template>
                     </Column>
                     <Column header="Tipo" field="tipo"></Column>
-                    <Column header="Detalle" field="descripcion"></Column>
+                    <Column header="Detalle" field="detalle"></Column>
                 </DataTable>
             </Panel>
             <!--        <div class="flex flex-col pt-3">-->
@@ -134,13 +145,13 @@ const historial: Ref<HistorialMascota[]> = ref([
             <!--        </div>-->
         </div>
     </Panel>
-    <Panel v-if="transito" class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" header="Reporte semanal">
+    <Panel class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" v-if="loading"></Panel>
+    <Panel v-else-if="transito" class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" header="Reporte semanal">
         <!--        <template #header>-->
         <!--            <div class="m-auto text-3xl font-semibold text-center"></div>-->
         <!--        </template>-->
         <div class="m-auto w-full h-full">
             <DataTable :value="actualizaciones">
-
                 <Column header="Fecha" field="fecha">
                     <template #body="{data}">
                         {{ data['fecha'].format('DD/MM/YYYY') }}
@@ -160,17 +171,9 @@ const historial: Ref<HistorialMascota[]> = ref([
                         <span v-else>Sin fotos</span>
                     </template>
                 </Column>
-
             </DataTable>
         </div>
 
-    </Panel>
-    <Panel v-if="loading">
-        <ProgressSpinner
-            class="m-auto h-20! text-center"
-            pt:circle="stroke-red-100 p-progressspinner-circle"
-            pt:root="p-progressspinner w-full!"
-            pt:spin="p-progressspinner-spin" />
     </Panel>
 </template>
 

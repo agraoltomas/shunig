@@ -1,8 +1,10 @@
+import type { IDomicilio } from '@/lib/tipos/domicilio'
+
 export interface IRefugio {
     administrador: string,
     capacidad_total: number,
     cuit: string,
-    direccion: string,
+    domicilio: IDomicilio,
     email: string,
     estado_activo: boolean,
     fecha_alta: string,

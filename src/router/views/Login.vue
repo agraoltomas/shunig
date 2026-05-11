@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/auth.ts'
 import { useToast } from '@/lib/toast/toast.ts'
 import ProgressSpinner from "primevue/progressspinner"
 import { useJWTToken } from '@/lib/token.ts'
+import { useRefugioStore } from '@/stores/refugio.ts'
 
 const router = useRouter();
 const toast = useToast();
@@ -14,6 +15,14 @@ const password: Ref<string | null> = ref(null)
 const authStore = useAuthStore()
 const {jwt_token} = useJWTToken()
 const ingresando = ref(false)
+const {refugio, loadContextRefugio} = useRefugioStore()
+
+const goToDashboard = async () => {
+    if(!authStore.user)return;
+    await loadContextRefugio(authStore.user);
+    if(refugio)await router.push('/swap')
+    else await router.push('/usuario')
+}
 onMounted(async () => {
     if(!jwt_token.value)return;
     const u = await authStore.revalidarUsuario()
@@ -36,7 +45,7 @@ const login = async () => {
     if(error){
         toast.add({ summary: "Error de login", detail: error, severity:"error"})
     }else{
-        await router.push('/swap')
+        await goToDashboard()
     }
 
 

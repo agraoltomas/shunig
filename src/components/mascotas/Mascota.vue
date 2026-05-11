@@ -158,7 +158,7 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
     </Panel>
     <Modal nombre="nuevoTransito" title="Nuevo Transito">
         <template #default="{closeFn, context}">
-            <FormTransito v-if="context.nuevoTransito" @close="closeFn" :mascota="context.nuevoTransito"></FormTransito>
+            <FormTransito v-if="context.nuevoTransito" @close="closeFn" @cargada="() => {closeFn() ; $emit('actualizado')}" :mascota="context.nuevoTransito"></FormTransito>
         </template>
     </Modal>
 </template>

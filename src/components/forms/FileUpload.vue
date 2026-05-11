@@ -56,7 +56,7 @@ const toURL = (f: File) => {
         <div class="flex flex-row gap-3 py-3">
                 <input  hidden @change="handleFileSelection" type="file" ref="fileInput" />
             <div class="flex flex-row gap-3">
-                <Button pt:label="max-h-fit" icon="pi pi-plus" label="Subir imagen" @click="openFilePicker"></Button>
+                <Button pt:label="max-h-fit" icon="pi pi-plus" :label="file ? 'Cambiar  ' : 'Subir imagen'" @click="openFilePicker"></Button>
             </div>
             <Message severity="error" v-if="error" fluid>{{ error }}</Message>
             <div v-else-if="!file" class="my-auto">

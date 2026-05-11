@@ -25,3 +25,10 @@ export interface IMascotaTransito extends IMascota{
     tipo: ('adopcion'|'transito'),
     id_vinculo: number
 }
+
+export interface HistorialAnimal {
+    id: string,
+    fecha_desde: string,
+    fecha_hasta: Maybe<string>,
+    tipo: ('transito' | 'adopcion' | 'refugio')
+}

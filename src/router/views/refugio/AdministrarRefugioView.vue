@@ -13,6 +13,7 @@ import { useRefugioStore } from '@/stores/refugio.ts'
 import { AxiosError } from 'axios'
 import { useToast } from '@/lib/toast/toast.ts'
 import type { MessageResponse } from '@/lib/tipos/generics'
+import { useAuthStore } from '@/stores/auth.ts'
 const opciones: MenuItem[] = [
     {label: "General", active: true, icon: "pi pi-cog", command: () => menuSelected.value = 'general'},
     {label: "Actualizar datos", icon: "pi pi-sync", command: () => menuSelected.value = 'datos'},
@@ -20,13 +21,17 @@ const opciones: MenuItem[] = [
 ]
 const menuSelected: Ref<('general'|'datos'|'permisos')> = ref('general')
 const {axios} = useAxios();
-const refugioStore = useRefugioStore();
+const { refugio, loadContextRefugio } = useRefugioStore();
+const {user} = useAuthStore();
 const toast = useToast();
 const desactivarRefugio = async () => {
     if(!confirm("Confirmar desactivacion del refugio?"))return;
-    if(!refugioStore.refugio) return;
+    if(!refugio) return;
     try{
-        const r = await axios.value.post(`refugio/${refugioStore.refugio.id_refugio}/desactivar/`, {})
+        const r = await axios.value.post(`refugio/${refugio.id_refugio}/desactivar/`, {});
+        const response: MessageResponse<any> = r.data;
+        if(response.ok)toast.add({ detail: "Refugio deshabilitado correctamente", severity: "success" });
+        if(user)await loadContextRefugio(user);
     }catch (e){
         if(e instanceof AxiosError){
             const response: MessageResponse<never> = e.response?.data;

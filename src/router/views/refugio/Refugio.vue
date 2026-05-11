@@ -13,7 +13,7 @@ import Settings from '@/router/views/Settings.vue'
 const router = useRouter()
 
 const modalesStore = useModalStore()
-const refugioStore = useRefugioStore()
+const { refugio } = useRefugioStore()
 const authStore = useAuthStore()
 const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
     {
@@ -58,9 +58,12 @@ if (!authStore.user) {
         <template #end>
 
             <div class="flex flex-row">
-                <div v-if="refugioStore.refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
+                <div v-if="refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
                     <div class="font-semibold text-3xl text-white m-auto px-5">
-                        ¡Hola, {{ refugioStore.refugio?.nombre }}!
+                        ¡Hola, {{ refugio?.nombre }}!
+                        <span class="px-3 text-red-300" v-if="!refugio.estado_activo">
+                            Tu refugio esta desactivado
+                        </span>
                     </div>
                 </div>
                 <div class="flex flex-row m-auto">
