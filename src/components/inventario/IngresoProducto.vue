@@ -1,36 +1,40 @@
 <script setup lang="ts">
 
 import { type Reactive, reactive, ref } from 'vue'
-import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
+import type { IProducto } from '@/lib/tipos/productos'
 import { Form } from '@primevue/forms'
 import axios from '@/lib/axios.ts'
 import type { Maybe } from '@/lib/tipos/generics'
+import { TablaEstatica } from '@/lib/tipos/estaticos.ts'
 
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
+import TableSelect from '@/components/forms/TableSelect.vue'
 import { useToast } from '@/lib/toast/toast.ts'
 import Label from '@/components/forms/Label.vue'
+
+//Cuando doy de alta un producto general 
+
+
 const toast = useToast();
 
 type Optional<T> = { [K in keyof T]: Maybe<T[K]> }
 const initialValues = reactive({
     nombre: null,
-    contacto: null,
-    email: null,
+    id_tipo_producto: null,
     descripcion: null
 })
 
-interface DatosPatrocinador {
+interface ProductoData {
     nombre: Maybe<string>,
-    contacto: Maybe<string>,
-    email: Maybe<string>,
+    id_tipo_producto: Maybe<number>,
     descripcion: Maybe<string>
 }
 
 
 const emits = defineEmits<{close: []}>();
-const ingresarPatrocinador = async (d: any) => {
-        const r = await axios.post(`/patrocinador/`, {
+const ingresarProducto = async (d: any) => {
+        const r = await axios.post(`/producto/`, {
             ...d.values
         });
         if([200,201].includes(r.status)){
@@ -39,22 +43,19 @@ const ingresarPatrocinador = async (d: any) => {
         }
 }
 
-const resolver = ({ values }: { values: Partial<Optional<IPatrocinador>> }) => {
-    const errors: { [K in keyof DatosPatrocinador]: { message: string }[] } = {
-        nombre: [], contacto: [], email: [], descripcion: []
+const resolver = ({ values }: { values: Partial<Optional<IProducto>> }) => {
+    const errors: { [K in keyof ProductoData]: { message: string }[] } = {
+        nombre: [], id_tipo_producto: [], descripcion:[]
     }
 
     if (!values.nombre) {
         errors.nombre.push({ message: 'El nombre es obligatorio' })
     }
-    if (!values.contacto) {
-        errors.contacto.push({ message: 'Los datos de contacto son obligatorios' })
-    }
-    if (!values.email) {
-        errors.email.push({ message: 'El email es obligatorio' })
+    if (!values.id_tipo_producto) {
+        errors.id_tipo_producto.push({ message: 'Seleccione el tipo de producto' })
     }
     if (!values.descripcion) {
-        errors.descripcion.push({ message: 'La descripción es obligatoria' })
+        errors.descripcion.push({ message: 'Ingrese una descripción para el producto' })
     }
     return {
         values, // (Optional) Used to pass current form values to submit event.
@@ -65,33 +66,26 @@ const resolver = ({ values }: { values: Partial<Optional<IPatrocinador>> }) => {
 </script>
 
 <template>
-    <Form v-slot="$form" :initialValues :resolver @submit="ingresarPatrocinador" class="flex flex-col gap-4 w-full">
+    <Form v-slot="$form" :initialValues :resolver @submit="ingresarProducto" class="flex flex-col gap-4 w-full">
         <!--        <div class="flex flex-col gap-7">-->
         <FormRow class="w-full">
             <FormCol :span="6">
                 <Label for="nombre" required>Nombre</Label>
-                <InputText fluid name="nombre" id="nombre"></InputText>
+                <InputText id="nombre" fluid name="nombre"></InputText>
                 <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.nombre.error?.message }}
                 </Message>
-            </FormCol>
-            <FormCol :span="6">
-                <Label for="contacto" required>Datos de contacto</Label>
-                <InputText id="contacto" fluid name="contacto"></InputText>
-                <Message v-if="$form.contacto?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.contacto.error?.message }}
+            </FormCol>      
+             <FormCol :span="6">
+                <Label for="tipoProducto" required>Tipo de producto</Label>
+                <TableSelect id="tipoProducto" name="id_tipo_producto" v-model="initialValues.id_tipo_producto" :tipo="TablaEstatica.Producto"></TableSelect>
+                <Message v-if="$form.id_tipo_producto?.invalid" severity="error" size="small" variant="simple">
+                    {{ $form.id_tipo_producto.error?.message }}
                 </Message>
-            </FormCol>
+            </FormCol>      
         </FormRow>
-        <FormRow class="w-full">
-            <FormCol :span="6">
-                <Label for="email" required>Email</Label>
-                <InputText id="emaiL" fluid name="email"></InputText>
-                <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.email.error?.message }}
-                </Message>
-            </FormCol>
-            <FormCol :span="6">
+        <FormRow class="w-full">           
+            <FormCol :span="12">
                 <Label for="descripcion" required>Descripción</Label>
                 <InputText id="descripcion" fluid name="descripcion"></InputText>
                 <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">

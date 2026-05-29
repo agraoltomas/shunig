@@ -6,5 +6,7 @@ export enum TablaEstatica {
     Donacion = 'tipo_donacion',
     Producto = 'tipo_producto',
     Rol = 'rol',
-    EstadoInscripcion = 'estado_inscripcion_tipo'
+    EstadoInscripcion = 'estado_inscripcion_tipo',
+    OrigenStock = 'origen_stock',
+    UnidadStock = 'unidad_stock'
 }
