@@ -24,8 +24,6 @@ type Optional<T> = { [K in keyof T]: Maybe<T[K]> }
 const initialValues: Partial<DatosArticuloStock> = reactive({
     marca: null,
     cantidad: null,
-    id_unidad_stock: null,
-    medida: null,
     fecha_vencimiento: null,
     id_origen_stock: null,
     id_donacion: null,
@@ -36,8 +34,6 @@ const initialValues: Partial<DatosArticuloStock> = reactive({
 interface DatosArticuloStock {
     marca: Maybe<string>,
     cantidad: Maybe<number>,
-    id_unidad_stock: Maybe<number>,
-    medida: Maybe<string>,
     fecha_vencimiento: Maybe<Date>,
     id_origen_stock: Maybe<number>,
     id_donacion: Maybe<number>,
@@ -102,8 +98,6 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
     const errors: { [K in keyof DatosArticuloStock]: { message: string }[] } = {
         marca: [],
         cantidad: [],
-        id_unidad_stock: [],
-        medida: [],
         fecha_vencimiento: [],
         id_origen_stock: [],
         id_donacion: [],
@@ -119,12 +113,6 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
     } else if (Number(values.cantidad) < 0) {
         errors.cantidad.push({ message: 'La cantidad no puede ser negativa' })
     }
-    if(!values.id_unidad_stock){
-        errors.id_unidad_stock.push({message: "Seleccione la unidad de medida del artículo"})
-    }
-    if(!values.medida){
-        errors.medida.push({message:"Ingrese la medida (por ejemplo: kilogramos, unidad, etc.)"})
-    }
     if (!initialValues.fecha_vencimiento) {
     errors.fecha_vencimiento.push({ message: 'La fecha de vencimiento es obligatoria' })
     }
@@ -137,9 +125,6 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
         errors.id_donacion.push({ message: 'Debe seleccionar una donación' })
     }
 
-    if (!values.descripcion) {
-        errors.descripcion.push({ message: 'Ingrese una descripción para el artículo' })
-    }
     return {
         values, // (Optional) Used to pass current form values to submit event.
         errors
@@ -164,24 +149,6 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
                 <InputNumber fluid name="cantidad" id="cantidad"></InputNumber>
                 <Message v-if="$form.cantidad?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.cantidad.error?.message }}
-                </Message>
-            </FormCol>
-        </FormRow>
-
-         <FormRow class="w-full">
-            <FormCol :span="6">
-                <Label for="unidadStock" required>Unidad</Label>
-                <TableSelect id="unidadStock" name="id_unidad_stock" v-model="initialValues.id_unidad_stock" :tipo="TablaEstatica.UnidadStock"></TableSelect>
-                <Message v-if="$form.id_unidad_stock?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.id_unidad_stock.error?.message }}
-                </Message>
-            </FormCol>
-
-            <FormCol :span="6">
-                <Label for="medida" required>Medida</Label>
-                <InputText fluid name="medida" id="medida"></InputText>
-                <Message v-if="$form.medida?.invalid" severity="error" size="small" variant="simple">
-                    {{ $form.medida.error?.message }}
                 </Message>
             </FormCol>
         </FormRow>
@@ -217,7 +184,7 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
             </FormCol>
 
             <FormCol :span="6">
-                <Label for="descripcion" required>Descripción</Label>
+                <Label for="descripcion">Descripción</Label>
                 <InputText id="descripcion" fluid name="descripcion"></InputText>
                 <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.descripcion.error?.message }}

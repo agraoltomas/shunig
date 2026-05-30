@@ -42,9 +42,7 @@ const valores = reactive({
     fecha_vencimiento: props.articulo.fecha_vencimiento ? moment.utc(props.articulo.fecha_vencimiento).toDate() : null,
     id_origen_stock: props.articulo.id_origen_stock,
     id_donacion: props.articulo.id_donacion,
-    descripcion: props.articulo.descripcion,
-    id_unidad_stock: props.articulo.id_unidad_stock,
-    medida: props.articulo.medida
+    descripcion: props.articulo.descripcion
 })
 
 const donaciones = ref<any[]>([])
@@ -99,9 +97,7 @@ const resolver = ({ values }: FormResolverOptions) => {
         fecha_vencimiento: [],
         id_origen_stock: [],
         id_donacion: [],
-        descripcion: [],
-        id_unidad_stock: [],
-        medida: []
+        descripcion: []
     }
 
     if (!values.marca) {
@@ -110,14 +106,6 @@ const resolver = ({ values }: FormResolverOptions) => {
 
     if (!values.cantidad || values.cantidad <= 0) {
         errors.cantidad.push({ message: 'Ingrese una cantidad de paquetes' })    
-    }
-
-    if (!valores.id_unidad_stock) {
-    errors.id_unidad_stock.push({ message: 'Seleccione la unidad del artículo' })
-    }
-
-    if (!values.medida) {
-        errors.medida.push({ message: 'Ingrese la medida' })
     }
 
     if (!valores.fecha_vencimiento) {
@@ -147,8 +135,6 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
     const r = await axios.patch(`/stock/${props.articulo.id_stock}`, {
         ...e.values,
          cantidad: Number(e.values.cantidad),
-        id_unidad_stock: valores.id_unidad_stock,
-        medida: e.values.medida,
         fecha_vencimiento: valores.fecha_vencimiento
             ? moment(valores.fecha_vencimiento).format('YYYY-MM-DD') : null,
         id_origen_stock: valores.id_origen_stock,
@@ -165,9 +151,7 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
                 : null,
             id_origen_stock: articuloActualizado.id_origen_stock,
             id_donacion: articuloActualizado.id_donacion,
-            descripcion: articuloActualizado.descripcion,
-            id_unidad_stock: articuloActualizado.id_unidad_stock,
-            medida: articuloActualizado.medida
+            descripcion: articuloActualizado.descripcion
         })
 
         toast.add({
@@ -199,8 +183,6 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
             <div class="grid grid-cols-2 gap-4">
                 <DataBlock label="Marca" :data="articulo.marca" />
                 <DataBlock label="Cantidad" :data="articulo.cantidad"></DataBlock>
-                <DataBlock label="Tipo de unidad" :data="articulo.unidad_stock"></DataBlock>                
-                <DataBlock label="Medida" :data="articulo.medida"></DataBlock>
                 <DataBlock 
                     label="Fecha vencimiento" 
                     :data="formatearFecha(articulo.fecha_vencimiento)"></DataBlock>
@@ -241,16 +223,16 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
             
            <FormRow class="w-full">
                 <FormCol :span="6">
-                    <Label required>Marca</Label>
-                    <InputText fluid name="marca"></InputText>
+                    <Label for="marca" required>Marca</Label>
+                    <InputText id="marca" fluid name="marca"></InputText>
                     <Message v-if="$form.marca?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.marca.error?.message }}
                     </Message>
                 </FormCol>
 
                 <FormCol :span="6">
-                    <Label required>Cantidad</Label>
-                    <InputText fluid name="cantidad"></InputText>
+                    <Label for="cantidad" required>Cantidad</Label>
+                    <InputText id="cantidad" fluid name="cantidad"></InputText>
                     <Message v-if="$form.cantidad?.invalid" severity="error" size="small" variant="simple">
                         {{ $form.cantidad.error?.message }}
                     </Message>
@@ -259,64 +241,43 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
 
             <FormRow class="w-full">
                 <FormCol :span="6">
-                    <Label required>Unidad</Label>
-                    <TableSelect name="id_unidad_stock" v-model="valores.id_unidad_stock" :tipo="TablaEstatica.UnidadStock"></TableSelect>
-                    <Message v-if="$form.id_unidad_stock?.invalid" severity="error" size="small" variant="simple">
-                        {{ $form.id_unidad_stock.error?.message }}
-                    </Message>
-                </FormCol>
-
-                <FormCol :span="6">
-                    <Label required>Medida</Label>
-                    <InputText fluid name="medida"></InputText>
-                    <Message v-if="$form.medida?.invalid" severity="error" size="small" variant="simple">
-                        {{ $form.medida.error?.message }}
-                    </Message>
-                </FormCol>
-            </FormRow>
-
-            <FormRow class="w-full">
-        <FormCol :span="6">
-            <Label required>Fecha de vencimiento</Label>
-            <DatePicker name="fecha_vencimiento" v-model="valores.fecha_vencimiento" showIcon fluid :showOnFocus="false"
-             date-format="dd-mm-yy" append-to="body"></DatePicker>
-            <Message v-if="$form.fecha_vencimiento?.invalid" severity="error" size="small" variant="simple">
+                <Label for="vto" required>Fecha de vencimiento</Label>
+                <DatePicker id="vto" name="fecha_vencimiento" v-model="valores.fecha_vencimiento" showIcon fluid :showOnFocus="false"
+                    date-format="dd-mm-yy" append-to="body"></DatePicker>
+                <Message v-if="$form.fecha_vencimiento?.invalid" severity="error" size="small" variant="simple">
                 {{ $form.fecha_vencimiento.error?.message }}
-            </Message>
-        </FormCol>
+                </Message>
+            </FormCol>
 
-        <FormCol :span="6">
-            <Label required>Origen del stock</Label>
-            <TableSelect
-                name="id_origen_stock"
-                v-model="valores.id_origen_stock"
-                :tipo="TablaEstatica.OrigenStock"
-            ></TableSelect>
-            <Message v-if="$form.id_origen_stock?.invalid" severity="error" size="small" variant="simple">
-                {{ $form.id_origen_stock.error?.message }}
-            </Message>
-        </FormCol>
-    </FormRow>
+            <FormCol :span="6">
+                <Label for="origen" required>Origen del stock</Label>
+                <TableSelect id="origen" name="id_origen_stock" v-model="valores.id_origen_stock"
+                    :tipo="TablaEstatica.OrigenStock" ></TableSelect>
+                <Message v-if="$form.id_origen_stock?.invalid" severity="error" size="small" variant="simple">
+                 {{ $form.id_origen_stock.error?.message }}
+                </Message>
+            </FormCol>
+        </FormRow>
 
-    <FormRow class="w-full">
-        <FormCol :span="6">
-            <Label for="donacion">Donación</Label>
-            <Select v-if="origenDeLaDonacion" v-model="donacionSeleccionada" :options="donaciones" 
-            :option-label="textoDonacion" fluid name="id_donacion" id="donacion" placeholder="Seleccione una donación" filter></Select>
-            <InputText v-else fluid disabled model-value="-"></InputText>
-            <Message v-if="$form.id_donacion?.invalid" severity="error" size="small" variant="simple">
-                {{ $form.id_donacion.error?.message }}
-            </Message>
-        </FormCol>
+        <FormRow class="w-full">
+            <FormCol :span="6">
+                <Label for="donacion">Donación</Label>
+                <Select v-if="origenDeLaDonacion" v-model="donacionSeleccionada" :options="donaciones" 
+                :option-label="textoDonacion" fluid name="id_donacion" id="donacion" placeholder="Seleccione una donación" filter></Select>
+                <InputText v-else fluid disabled model-value="-"></InputText>
+                <Message v-if="$form.id_donacion?.invalid" severity="error" size="small" variant="simple">
+                    {{ $form.id_donacion.error?.message }}
+                </Message>
+            </FormCol>
 
-        <FormCol :span="6">
-            <Label required>Descripción</Label>
-            <InputText fluid name="descripcion"></InputText>
-            <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
-                {{ $form.descripcion.error?.message }}
-            </Message>
-        </FormCol>
-    </FormRow>
+            <FormCol :span="6">
+                <Label for="descripcion" required>Descripción</Label>
+                <InputText id="descripcion" fluid name="descripcion"></InputText>
+                <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
+                    {{ $form.descripcion.error?.message }}
+                </Message>
+            </FormCol>
+        </FormRow>
      <div class="flex justify-end gap-3 px-6 py-4">
         <Button type="submit" icon="pi pi-check" label="Guardar" />
         <Button type="button" icon="pi pi-times" label="Cancelar" @click="editando = false" />

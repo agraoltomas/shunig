@@ -23,30 +23,20 @@ const props = defineProps<{
 }>()
 
 
-// ALERTAS, veo que tipo de producto es
-const obtenerAlertaStock = (producto: IProducto) =>{
-    const tipoProducto = String(producto.tipo_producto).trim();
-    const cantidad = Number(producto.cantidad);
-
-    switch(tipoProducto){
-        case "Alimento":
-            if(cantidad < 10){
-                return EAlerta.AlimentoBajo;
-            }
-            if(cantidad > 50){
-                return EAlerta.AlimentoAlto;
-            }
-            return EAlerta.AlimentoModerado; 
-        case "Medicamento":
-            if(cantidad < 15){
-                return EAlerta.MedicamentoBajo;
-            }
-            if(cantidad>30){
-                return EAlerta.MedicamentoAlto;
-            }
-            return EAlerta.MedicamentoModerado;
-        default:
-            return null;
+// ALERTAS
+const obtenerAlertaStock =(producto: IProducto)=>{
+    if(!producto.alerta_stock_activa){
+        return null;
+    }
+    const cantidad = Number(producto.cantidad || 0);
+    const cantidadBaja = Number(producto.cantidad_alerta_baja || 0);
+    const cantidadModerada = Number(producto.cantidad_alerta_moderada || 0);
+    if(cantidad <= cantidadBaja){
+        return EAlerta.StockBajo;
+    }else if(cantidad <= cantidadModerada){
+        return EAlerta.StockModerado;
+    }else{
+        return EAlerta.StockAlto;
     }
 }
 
@@ -122,6 +112,9 @@ const solicitarDonacion = async (producto: IProducto) => {
             <Column header="Tipo de producto" field="tipo_producto"  style="width:15%">
             </Column>
             <Column header="Cantidad total" field="cantidad" style="width:10%">
+                <template #body="{ data: producto }">
+                {{ producto.cantidad}} - {{ producto.unidad_stock}}
+                </template>
             </Column>
             <Column header="Última actualización" style="width:10%">
 		    <template #body="{data: producto}">{{ 

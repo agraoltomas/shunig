@@ -14,8 +14,6 @@ export interface IStock{
     fecha_modificacion: string,
     descripcion: string,
     id_unidad_stock: number,
-    unidad_stock: string,
-    medida: string,
     fecha_donacion: Maybe<string>,
     fecha_recepcion: Maybe<string>,
     donacion_patrocinador: Maybe<string>
