@@ -10,6 +10,9 @@ import FormTransito from '@/components/transito/FormTransito.vue'
 import Modal from '@/components/modal/Modal.vue'
 import IngresoPatrocinador from './patrocinadores/IngresoPatrocinador.vue'
 import Eliminar from './generales/Eliminar.vue'
+import IngresoProducto from './inventario/IngresoProducto.vue'
+import ArticuloStock from "./inventario/ArticuloStock.vue"
+import IngresoArticuloStock from "./inventario/IngresoArticuloStock.vue"
 
 const store = useModalStore()
 const data = ref('')
@@ -75,6 +78,50 @@ const data = ref('')
                           :mascota="context.nuevoTransito?.mascota" :user="context.nuevoTransito?.usuario"></FormTransito>
         </template>
     </Modal>
+
+    <Dialog v-model:visible="store.modales.nuevoProducto" modal header="Alta de producto" class="w-[60%]"
+            pt:header="border-b-2 mb-5 border-surface-400">
+        <template #header>
+            <div class="flex flex-col w-full">
+                <div class="font-semibold m-auto text-2xl pb-0!">
+                    Alta de producto
+                </div>
+            </div>
+        </template>
+        <IngresoProducto class="mt-3" @close="() => store.cerrar('nuevoProducto')"></IngresoProducto>
+    </Dialog>
+
+    <Dialog v-model:visible="store.modales.nuevoArticuloStock" modal header="Alta de artículo" class="w-[60%]"
+            pt:header="border-b-2 mb-5 border-surface-400">
+        <template #header>
+            <div class="flex flex-col w-full">
+                <div class="font-semibold m-auto text-2xl pb-0!">
+                    Alta de artículo
+                </div>
+            </div>
+        </template>
+        <IngresoArticuloStock  v-if="store.context.nuevoArticuloStock" class="mt-3" :id_producto="store.context.nuevoArticuloStock.id_producto"
+                               @close="() => store.cerrar('nuevoArticuloStock')"></IngresoArticuloStock>
+    </Dialog>
+
+    <Dialog v-model:visible="store.modales.verArticuloStock" modal header="Detalle del artículo" class="w-[60%]"
+            pt:header="border-b-2 mb-5 border-surface-400">
+        <template #header>
+            <div class="flex flex-col w-full">
+                <div class="font-semibold m-auto text-2xl pb-0!">
+                    Detalle del artículo
+                </div>
+            </div>
+        </template>
+        <ArticuloStock v-if="store.context.verArticuloStock" :articulo="store.context.verArticuloStock.articulo"
+                       class="mt-3" @close="() => store.cerrar('verArticuloStock')" @eliminado="() => {
+            store.context.verArticuloStock.eliminaStock?.()
+            store.cerrar('verArticuloStock')}"
+                       @actualizado="() => {
+            store.context.verArticuloStock.actualizaStock?.()
+            store.cerrar('verArticuloStock')}"></ArticuloStock>
+    </Dialog>
+
 
 </template>
 

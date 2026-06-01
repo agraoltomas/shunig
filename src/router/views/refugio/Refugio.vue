@@ -37,7 +37,7 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
             },
             {
                 label: 'Control de stock',
-                command: () => router.push('/refugio/stock')
+                command: () => router.push('/refugio/inventario')
             },
             {
                 label: 'Patrocinadores',

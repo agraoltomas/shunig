@@ -1,8 +1,13 @@
 export enum EAlerta{
-    AlimentoBajo ,
     AnimalSinReporte ,
     AnimalCritico ,
     VacunaVencida,
     AnimalEnTratamiento,
-    SolicitudPendiente
+    SolicitudPendiente,
+    StockBajo,
+    StockModerado,
+    StockAlto,
+    DineroBajo,
+    DineroModerado,
+    DineroAlto
 }

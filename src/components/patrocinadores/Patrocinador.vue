@@ -11,6 +11,7 @@ import { useToast } from '@/lib/toast/toast.ts'
 import { useModalStore } from '@/stores/modales'
 import { Form, type FormResolverOptions} from '@primevue/forms'
 import type { FormSubmitEvent } from '@primevue/forms/form'
+import { useRouter } from 'vue-router'
 
 const toast = useToast();
 const modalesStore = useModalStore();
@@ -25,7 +26,8 @@ const emits = defineEmits<{
 }>();
 
 const editando = ref(false);
-const form: TemplateRef<typeof Form> = useTemplateRef("form");
+//const form: TemplateRef<typeof Form> = useTemplateRef("form");
+
 
 const valores = reactive({
     nombre: props.patrocinador.nombre,
@@ -44,7 +46,7 @@ const actualizarPatrocinador = async (e: FormSubmitEvent) => {
             nombre: patrocinadorActualizado.nombre,
             contacto: patrocinadorActualizado.contacto,
             email: patrocinadorActualizado.email,
-            descripcion: patrocinadorActualizado.descripcion,
+            descripcion: patrocinadorActualizado.descripcion
         });
         toast.add({severity:"success", summary:"Éxito!", detail: 
         `${e.values.nombre} se modificó exitosamente`
@@ -164,13 +166,16 @@ const resolver = ({ values }: FormResolverOptions) => {
             </div>          
             
         </div>
-         <div v-if="!editando" class="flex justify-end gap-3 px-6 py-4">
-            <Button icon="pi pi-pencil" label="Editar" @click="editando = true" />
-            <DangerButton icon="pi pi-trash" label="Eliminar" @click="modalesStore.abrir('eliminar', {
-                nombre: patrocinador.nombre,
-                endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
-                volverPrincipal: '/refugio/patrocinadores'})">
-            </DangerButton>
+         <div v-if="!editando" class="flex justify-between items-center">
+            <Button class="mx-4" icon="pi pi-undo" label="Volver" @click="$router.go(-1)"></Button>
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <Button icon="pi pi-pencil" label="Editar" @click="editando = true" />
+                <DangerButton icon="pi pi-trash" label="Eliminar" @click="modalesStore.abrir('eliminar', {
+                    nombre: patrocinador.nombre,
+                    endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
+                    volverPrincipal: '/refugio/patrocinadores'})">
+                </DangerButton>
+            </div>
         </div>
         
     </Panel>
