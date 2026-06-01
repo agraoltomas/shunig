@@ -1,17 +1,3 @@
-<template>
-    <Avatar
-        unstyled
-        :pt="theme"
-        :ptOptions="{
-            mergeProps: ptViewMerge
-        }"
-    >
-        <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-            <slot :name="slotName" v-bind="slotProps ?? {}" />
-        </template>
-    </Avatar>
-</template>
-
 <script setup lang="ts">
 import Avatar, { type AvatarPassThroughOptions, type AvatarProps } from 'primevue/avatar';
 import { ref } from 'vue';
@@ -33,3 +19,20 @@ const theme = ref<AvatarPassThroughOptions>({
     image: `p-circle:rounded-full w-full h-full`
 });
 </script>
+
+<template>
+    <Avatar
+        unstyled
+        :pt="theme"
+        :ptOptions="{
+            mergeProps: ptViewMerge
+        }"
+    >
+        <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
+            <slot :name="slotName" v-bind="slotProps ?? {}" />
+        </template>
+    </Avatar>
+</template>
+
+<style scoped>
+</style>

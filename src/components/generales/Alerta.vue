@@ -8,13 +8,15 @@ type Contexto = {
     solicitud?: IDetalleSolicitud
 }
 const mensajeAlerta = (a: EAlerta) => {
-    switch (a) {
-        case EAlerta.AlimentoBajo: return "Stock bajo de alimento";
+    switch (a) {        
         case EAlerta.AnimalSinReporte: return     "Animal sin reporte ";
         case EAlerta.AnimalCritico: return     "Animal en estado crítico";
         case EAlerta.AnimalEnTratamiento: return "Animal en tratamiento sin actualización reciente";
         case EAlerta.VacunaVencida: return "Vacuna vencida";
         case EAlerta.SolicitudPendiente: return "Solicitud pendiente";
+        case EAlerta.StockBajo: return "Stock bajo";
+        case EAlerta.StockModerado: return "Stock moderado";
+        case EAlerta.StockAlto: return "Stock suficiente";
     }
 }
 
@@ -23,9 +25,11 @@ const mensajeSeverity = (a: EAlerta) => {
         case EAlerta.VacunaVencida: return "info";
         case EAlerta.AnimalSinReporte: return "warn";
         case EAlerta.AnimalCritico: return "error";
-        case EAlerta.AnimalEnTratamiento: return "warn";
-        case EAlerta.AlimentoBajo: return "warn";
+        case EAlerta.AnimalEnTratamiento: return "warn";        
         case EAlerta.SolicitudPendiente: return "success";
+        case EAlerta.StockBajo: return "error";
+        case EAlerta.StockModerado: return "warn";
+        case EAlerta.StockAlto: return "success";
     }
 }
 const props = withDefaults(defineProps<{ tipo: EAlerta, detalle?: string, contexto?: Contexto }>(), {});

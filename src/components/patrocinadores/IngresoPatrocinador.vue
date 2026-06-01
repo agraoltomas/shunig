@@ -69,15 +69,15 @@ const resolver = ({ values }: { values: Partial<Optional<IPatrocinador>> }) => {
         <!--        <div class="flex flex-col gap-7">-->
         <FormRow class="w-full">
             <FormCol :span="6">
-                <Label required>Nombre</Label>
-                <InputText fluid name="nombre"></InputText>
+                <Label for="nombre" required>Nombre</Label>
+                <InputText fluid name="nombre" id="nombre"></InputText>
                 <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.nombre.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="6">
-                <Label required>Datos de contacto</Label>
-                <InputText fluid name="contacto"></InputText>
+                <Label for="contacto" required>Datos de contacto</Label>
+                <InputText id="contacto" fluid name="contacto"></InputText>
                 <Message v-if="$form.contacto?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.contacto.error?.message }}
                 </Message>
@@ -85,15 +85,15 @@ const resolver = ({ values }: { values: Partial<Optional<IPatrocinador>> }) => {
         </FormRow>
         <FormRow class="w-full">
             <FormCol :span="6">
-                <Label required>Email</Label>
-                <InputText fluid name="email"></InputText>
+                <Label for="email" required>Email</Label>
+                <InputText id="emaiL" fluid name="email"></InputText>
                 <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.email.error?.message }}
                 </Message>
             </FormCol>
             <FormCol :span="6">
-                <Label required>Descripción</Label>
-                <InputText fluid name="descripcion"></InputText>
+                <Label for="descripcion" required>Descripción</Label>
+                <InputText id="descripcion" fluid name="descripcion"></InputText>
                 <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.descripcion.error?.message }}
                 </Message>
