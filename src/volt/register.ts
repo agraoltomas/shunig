@@ -19,6 +19,7 @@ import Message from "@/volt/Message.vue";
 import Select from "@/volt/Select.vue"
 import type { App } from 'vue'
 import Tag from '@/volt/Tag.vue'
+import DataTable from '@/volt/DataTable.vue'
 
 export const registerAll = (app: App): App => {
     app.component('InputText', InputText)
@@ -40,6 +41,7 @@ export const registerAll = (app: App): App => {
     app.component('Textarea', Textarea)
     app.component('Image',Image)
     app.component("Column",Column)
+    app.component('DataTable',DataTable)
 
 
     return app;

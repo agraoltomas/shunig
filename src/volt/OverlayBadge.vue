@@ -1,7 +1,7 @@
 <template>
-    <div class="relative inline-flex">
+    <div class="relative inline-flex h-fit self-center py-1">
         <slot />
-        <Badge v-bind="$attrs" class="absolute top-0 end-0 translate-x-[50%] translate-y-[-50%] origin-[100%_0] m-0 outline-2 outline-surface-0 dark:outline-surface-900" />
+        <Badge v-bind="$attrs" class="absolute top-0 inset-e-0 translate-x-[50%] translate-y-[-50%] origin-top-right m-0 outline-surface-0 dark:outline-surface-900 px-0.5!" />
     </div>
 </template>
 

@@ -10,8 +10,8 @@ import { useAxios } from '@/lib/axios.ts'
 const props = defineProps<{solicitud: IDatosSolicitud}>();
 const {axios} = useAxios()
 const openPopover = useTemplateRef("openPopover")
-const popover= useTemplateRef("detalleSolicitudPopover");
 const emit = defineEmits<{ updated: []}>()
+const popover= useTemplateRef("detalleSolicitudPopover");
  const show = (e: Event) => {
      console.log(e,popover)
      if(!popover.value)return;
@@ -35,7 +35,7 @@ const emit = defineEmits<{ updated: []}>()
         <Popover ref="detalleSolicitudPopover">
             <div class="flex flex-col gap-3">
                 <div>datos usuario</div>
-                <div>datos uascota</div>
+                <div>datos mascota</div>
                 <div class="flex flex-row gap-3">
                     <DangerButton label="Rechazar" @click="() => cambiarEstado('rechazar')"></DangerButton>
                     <Button label="Aceptar" @click="() => cambiarEstado('aceptar')"></Button>

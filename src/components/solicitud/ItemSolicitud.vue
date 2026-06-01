@@ -1,0 +1,42 @@
+<script setup lang="ts">
+
+import paw from '@/assets/images/paw-solid-full-purple.svg'
+import moment from 'moment/moment'
+import type { IDatosSolicitud } from '@/lib/tipos/solicitud.ts'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import EstadoSolicitud from '@/components/solicitud/EstadoSolicitud.vue'
+import TipoSolicitud from '@/components/solicitud/TipoSolicitud.vue'
+const props = defineProps<{ solicitud: IDatosSolicitud}>()
+const router = useRouter()
+
+</script>
+
+<template>
+    <div class=" shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-lg flex flex-row gap-3 justify-between">
+        <div class="max-h-50 overflow-hidden m-3 rounded-lg text-center">
+            <img class="w-70  rounded-lg " :src="solicitud.imagen" />
+        </div>
+        <div class="flex flex-col justify-start gap-2 my-5 items-start w-1/2">
+            <h1 class="text-3xl font-bold">{{ solicitud.animal_nombre }}</h1>
+            <span class="text-slate-500 font-semibold text-lg">{{ solicitud.raza }}</span>
+            <TipoSolicitud :solicitud="solicitud"></TipoSolicitud>
+            <div class="text-sm text-left self-start"><span class="pi pi-calendar p-1"></span> Solicitud enviada
+                el {{ moment(solicitud.fecha_creacion).format('DD/MM/YYYY') }}
+            </div>
+            <div class="text-sm text-left self-start">{{ solicitud.motivo }}</div>
+        </div>
+        <div class="flex flex-col my-5 gap-3 items-end me-5 justify-end">
+            <EstadoSolicitud :solicitud="solicitud"></EstadoSolicitud>
+            <div class="bg-gray-200 rounded p-2 text-sm flex flex-col gap-3 min-w-40">
+                <span>Número de solicitud</span>
+                #{{ solicitud.id_solicitud }}
+            </div>
+            <Button label="Ver Detalle" icon="pi pi-arrow-right" variant="outlined" @click="() => router.push(`/usuario/solicitud/${solicitud.id_solicitud}`)"></Button>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+
+</style>

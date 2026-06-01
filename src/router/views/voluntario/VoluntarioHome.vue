@@ -7,6 +7,9 @@ import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useAxios } from '@/lib/axios.ts'
 import { useRouter } from 'vue-router'
+import FormAdopcion from '@/components/adopcion/FormAdopcion.vue'
+import Modal from '@/components/modal/Modal.vue'
+import moment from 'moment'
 
 const adopciones: Ref<IMascota[]> = ref([])
 const transitos: Ref<IMascota[]> = ref([])
@@ -16,7 +19,6 @@ const router = useRouter()
 
 onMounted(async () => {
     if(!authStore.user)return;
-
     const r = await axiosService.axios.value.get(`/animal/usuario/${authStore.user.id_usuario}/`)
     if (r.status == 200) {
         let response: MessageResponse<IMascotaTransito[]> = r.data
@@ -24,12 +26,13 @@ onMounted(async () => {
         transitos.value = response.data.filter((v: IMascotaTransito) => v.tipo == 'transito')
         console.log(response)
     }
+
 })
 const events = [
     {
         title: 'Advanced algebra',
         with: 'Chandler Bing',
-        time: { start: '2026-04-16 12:05', end: '2026-04-16 13:35' },
+        time: { start: moment().add('2days').format('YYYY-MM-DD'), end: moment().add('7days').format('YYYY-MM-DD') },
         color: 'yellow',
         isEditable: true,
         id: '753944708f0f',
@@ -65,9 +68,13 @@ const config = {
 </script>
 
 <template>
-    <div class="grid grid-cols-4 grid-rows-12 max-h-[80vw] gap-5 shadow-amber-50">
-        <Panel class="col-span-2  row-span-3" header="Mis adopciones">
+    <div class="grid grid-cols-4 grid-rows-12 max-h-[80vw] gap-5 shadow-amber-50 ">
+        <div class="col-span-2 flex flex-col justify-around gap-3">
+            <Panel class="  row-span-3" header="Mis adopciones" v-if="adopciones.length">
                 <DataTable :value="adopciones">
+                    <template #empty>
+                        <div class="text-center  py-3text-slate-300">No tiene mascotas adoptadas actualmente</div>
+                    </template>
                     <Column header="Nombre" field="nombre">
                     </Column>
                     <Column header="Sexo" field="sexo">
@@ -79,22 +86,23 @@ const config = {
                         </template>
                     </Column>
                 </DataTable>
-        </Panel>
+            </Panel>
 
-        <Panel class="col-span-2  row-start-4 row-span-3 bg-surface-50!" header="Mis tránsitos">
-            <DataTable :value="transitos">
-                <Column header="Nombre" field="nombre">
-                </Column>
-                <Column header="Sexo" field="sexo">
-                </Column>
-                <Column header="Raza" field="raza"></Column>
-                <Column>
-                    <template #body="{data}">
-                        <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
-                    </template>
-                </Column>
-            </DataTable>
-        </Panel>
+            <Panel class=" " header="Mis tránsitos" v-if="transitos.length">
+                <DataTable :value="transitos">
+                    <Column header="Nombre" field="nombre">
+                    </Column>
+                    <Column header="Sexo" field="sexo">
+                    </Column>
+                    <Column header="Raza" field="raza"></Column>
+                    <Column>
+                        <template #body="{data}">
+                            <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                        </template>
+                    </Column>
+                </DataTable>
+            </Panel>
+        </div>
         <Panel class="col-span-2 col-start-3 row-span-6 h-full   overflow-y-scroll!">
             <div class=" flex flex-col gap-3">
                 <Qalendar

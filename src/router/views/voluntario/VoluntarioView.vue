@@ -8,14 +8,15 @@ import Menu from '@/volt/Menu.vue'
 import { ref, type Ref, useTemplateRef } from 'vue'
 import type { MenuItem } from 'primevue/menuitem'
 import { useRouter } from 'vue-router'
-import OverlayBadge from "@/volt/OverlayBadge.vue"
-import Badge from "@/volt/Badge.vue"
+import OverlayBadge from '@/volt/OverlayBadge.vue'
+import Badge from '@/volt/Badge.vue'
 import Settings from '@/router/views/Settings.vue'
 import { useRefugioStore } from '@/stores/refugio.ts'
+import Notificaciones from '@/components/menu/Notificaciones.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const refugioStore = useRefugioStore();
+const refugioStore = useRefugioStore()
 const menuAccesoRapido = useTemplateRef('menuAccesoRapido')
 
 const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
@@ -36,8 +37,8 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
             },
             {
                 label: 'Notificaciones',
-                badge: "99+",
-                command: () => {}
+                command: () => {
+                }
             }
         ]
     }
@@ -51,39 +52,39 @@ const toggle = (event: Event) => {
 <template>
     <Menubar>
         <template #end>
-            <div class="flex flex-row gap-3 w-full justify-end">
+            <div class="flex flex-row gap-3 w-full justify-end text-xl">
                 <div v-if="authStore.user" class="font-semibold text-3xl text-white m-auto px-5">
                     ¡Hola, {{ authStore.user.nombre }}!
                 </div>
-<!--                <Settings title="Configuración"></Settings>-->
-                <Button :title="`ir a ${refugioStore.refugio.nombre}`" v-if="refugioStore.refugio" icon="pi pi-home" class="flex-col! h-fit my-auto" @click="() => router.push('/refugio')" ></Button>
+                <!--                <Settings title="Configuración"></Settings>-->
+                <div class="flex flex-row gap-5 justify-around" id="buttons">
+                    <Notificaciones></Notificaciones>
+                    <Button :title="`ir a ${refugioStore.refugio.nombre}`" v-if="refugioStore.refugio" icon="pi pi-home"
+                            class="flex-col! h-fit my-auto" @click="() => router.push('/refugio')"></Button>
+                </div>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>
     </Menubar>
     <div class="mx-3 rounded-lg flex flex-row justify-between my-2">
         <div class="w-[50%] my-auto">
-            <OverlayBadge severity="danger" value="99+" >
-                <Button type="button" icon="pi pi-bars" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
-            </OverlayBadge>
+                <Button type="button" icon="pi pi-bars" @click="toggle" aria-haspopup="true"
+                        aria-controls="overlay_menu" />
             <Menu pt:submenulabel="text-black font-semibold text-center bg-gray-100" ref="menuAccesoRapido"
                   id="overlay_menu" :model="itemsMenuAccesoRapido" :popup="true">
                 <template #item="{ item, props }">
                     <a class="flex items-center" v-bind="props.action">
                         <span :class="item.icon" />
                         <span>{{ item.label }}</span>
-                        <Badge severity="danger" v-if="item.badge" class="ml-auto" :value="item.badge" />
+<!--                        <Badge severity="danger" v-if="item.badge" class="ml-auto" :value="item.badge" />-->
                     </a>
                 </template>
             </Menu>
         </div>
         <div class="flex flex-row gap-3">
-            <Button  label="Quiero adoptar" disabled></Button>
-            <Button disabled icon-pos="left" label="Quiero transitar" ></Button>
+            <Button label="Quiero adoptar" @click="() => router.push('/usuario/adoptar')"></Button>
+            <Button icon-pos="left" label="Quiero transitar" @click="() => router.push('/usuario/transitar')"></Button>
         </div>
-        <!--                <Dialog :visible="true" modal class="bg-white!">-->
-        <!--                    hola-->
-        <!--                </Dialog>-->
     </div>
     <router-view></router-view>
 </template>

@@ -39,6 +39,7 @@
     --p-surface-900: #2e281e;
     --p-surface-950: #17140f;
     --p-content-border-radius: 8px;
+
 }
 
 /* Light */
@@ -112,6 +113,11 @@
     --color-surface-800: #5c513c;
     --color-surface-900: #2e281e;
     --color-surface-950: #17140f;
+    --color-refugio-200: #B8AEDB;
+    --color-refugio-300: #816FBE;
+    --color-refugio-400: #664FB0;
+    --color-refugio-500: #564394;
+    --color-refugio-contrast: #ffffff;
 }
 .calendar-root[data-v-67f77862], .date-picker-root[data-v-67f77862] {
     --qalendar-blue: rgb(38 132 255);

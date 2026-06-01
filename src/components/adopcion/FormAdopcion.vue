@@ -6,33 +6,22 @@ import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Label from '@/components/forms/Label.vue'
 import { Form } from '@primevue/forms'
-import { onMounted, type Ref, ref } from 'vue'
+import { computed, onMounted, type Ref, ref } from 'vue'
 import { useAxios } from '@/lib/axios.ts'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import type { IMascota } from '@/lib/tipos/mascotas'
 import type { IDomicilio } from '@/lib/tipos/domicilio'
-import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
-import { useToast } from 'primevue'
+import { type IDatosSolicitud, TipoSolicitud } from '@/lib/tipos/solicitud.ts'
+import { useToast } from '@/lib/toast/toast.ts'
 import domicilio from '@/lib/modelos/domicilio.ts'
+import { useResponse } from '@/lib/utils/response.ts'
 
-
-export interface IDatosSolicitud {
-    id_usuario: number,
-    id_animal: number,
-    tipo_solicitud: TipoSolicitud,
-    id_detalle_solicitud: number,
-    compromiso: boolean,
-    responsable_principal: string,
-    fecha_desde?: string,
-    fecha_hasta?: string,
-    id_solicitud?: number,
-    animal_nombre?: string
-}
-const props = defineProps<{ mascota: IMascota }>()
+const props = defineProps<{ mascota: IMascota, user?: Maybe<User> }>();
 const authStore = useAuthStore()
 const usuarios: Ref<User[]> = ref([])
 const { axios } = useAxios()
+const {unwrap, tryLogError} = useResponse();
 onMounted(async () => {
     const r = await axios.value.get('/usuario')
 
@@ -40,10 +29,10 @@ onMounted(async () => {
     usuarios.value = response.data
     console.log(usuarios.value)
 })
-const usuario: Ref<Maybe<User>> = ref(null)
+const usuario: Ref<Maybe<User>> = ref(props.user ?? null);
 
 const toast = useToast()
-const emit = defineEmits<{ cargada: []}>()
+const emit = defineEmits<{ cargada: [], cerrar: []}>()
 const iniciarSolicitud =  async () => {
     if(!usuario.value)return;
     try{
@@ -56,9 +45,13 @@ const iniciarSolicitud =  async () => {
         } satisfies Partial<{[ r in keyof IDatosSolicitud]: any}>);
         toast.add({ detail: "Solicitud iniciada correctamente", severity:"success"})
         emit('cargada')
-    }catch (error) {}
+    }catch (error) {
+        tryLogError(<Error>error, toast)
+        emit('cerrar')
+    }
 
 }
+const userName = computed(() => `${props.user?.nombre} ${props.user?.apellido}`)
 </script>
 
 <template>
@@ -67,9 +60,10 @@ const iniciarSolicitud =  async () => {
             <FormRow>
                 <FormCol :span="3">
                     <Label>Usuario adoptante</Label>
-                    <Select v-model="usuario"
+                    <Select v-if="!user" v-model="usuario"
                             :option-label="(u: User) => { return `${u.nombre} ${u.apellido} - ${u.email}`}"
                             placeholder="Usuario" :options="usuarios" filter></Select>
+                    <InputText v-else :value="userName" disabled></InputText>
                 </FormCol>
                 <FormCol :span="5">
                     <Label>Mail</Label>
@@ -89,9 +83,8 @@ const iniciarSolicitud =  async () => {
             <FormRow>
             </FormRow>
         </Form>
-        <!--    <Solicitud v-if="usuario" :usuario="usuario">-->
-
-        <!--    </Solicitud>-->
+            <Solicitud v-if="usuario" :usuario="usuario">
+            </Solicitud>
         <div class="flex flex-row gap-3 my-3 justify-center">
             <Button @click="iniciarSolicitud" :disabled="!usuario" label="Iniciar solicitud"></Button>
         </div>

@@ -15,14 +15,16 @@ import domicilio from '@/lib/modelos/domicilio.ts'
 import type { DetalleTransito } from '@/lib/tipos/transito'
 import TransitoDetalle from '@/components/transito/TransitoDetalle.vue'
 import SecondaryButton from '@/volt/SecondaryButton.vue'
+import ReporteTabla from '@/components/transito/ReporteTabla.vue'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
-const {axios} = useAxios()
+const { axios } = useAxios()
+
 interface Reporte {
     imagenes: string[]
 }
 
-const historial: Ref<HistorialAnimal[]> = ref([]);
+
 const transito: Ref<Maybe<DetalleTransito>> = ref(null)
 const route = useRoute()
 const router = useRouter()
@@ -33,7 +35,6 @@ const getTransito = async () => {
         const r = await axios.value.get(`/transito/${route.params.id}/`, {})
         const response: MessageResponse<DetalleTransito> = r.data
         transito.value = response.data
-        await getHistorial();
     } catch (error) {
 
     } finally {
@@ -44,43 +45,41 @@ const getTransito = async () => {
 onMounted(async () => {
     getTransito()
 })
-
-const getHistorial = async () =>{
-    if(!transito.value)return;
-    startLoading()
-    try {
-        const r = await axios.value.get(`/animal/${transito.value.animal.id_animal}/historial/`)
-        const response: MessageResponse<HistorialAnimal[]> = r.data
-        historial.value = response.data
-    } catch (error) {
-
-    } finally {
-        stopLoading()
-    }
-}
 watch(() => route.params.id, () => {
     getTransito()
 })
-const STRING_LENGTH = 40
-const actualizaciones = ref([
-    { images: [1], fecha: moment().add(1, 'days'), descripcion: 'Hoy jugo mucho!' },
-    { images: [1, 2, 4], fecha: moment().add(2, 'days'), descripcion: 'comio algo que no debia y gomito' },
-    { images: [1, 2, 4, 5, 4], fecha: moment().add(3, 'days'), descripcion: 'sin noticias' },
+interface Reporte {
+    images: number[],
+    fecha: string,
+    descripcion: string,
+}
+const reportes: Ref<Reporte[]> = ref([
+    { images: [1],
+        fecha: moment().add(1, 'days').format("DD/MM/YYYY"),
+        descripcion: 'Hoy jugo mucho!' },
+    { images: [1, 2, 4],
+        fecha: moment().add(2, 'days').format("DD/MM/YYYY"),
+        descripcion: 'comio algo que no debia y gomito' },
+    { images: [1, 2, 4, 5, 4],
+        fecha: moment().add(3, 'days').format("DD/MM/YYYY"),
+        descripcion: 'sin noticias' },
     {
-        fecha: moment().add(4, 'days'),
+        fecha: moment().add(4, 'days').format("DD/MM/YYYY"),
         descripcion: 'se convirtio en un demonio lovecraftiano y me hizo temerle a la existencia misma'
     }
 ])
-console.log(route);
+console.log(route)
 </script>
 
 <template>
     <Panel v-if="transito" class="w-[75%] m-auto border-white! border-0 overflow-auto " pt:header="p-0!">
         <template #header>
             <div class="w-full h-full" v-if="transito.animal">
-                <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center">
+                <div
+                    class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center">
                     {{ transito.animal.nombre }}
-                    <SecondaryButton icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!" @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></SecondaryButton>
+                    <SecondaryButton icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!"
+                                     @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></SecondaryButton>
                 </div>
             </div>
         </template>
@@ -94,7 +93,8 @@ console.log(route);
             </Panel>
             <Panel class="col-span-4 row-span-2" v-else-if="transito?.usuario">
                 <h1 class="text-2xl pb-3  font-semibold underline text-center">Voluntario</h1>
-                <DataBlock label="Nombre" :data="`${transito?.usuario.nombre} ${transito?.usuario.apellido}`"></DataBlock>
+                <DataBlock label="Nombre"
+                           :data="`${transito?.usuario.nombre} ${transito?.usuario.apellido}`"></DataBlock>
                 <DataBlock label="Domicilio" :data="domicilio.toText(transito?.usuario.domicilio)"></DataBlock>
                 <DataBlock label="Mail" :data="transito?.usuario.email"></DataBlock>
                 <DataBlock label="Alta" :data="moment(transito?.usuario.fecha_alta).format('DD/MM/YYYY')"></DataBlock>
@@ -106,29 +106,17 @@ console.log(route);
                     pt:root="p-progressspinner w-full!"
                     pt:spin="p-progressspinner-spin" />
             </Panel>
-            <TransitoDetalle v-else-if="transito?.transito" class="col-span-4 row-span-1 row-start-3" :detalle="transito?.transito"></TransitoDetalle>
-            <Panel v-if="loading"  class="col-span-12 row-span-4 col-start-5">
+            <TransitoDetalle v-else-if="transito?.transito" class="col-span-4 row-span-1 row-start-3"
+                             :detalle="transito?.transito"></TransitoDetalle>
+            <Panel v-if="loading" class="col-span-12 row-span-4 col-start-5">
                 <ProgressSpinner
                     class="m-auto h-20! text-center"
                     pt:circle="stroke-red-100 p-progressspinner-circle"
                     pt:root="p-progressspinner w-full!"
                     pt:spin="p-progressspinner-spin" />
             </Panel>
-            <Panel v-else header="historial" class="col-span-12 row-span-4 col-start-5">
-                <DataTable :value="historial">
-                    <Column header="Desde" field="fecha_desde">
-                        <template #body="{data, field}">
-                            {{ moment(data[field]).format("DD/MM/YYYY")}}
-                        </template>
-                    </Column>
-                    <Column header="Hasta" field="fecha_hasta">
-                        <template #body="{data, field}">
-                            {{ data[field] ? moment(data[field]).format("DD/MM/YYYY") :"-" }}
-                        </template>
-                    </Column>
-                    <Column header="Tipo" field="tipo"></Column>
-                    <Column header="Detalle" field="detalle"></Column>
-                </DataTable>
+            <Panel v-else header="Reporte semanal" class="col-span-12 row-span-4 col-start-5">
+                <ReporteTabla :reportes="reportes" :mascota="transito.animal"></ReporteTabla>
             </Panel>
             <!--        <div class="flex flex-col pt-3">-->
             <!--            <div class=" flex flex-row gap-3">-->
@@ -144,36 +132,6 @@ console.log(route);
 
             <!--        </div>-->
         </div>
-    </Panel>
-    <Panel class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" v-if="loading"></Panel>
-    <Panel v-else-if="transito" class="mt-3 w-[75%] m-auto border-white! border-0 overflow-auto" header="Reporte semanal">
-        <!--        <template #header>-->
-        <!--            <div class="m-auto text-3xl font-semibold text-center"></div>-->
-        <!--        </template>-->
-        <div class="m-auto w-full h-full">
-            <DataTable :value="actualizaciones">
-                <Column header="Fecha" field="fecha">
-                    <template #body="{data}">
-                        {{ data['fecha'].format('DD/MM/YYYY') }}
-                    </template>
-                </Column>
-                <Column header="Detalle">
-                    <template #body="{data}">
-                        <div class="max-w-52! text-wrap">{{ data['descripcion'].substring(0, STRING_LENGTH + 1)
-                            }}{{ data['descripcion'].length > STRING_LENGTH ? '...' : '' }}
-                        </div>
-                    </template>
-                </Column>
-                <Column header="Fotos">
-                    <template #body="{data}">
-                        <Button v-if="data['images'] && data['images'].length > 0" title="Ver fotos"
-                                :icon="data['images'].length > 1 ? 'pi pi-images' : 'pi pi-image'"></Button>
-                        <span v-else>Sin fotos</span>
-                    </template>
-                </Column>
-            </DataTable>
-        </div>
-
     </Panel>
 </template>
 

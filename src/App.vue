@@ -14,7 +14,7 @@ onMounted(() => {
         router.push(route);
     }else{
         if(!authStore.user){
-            router.push('/login')
+            // router.push('/login')
         }else{
 
         }
@@ -33,6 +33,8 @@ onMounted(() => {
 
 <style>
 body {
-    background-color: var(--p-surface-300);
+    background-color:  color-mix(in oklab, #edeff0 40%, transparent) !important;
 }
 </style>
+
+<!--//color-mix(in oklab, #F2F4FA 30%, transparent) !important;-->

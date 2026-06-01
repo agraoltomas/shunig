@@ -50,7 +50,7 @@ const theme = ref<ButtonPassThroughOptions>({
     label: `font-medium p-icon-only:invisible p-icon-only:w-0
         p-small:text-sm p-large:text-[1.125rem]`,
     pcBadge: {
-        root: `min-w-4 h-4 leading-4 bg-primary-contrast rounded-full text-primary text-xs font-bold`
+        root: `min-w-5 h-5 leading-4 bg-red-500  rounded-full text-white text-xs font-semibold py-0.5 px-0.5 h-fit absolute top-1 right-1 `
     }
 });
 </script>

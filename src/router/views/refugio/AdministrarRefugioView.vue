@@ -14,12 +14,14 @@ import { AxiosError } from 'axios'
 import { useToast } from '@/lib/toast/toast.ts'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import { useAuthStore } from '@/stores/auth.ts'
+import AdministrarRechazos from '@/components/refugio/AdministrarRechazos.vue'
 const opciones: MenuItem[] = [
     {label: "General", active: true, icon: "pi pi-cog", command: () => menuSelected.value = 'general'},
     {label: "Actualizar datos", icon: "pi pi-sync", command: () => menuSelected.value = 'datos'},
     {label: "Administrar permisos", icon: "pi pi-lock", command: () => menuSelected.value = 'permisos'},
+    {label: "Administrar usuarios rechazados", icon: "pi pi-users", command: () => menuSelected.value = 'rechazos'},
 ]
-const menuSelected: Ref<('general'|'datos'|'permisos')> = ref('general')
+const menuSelected: Ref<('general'|'datos'|'permisos'|'rechazos')> = ref('general')
 const {axios} = useAxios();
 const { refugio, loadContextRefugio } = useRefugioStore();
 const {user} = useAuthStore();
@@ -66,6 +68,9 @@ const desactivarRefugio = async () => {
             <div class="h-96 overflow-y-auto">
                 <AdministrarUsuariosRefugio></AdministrarUsuariosRefugio>
             </div>
+        </Panel>
+        <Panel v-else-if="menuSelected == 'rechazos'">
+            <AdministrarRechazos></AdministrarRechazos>
         </Panel>
     </div>
 </template>

@@ -1,4 +1,5 @@
-import {useToast as uT} from "primevue"
+import { type ToastServiceMethods, useToast as uT } from 'primevue'
+type ExtraFunction = (msg: string) => void
 export const useToast = () =>{
     const toast = uT()
     const add = toast.add;

@@ -20,6 +20,6 @@ interface Props extends /* @vue-ignore */ TabsProps {}
 const props = defineProps<Props>();
 
 const theme = ref<TabsPassThroughOptions>({
-    root: `flex flex-col`
+    root: `flex flex-col gap-3`
 });
 </script>

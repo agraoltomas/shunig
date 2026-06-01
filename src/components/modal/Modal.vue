@@ -18,7 +18,7 @@ const close = () => {
 </script>
 
 <template>
-    <Dialog v-model:visible="store.modales[nombre]" :header="title">
+    <Dialog v-model:visible="store.modales[nombre]" :header="title" modal>
         <slot :closeFn="close" :context="store.context"></slot>
     </Dialog>
 </template>

@@ -1,21 +1,21 @@
 <script setup lang="ts">
 
 import Menubar from '@/components/Menubar.vue'
-import { onMounted } from 'vue'
-import { useRefugioStore } from '@/stores/refugio.ts'
-import { useRouter } from 'vue-router'
-const router = useRouter();
-onMounted(() => {
-    const refugioStore = useRefugioStore();
-    if(refugioStore.refugio){
-        router.push("")
-    }
+import { onMounted, ref, type Ref } from 'vue'
+onMounted(async () => {
+
 })
 </script>
-
 <template>
-    <Menubar/>
-    <router-view></router-view>
+    <Menubar>
+        <template #end>
+            <div class="w-full flex flex-row justify-end h-full">
+                <Button class="self-center border-refugio-500 shadow-lg mr-3" label="Ingresar" @click="() => router.push('/login')"></Button>
+            </div>
+        </template>
+    </Menubar>
+    <router-view>
+    </router-view>
 </template>
 
 <style scoped>

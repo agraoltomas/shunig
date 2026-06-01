@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { type Ref, ref } from 'vue'
+import { onMounted, type Ref, ref } from 'vue'
 import Menubar from '@/components/Menubar.vue'
 import { TipoUsuario } from '@/lib/tipos/usuario.ts'
 import type { Maybe } from '@/lib/tipos/generics'
 import { type User } from '@/lib/tipos/usuarios'
 import UsuarioIngreso from '@/components/usuario/UsuarioIngreso.vue'
 import RefugioIngreso from '@/components/refugio/RefugioIngreso.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const tipo = ref(null)
 const router = useRouter()
+const route = useRoute()
 enum EForm {
     Usuario,
     Refugio
@@ -25,6 +26,9 @@ const ingresadoUsuario = (u: User) => {
        router.push("/login")
    }
 }
+onMounted(() => {
+
+})
 </script>
 
 <template>

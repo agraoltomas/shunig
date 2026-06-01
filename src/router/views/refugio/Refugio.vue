@@ -28,6 +28,10 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
                 command: () => router.push('/refugio/transito')
             },
             {
+                label: 'Solicitúdes pendientes',
+                command: () => router.push('/refugio/solicitudes')
+            },
+            {
                 label: 'Eventos de vacunación',
                 command: () => router.push('/refugio/vacunas')
             },
@@ -57,7 +61,7 @@ if (!authStore.user) {
     <Menubar>
         <template #end>
 
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-3">
                 <div v-if="refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
                     <div class="font-semibold text-3xl text-white m-auto px-5">
                         ¡Hola, {{ refugio?.nombre }}!
@@ -70,6 +74,7 @@ if (!authStore.user) {
 <!--                    <Settings title="Configuración"></Settings>-->
 <!--                    <Logout title="Cerrar sesión"></Logout>-->
                 </div>
+                <Button :title="`ir a pantalla de usuario`" v-if="authStore.user" icon="pi pi-user" class="flex-col! h-fit my-auto" @click="() => router.push('/usuario')" ></Button>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>
         </template>
@@ -84,8 +89,6 @@ if (!authStore.user) {
         <div class="flex flex-row gap-3">
             <Button icon="pi pi-plus" icon-pos="left" label="Animal"
                     @click="() => modalesStore.abrir('nuevoAnimal')"></Button>
-            <Button disabled icon="pi pi-plus" icon-pos="left" label="Tránsito"
-                    @click="() => modalesStore.abrir('nuevoTransito')"></Button>
             <Button disabled icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"
                     @click="() => modalesStore.abrir('vacunacion')"></Button>
             

@@ -11,13 +11,14 @@ import type { FormSubmitEvent } from '@primevue/forms/form'
 import axios from '@/lib/axios.ts'
 import * as yup from 'yup'
 import { yupResolver } from '@primevue/forms/resolvers/yup'
-import { reactive, type Reactive } from 'vue'
+import { onMounted, reactive, type Reactive, ref } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import { CUILValidator } from '@/lib/utils/cuil.ts'
 import { useToast } from '@/lib/toast/toast.ts'
 import Domicilio from '@/components/forms/Domicilio.vue'
 import { domicilioSchema } from '@/validations/domicilio.ts'
+import { useRoute } from 'vue-router'
 
 
 interface DatosUsuario {
@@ -35,6 +36,18 @@ interface DatosUsuario {
 
 const toast = useToast()
 const tipo = defineModel<Maybe<TipoUsuario>>('tipo')
+const route = useRoute()
+const defered  = ref(false);
+onMounted(() => {
+    if(route.query.t){
+        switch (route.query.t){
+            case 'refugio':
+                tipo.value = TipoUsuario.Refugio
+                defered.value = true
+                break;
+        }
+    }
+})
 const datosUsuario: Reactive<DatosUsuario> = reactive({
     cuit: null,
     nombre: null,
