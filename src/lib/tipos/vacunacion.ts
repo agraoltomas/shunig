@@ -10,5 +10,6 @@ export interface IEventoVacunacion{
     cupo_maximo: number
     observaciones: Maybe<string>,
     refugio_nombre: string
-    refugio_domicilio: IDomicilio
+    refugio_domicilio: IDomicilio,
+    inscriptos: string
 }

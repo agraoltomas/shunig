@@ -12,10 +12,15 @@ onMounted(() => {
 const date = computed(() => {
     return moment(props.evento.fecha_evento)
 })
+const cupos = computed(() => {
+    const inscriptos = parseInt(props.evento.inscriptos)
+    if(isNaN(inscriptos))return props.evento.cupo_maximo;
+    return props.evento.cupo_maximo - inscriptos;
+})
 </script>
 
 <template>
-    <div class="flex flex-row border rounded-xl p-3 gap-3 w-fit border-primary-200/40 border-1.5">
+    <div class="flex flex-row border rounded-xl p-3 gap-3 border-primary-200/40 border-1.5">
         <div class="flex flex-col gap-1 px-3 bg-primary-200/20 rounded-lg text-center justify-between py-4">
             <i class="pi pi-calendar text-primary-600 text-2xl"></i>
             <span class="text-3xl text-bold">{{ date.format('DD') }}</span>
@@ -28,14 +33,14 @@ const date = computed(() => {
                 <div class="text-zinc-500">{{ evento.refugio_nombre }}</div>
             </div>
             <div class="text-zinc-500">- {{ domicilio.toText(evento.refugio_domicilio) }}</div>
-            <div class="text-zinc-500 flex flex-row gap-3 mt-3">
+            <div class="text-zinc-600 flex flex-row gap-3 mt-3">
                 <i class="pi pi-users p-1"></i>
                 Cupo máximo: {{ evento.cupo_maximo }} animales
-                <div class="text-amber-600 text-semibold px-2">Quedan 5</div>
+                <div v-if="cupos > 0" class="text-amber-600 text-semibold px-2">Quedan {{ evento.cupo_maximo - parseInt(evento.inscriptos)}}</div>
             </div>
         </div>
             <div>
-                <slot name="end" v-bind="evento"></slot>
+                <slot name="end" v-bind="{...evento, cupos}"></slot>
             </div>
     </div>
 </template>

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type {  IMascota } from '@/lib/tipos/mascotas'
+import type { IMascota } from '@/lib/tipos/mascotas'
 import { useModalStore } from '@/stores/modales.ts'
-import FormTransito from '@/components/transito/FormTransito.vue'
-import Modal from '@/components/modal/Modal.vue'
-import {  type Reactive, reactive, type Ref, ref, type TemplateRef, useTemplateRef, watch } from 'vue'
+import { type Reactive, reactive, type Ref, ref, useTemplateRef } from 'vue'
 import { Form } from '@primevue/forms'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
@@ -27,19 +25,29 @@ import handshake from '@/assets/images/handshake-regular-full-white.svg'
 import paw from '@/assets/images/paw-solid-full.svg'
 import Tag from '@/volt/Tag.vue'
 import { useAuthStore } from '@/stores/auth.ts'
+import { useRouter } from 'vue-router'
+import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
+import Contenedor from '@/components/generales/Contenedor.vue'
+import DataListGroup from '@/components/generales/DataListGroup.vue'
+import EstadoSalud from '@/components/mascotas/EstadoSalud.vue'
+import Footer from '@/components/generales/Footer.vue'
+import Modal from '@/components/modal/Modal.vue'
 
 const props = defineProps<{ mascota: IMascota }>()
 const emit = defineEmits<{ actualizado: [] }>()
+
 const modalStore = useModalStore()
-const editando = ref(false)
-const newValues: Reactive<{ [k in keyof IMascota]?: any }> = reactive({})
 const { axios } = useAxios()
 const { startLoading, loading, stopLoading } = useLoadingComposable()
-const { user } = useAuthStore();
+const { user } = useAuthStore()
+const router = useRouter()
 const toImageSource = (f: File): string => {
     return URL.createObjectURL(f)
 }
 
+
+const editando = ref(false)
+const newValues: Reactive<{ [k in keyof IMascota]?: any }> = reactive({})
 const updateNew = (l: keyof IMascota, v: any) => {
     newValues[l] = v
 }
@@ -84,22 +92,16 @@ const actualizar = async (e: FormSubmitEvent) => {
         }
     }
 }
-const form: TemplateRef<typeof Form> = useTemplateRef('form')
+const form = useTemplateRef<typeof Form & { submit: () => void }>('form')
 const newImage: Ref<Maybe<File>> = ref(null)
 const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array.from(props.mascota.imagen), 'imagen') : null)
+
+
 </script>
 
 <template>
-    <Panel v-if="mascota" class="border-white! border-0 overflow-auto w-[75%] m-auto" pt:header="p-0!">
-        <template #header>
-            <div v-if="mascota"
-                 class="w-full h-full">
-                <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
-                    {{ mascota.nombre }}
-                </div>
-            </div>
-        </template>
-        <div v-if="editando" class="flex flex-row gap-4 pt-3">
+    <Contenedor v-if="editando" class="w-3/4 m-auto">
+        <div class="flex flex-row gap-4 pt-3">
             <Form ref="form" v-slot="$form" @submit="actualizar" :initial-values="mascota" class="flex flex-row">
                 <div class="flex flex-col gap-3 mx-3 min-w-96 justify-between h-full">
                     <Image v-if="newImage" class="m-auto" pt:image="max-w-72!"
@@ -151,13 +153,18 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                 </div>
             </Form>
         </div>
-        <div v-else class="flex flex-col gap-3">
+    </Contenedor>
+    <Contenedor v-else class="overflow-auto w-[75%] m-auto" pt:header="p-0!">
+        <div v-if="mascota" class="flex flex-col gap-3">
             <MascotaDetalle :mascota="mascota">
                 <div v-if="mascota.transito">
                     <Button label="En tránsito" icon="pi pi-eye" icon-pos="right"
                             @click="() => router.push(`/refugio/transito/${mascota.transito}`)"></Button>
                 </div>
-                <Tag v-else-if="mascota.adopcion"> ADOPTADA</Tag>
+                <Tag v-else-if="mascota.adopcion">
+                    <Button label="En adopción" icon="pi pi-eye" icon-pos="right"
+                            @click="() => router.push(`/refugio/adopcion/${mascota.adopcion}`)"></Button>
+                </Tag>
                 <Tag v-else-if="mascota.solicitud">Solicitud
                     {{ mascota.solicitud.tipo_solicitud == TipoSolicitud.Adopcion ? 'de adopcion' : 'de transito' }}
                     pendiente
@@ -178,6 +185,8 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                 </div>
             </MascotaDetalle>
         </div>
+    </Contenedor>
+    <div class="w-3/4">
         <div class="flex-row flex gap-3 justify-end py-5">
             <Button v-if="editando" icon="pi pi-check" label="Guardar" @click="() => form?.submit()"></Button>
             <Button class=""
@@ -185,7 +194,27 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                     :label=" editando ? 'Cancelar' : 'Editar'"
                     @click="() => editando = !editando"></Button>
         </div>
-    </Panel>
+    </div>
+    <div class="flex flex-row gap-5 m-auto w-3/4">
+        <EstadoSalud class="w-1/3" :mascota="mascota"></EstadoSalud>
+
+        <Contenedor class="w-1/3">
+            <div class="flex flex-row text-xl gap-3 pb-3">
+                <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
+                    <i class="text-primary-500 text-center pi pi-heart"></i>
+                </div>
+                <div class="font-semibold h-fit my-auto pr-2">Eventos de vacunacion</div>
+            </div>
+        </Contenedor>
+        <Contenedor class="w-1/3">
+            <div class="flex flex-row text-xl gap-3 pb-3">
+                <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
+                    <i class="text-primary-500 text-center pi pi-heart"></i>
+                </div>
+                <div class="font-semibold h-fit my-auto pr-2">Historial de hogares</div>
+            </div>
+        </Contenedor>
+    </div>
     <Panel v-if="loading" class="col-span-12 row-span-4 col-start-5">
         <ProgressSpinner
             class="m-auto h-20! text-center"
@@ -193,8 +222,7 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
             pt:root="p-progressspinner w-full!"
             pt:spin="p-progressspinner-spin" />
     </Panel>
-
-
+    <Footer></Footer>
 
 </template>
 

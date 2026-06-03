@@ -42,6 +42,7 @@ const solicitudSeleccionada: Ref<Maybe<IDatosSolicitud>> = ref(null);
 const seleccionarSolicitud = (s: IDatosSolicitud) => {
     solicitudSeleccionada.value = s;
 }
+
 const mostrarSolicitud = (s: IDatosSolicitud, e: Event) => {
     seleccionarSolicitud(s);
     show(e)

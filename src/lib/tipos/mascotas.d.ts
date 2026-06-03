@@ -1,5 +1,5 @@
 import type { Maybe } from '@/lib/tipos/generics'
-import type { ISolicitud } from '@/components/solicitud/Solicitud.vue'
+import type { ISolicitud } from '@/components/solicitud/SolicitudForm.vue'
 import type { IDatosSolicitud } from '@/components/adopcion/FormAdopcion.vue'
 
 export interface IMascota{

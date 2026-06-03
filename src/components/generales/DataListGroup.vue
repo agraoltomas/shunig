@@ -1,42 +1,40 @@
 <script setup lang="ts">
 import paw from '@/assets/images/paw-solid-full-black.svg'
 import moment from 'moment/moment'
-
+import Contenedor from '@/components/generales/Contenedor.vue'
+export interface DataListItem{
+    icon?: string,
+    label: string,
+    value: string
+}
 const props = defineProps<{
-    title: string,
-    titleIcon: string
+    title: { label: string; icon?: String },
+    items: DataListItem[]
 }>()
 </script>
 
 <template>
-    <div class="grow shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded p-3 flex flex-col">
-        <div class="flex flex-row text-xl gap-3 pb-3">
+    <Contenedor class="grow flex flex-col">
+        <div v-if="title" class="flex flex-row text-xl gap-3 pb-3">
             <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
-                <i class="pi pi-info-circle text-primary-500 text-center"></i>
+                <i v-if="title.icon" :class="['text-primary-500 text-center', title.icon]"></i>
             </div>
-            <div class="font-semibold h-fit my-auto">Información principal</div>
+            <div class="font-semibold h-fit my-auto">{{ title.label}}</div>
         </div>
-        <div class="border-b-slate-400 grid grid-cols-12 grid-row-3 px-3">
-            <i class="pi pi-clipboard py-3 border-b-slate-200 border-b w-fit col-span-1"></i>
-            <div class="col-span-7 border-b-slate-200 border-b py-2 h-fit my-auto">Tipo de solicitud</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-4  pr-3 flex justify-start">
-                <div
-                    :class="['flex flex-row gap-1 rounded-lg px-2 py-1 font-semibold w-fit', solicitud.tipo_solicitud == 'adopcion' ? 'bg-primary-200/30 text-primary-500' : 'bg-refugio-200/40 text-refugio-500']">
-                    <img v-if="solicitud.tipo_solicitud == 'transito'" class="w-5" :src="paw"><span v-else
-                                                                                                    class="pi pi-home p-1"></span>
-                    {{ solicitud.tipo_solicitud == 'adopcion' ? 'Adopción' : 'Tránsito' }}
-                </div>
+        <div class="border-b-slate-400 px-3 flex flex-col gap-3">
+            <div v-for="item in items" class="flex flex-row gap-3">
+                <slot name="item" v-bind="{item, items}">
+                    <div class="flex flex-row gap-1">
+                        <i v-if="item.icon" :class="['pi py-3 border-b-slate-200 border-b w-fit']"></i>
+                        <div class="border-b-slate-200 border-b py-2 h-fit my-auto">{{item.label}}</div>
+                    </div>
+                    <div>{{ item.value}}</div>
+                </slot>
             </div>
-            <i class="pi pi-calendar py-3 border-b-slate-200 border-b w-fit col-span-1"></i>
-            <div class="col-span-7 border-b-slate-200 border-b py-2 h-fit my-auto">Fecha de solicitud</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-4 text-end pr-3 flex justify-start">
-                <span>{{ moment(solicitud.fecha_creacion).format('DD/MM/YYYY') }}</span>
-            </div>
-            <i class="pi pi-user  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
-            <div class="col-span-7 border-b-slate-200 border-b py-2 h-fit my-auto">Responsable principal</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-4 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.responsable_principal }}</span></div>
+
         </div>
-    </div>
+
+    </Contenedor>
 </template>
 
 <style scoped>

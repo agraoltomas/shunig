@@ -14,6 +14,7 @@ import banner from "@/assets/images/banner-intro.png"
 import RefugioButton from '@/volt/RefugioButton.vue'
 import { useScroll } from '@/lib/utils/scroll.ts'
 import ScrollArrow from '@/components/generales/ScrollArrow.vue'
+import Footer from '@/components/generales/Footer.vue'
 
 const router = useRouter()
 const animales: Ref<IMascota[]> = ref([])
@@ -102,23 +103,7 @@ const refugioBanner = useTemplateRef("refugioBanner");
         </div>
     </div>
 
-    <div class="flex flex-row h-50 text-center  mt-5 bg-[#edeff0]/40 border-t-0.5 border-t-slate-500/40 shadow-black shadow-lg pt-7 pb-3 px-5 justify-around">
-        <div class="flex flex-col">
-            <div class="flex flex-row gap-1 align-bottom">
-                <img class="w-15" :src="paw" alt="Pata">
-                <span class=" text-3xl vertical-bottom h-fit self-center">Shunig</span>
-            </div>
-        </div>
-        <div>
-            <span class="text-lg font-semibold">Navegación</span>
-        </div>
-        <div>
-            <span class="text-lg font-semibold">Ayuda</span>
-        </div>
-        <div>
-            <span class="text-lg font-semibold">Seguinos</span>
-        </div>
-    </div>
+    <Footer></Footer>
     <ScrollArrow></ScrollArrow>
 </template>
 

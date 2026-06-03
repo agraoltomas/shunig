@@ -1,28 +1,32 @@
-import RefugioHome from '@/router/views/refugio/RefugioHome.vue'
-import MascotasView from '@/router/views/refugio/MascotasView.vue'
-import MascotaView from '@/router/views/refugio/MascotaView.vue'
-import VacunasView from '@/router/views/refugio/VacunasView.vue'
-import StockView from '@/router/views/refugio/StockView.vue'
-import TransitoView from '@/router/views/refugio/transito/TransitoView.vue'
-import MascotaTransitoView from '@/router/views/refugio/transito/MascotaTransitoView.vue'
-import AdministrarRefugioView from '@/router/views/refugio/AdministrarRefugioView.vue'
-import PatrocinadoresView from '@/router/views/refugio/PatrocinadoresView.vue'
+// import InventarioView from
+// import ProductoView from
+// import RefugioHome from
+// import MascotasView from
+// import MascotaView from
+// import VacunasView from
+// import TransitoView from
+// import MascotaTransitoView from
+// import AdministrarRefugioView from
+// import PatrocinadoresView from
+// import SolicitudesView from
+// import SolicitudDetalleView from
+// import PatrocinadorView from
 // @ts-ignore
-import SolicitudesView from '@/router/views/refugio/SolicitudesView.vue'
-import PatrocinadorView from '@/router/views/refugio/PatrocinadorView.vue'
 
 const routes = [
-    { path: '', component: RefugioHome },
-    { path: 'mascotas', component: MascotasView },
-    { path: 'mascota/:id', component: MascotaView },
-    { path: 'vacunas', component: VacunasView },
-    { path: 'stock', component: StockView },
-    { path: 'transito', component: TransitoView },
-    { path: 'transito/:id', component: MascotaTransitoView },
-    { path: 'administrar', component: AdministrarRefugioView },
-    { path: 'patrocinadores', component: PatrocinadoresView },
-    { path: 'solicitudes', component: SolicitudesView },
-    { path: 'patrocinador/:id', component: PatrocinadorView },
+    { path: 'inventario', component: () => import('@/router/views/refugio/InventarioView.vue') },
+    { path: 'inventario/producto/:id', component: () => import('@/router/views/refugio/ProductoView.vue')},
+    { path: '', component: () => import('@/router/views/refugio/RefugioHome.vue') },
+    { path: 'mascotas', component: () => import('@/router/views/refugio/MascotasView.vue') },
+    { path: 'mascota/:id', component: () => import('@/router/views/refugio/MascotaView.vue') },
+    { path: 'vacunas', component: () => import('@/router/views/refugio/VacunasView.vue') },
+    { path: 'transito', component: () => import('@/router/views/refugio/transito/TransitoView.vue') },
+    { path: 'transito/:id', component: () => import('@/router/views/refugio/transito/MascotaTransitoView.vue') },
+    { path: 'administrar', component: () => import('@/router/views/refugio/AdministrarRefugioView.vue') },
+    { path: 'patrocinadores', component: () => import('@/router/views/refugio/PatrocinadoresView.vue') },
+    { path: 'solicitudes', component: () => import('@/router/views/refugio/solicitudes/SolicitudesView.vue') },
+    { path: 'solicitud/:id', component: () => import('@/router/views/refugio/solicitudes/SolicitudDetalleView.vue') },
+    { path: 'patrocinador/:id', component: () => import('@/router/views/refugio/PatrocinadorView.vue') },
 ]
 
 export default routes

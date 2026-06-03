@@ -45,7 +45,7 @@ const theme = ref<DialogPassThroughOptions>({
         bg-surface-0 dark:bg-surface-900
         text-surface-900 dark:text-surface-0 shadow-lg
         p-maximized:w-screen p-maximized:h-screen p-maximized:top-0 p-maximized:start-0p-maximized: max-h-full p-maximized:rounded-none`,
-    header: `flex items-center justify-between shrink-0 p-5 border-b-2 mb-5 border-surface-400 text-center`,
+    header: `flex items-center justify-between shrink-0 mb-5 border-surface-400 text-center`,
     title: `font-bold text-2xl w-full`,
     headerActions: `flex items-center gap-2`,
     content: `overflow-y-auto pt-0 px-5 pb-5 p-maximized:grow`,

@@ -7,7 +7,7 @@ import EventosView from '@/router/views/voluntario/EventosView.vue'
 import router from '@/router'
 import InicioAdopcionView from '@/router/views/voluntario/InicioAdopcionView.vue'
 import InicioTransitoView from '@/router/views/voluntario/InicioTransitoView.vue'
-import SolicitudDetalleView from '@/router/views/solicitudes/SolicitudDetalleView.vue'
+import SolicitudDetalleView from '@/router/views/voluntario/solicitudes/SolicitudDetalleView.vue'
 
 
 const routes = [

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useAuthStore } from '@/stores/auth.ts'
-import Solicitud from '@/components/solicitud/Solicitud.vue'
+import SolicitudForm from '@/components/solicitud/SolicitudForm.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Label from '@/components/forms/Label.vue'
@@ -83,8 +83,8 @@ const userName = computed(() => `${props.user?.nombre} ${props.user?.apellido}`)
             <FormRow>
             </FormRow>
         </Form>
-            <Solicitud v-if="usuario" :usuario="usuario">
-            </Solicitud>
+            <SolicitudForm v-if="usuario" :usuario="usuario">
+            </SolicitudForm>
         <div class="flex flex-row gap-3 my-3 justify-center">
             <Button @click="iniciarSolicitud" :disabled="!usuario" label="Iniciar solicitud"></Button>
         </div>

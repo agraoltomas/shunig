@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router'
 import EstadoSolicitud from '@/components/solicitud/EstadoSolicitud.vue'
 import TipoSolicitud from '@/components/solicitud/TipoSolicitud.vue'
 const props = defineProps<{ solicitud: IDatosSolicitud}>()
-const router = useRouter()
+
 
 </script>
 
@@ -32,7 +32,7 @@ const router = useRouter()
                 <span>Número de solicitud</span>
                 #{{ solicitud.id_solicitud }}
             </div>
-            <Button label="Ver Detalle" icon="pi pi-arrow-right" variant="outlined" @click="() => router.push(`/usuario/solicitud/${solicitud.id_solicitud}`)"></Button>
+            <slot name="nav-button"></slot>
         </div>
     </div>
 </template>

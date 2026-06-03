@@ -2,7 +2,7 @@
 
 import { EAlerta } from '@/components/generales/alertas.ts'
 import VisualizarSolicitud from '@/components/solicitud/VisualizarSolicitud.vue'
-import type { IDetalleSolicitud } from '@/components/solicitud/Solicitud.vue'
+import type { IDetalleSolicitud } from '@/components/solicitud/SolicitudForm.vue'
 
 type Contexto = {
     solicitud?: IDetalleSolicitud

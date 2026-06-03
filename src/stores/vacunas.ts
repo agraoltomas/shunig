@@ -15,6 +15,7 @@ export const useEventosVacunacionStore = defineStore('eventos-vacunacion', () =>
             const r = await unwrap<IEventoVacunacion[]>(axios.value.get(rutas_api.eventos_vacunacion.LIST()))
             eventos.value = r.data
         }catch(err){
+            eventos.value = []
             console.log(err)
         }
         return eventos.value

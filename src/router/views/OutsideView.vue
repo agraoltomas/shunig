@@ -2,6 +2,8 @@
 
 import Menubar from '@/components/Menubar.vue'
 import { onMounted, ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 onMounted(async () => {
 
 })

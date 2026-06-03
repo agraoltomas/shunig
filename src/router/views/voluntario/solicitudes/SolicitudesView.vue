@@ -11,11 +11,13 @@ import ProgressSpinner from '@/volt/ProgressSpinner.vue'
 import paw from '@/assets/images/paw-solid-full-purple.svg'
 import moment from 'moment'
 import ItemSolicitud from '@/components/solicitud/ItemSolicitud.vue'
+import { useRouter } from 'vue-router'
 
 const { axios } = useAxios()
 const { user } = useAuthStore()
 const { loading, stopLoading, startLoading } = useLoadingComposable()
 const solicitudes: Ref<IDatosSolicitud[]> = ref([])
+const router = useRouter()
 const loadSolicitudes = async () => {
     startLoading()
     if (!user) return
@@ -45,7 +47,9 @@ onMounted(async () => {
         </div>
         <div v-else class="overflow-y-auto  flex flex-col gap-3 p-3">
           <ItemSolicitud v-for="solicitud in solicitudes" :solicitud="solicitud">
-
+            <template #nav-button>
+                <Button label="Ver Detalle" icon="pi pi-arrow-right" variant="outlined" @click="() => router.push(`/usuario/solicitud/${solicitud.id_solicitud}`)"></Button>
+            </template>
           </ItemSolicitud>
         </div>
     </div>

@@ -16,6 +16,9 @@ export const rutas_api = {
     },
     animales: {
         LIST: () => `/animal/`,
+        salud: {
+            LIST: (id_animal: string) => `/animal/${id_animal}/salud/`,
+        }
     },
     transito: {
         reporte: {

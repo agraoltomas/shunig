@@ -4,7 +4,8 @@ export const useToast = () =>{
     const toast = uT()
     const add = toast.add;
     toast.add = (conf) => {
-        return add.bind(toast)({ ...conf,life: 3000 })
+        conf.life = conf.life ?? 3000
+        return add.bind(toast)(conf)
     }
     return toast
 }

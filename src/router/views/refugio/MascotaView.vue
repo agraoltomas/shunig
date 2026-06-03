@@ -41,7 +41,7 @@ watch(() => route.params.id, async () => {
 </script>
 
 <template>
-    <Panel v-if="loading" class="border-surface-800! border-2 overflow-auto m-3" pt:header="p-0! text-center">
+    <Panel v-if="loading" class="overflow-auto m-3" pt:header="p-0! text-center">
         <div class="text-center align-middle p-3">Cargando</div>
         <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
     </Panel>

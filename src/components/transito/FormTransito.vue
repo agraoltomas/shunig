@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useAuthStore } from '@/stores/auth.ts'
-import Solicitud, { type IDetalleSolicitud } from '@/components/solicitud/Solicitud.vue'
+import SolicitudForm, { type IDetalleSolicitud } from '@/components/solicitud/SolicitudForm.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Label from '@/components/forms/Label.vue'
@@ -21,7 +21,7 @@ import CheckBox from '@/volt/CheckBox.vue'
 import { useResponse } from '@/lib/utils/response.ts'
 
 const props = defineProps<{ mascota: IMascota, user?: Maybe<User> }>()
-const solicitud = useTemplateRef<typeof Solicitud>('solicitud')
+const solicitud = useTemplateRef<typeof SolicitudForm>('solicitud')
 const usuarios: Ref<User[]> = ref([])
 const {unwrap, tryLogError} = useResponse();
 const { axios } = useAxios()
@@ -99,8 +99,8 @@ const datosForm = reactive({
             <FormRow>
             </FormRow>
         </Form>
-        <Solicitud ref="solicitud" v-if="usuario" :usuario="usuario" @cargado="(ok) => detalleSolicitudCargada = ok">
-        </Solicitud>
+        <SolicitudForm ref="solicitud" v-if="usuario" :usuario="usuario" @cargado="(ok) => detalleSolicitudCargada = ok">
+        </SolicitudForm>
         <h1 class="text-xl py-3 text-center font-bold gap-5">Compromiso</h1>
 
         <FormRow :gap="6">

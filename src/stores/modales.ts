@@ -15,7 +15,8 @@ export interface IModalesContext {
     mostrarAnimal: Maybe<IMascota>,
     nuevoProducto: any,
     verArticuloStock: any,
-    nuevoArticuloStock: any
+    nuevoArticuloStock: any,
+    estado_salud: Maybe<IMascota>,
 }
 export const useModalStore = defineStore('modales',() => {
     const modales: Reactive<{[k: string]: boolean}> = reactive({
@@ -29,7 +30,8 @@ export const useModalStore = defineStore('modales',() => {
         mostrarAnimal: false,
         nuevoProducto: false,
         nuevoArticuloStock: false,
-        verArticuloStock: false
+        verArticuloStock: false,
+        estado_salud: false
     });
     const context: Reactive<IModalesContext> = reactive({
         adopcion: null,
@@ -42,7 +44,8 @@ export const useModalStore = defineStore('modales',() => {
         mostrarAnimal: null,
         nuevoProducto: null,
         nuevoArticuloStock: null,
-        verArticuloStock: null
+        verArticuloStock: null,
+        estado_salud: null
     })
     const abrir = < K extends keyof IModalesContext>(name: K, c?: IModalesContext[K]) => {
         console.log(name, c)

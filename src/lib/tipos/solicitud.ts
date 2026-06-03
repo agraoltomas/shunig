@@ -60,7 +60,7 @@ export interface IDatosSolicitud {
     responsable_principal: string,
     fecha_desde?: string,
     fecha_hasta?: string,
-    id_solicitud?: number,
+    id_solicitud: number,
     animal_nombre?: string,
     fecha_creacion: string,
     raza: string,

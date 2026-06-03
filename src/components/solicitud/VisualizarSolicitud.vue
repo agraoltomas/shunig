@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IDetalleSolicitud } from '@/components/solicitud/Solicitud.vue'
+import type { IDetalleSolicitud } from '@/components/solicitud/SolicitudForm.vue'
 import { type Ref, type ShallowRef, useTemplateRef } from 'vue'
 import type { Maybe } from '@/lib/tipos/generics'
 import Popover from '@/volt/Popover.vue'
@@ -18,15 +18,6 @@ const popover= useTemplateRef("detalleSolicitudPopover");
      popover.value.show(e)
  }
 
- const cambiarEstado = async (e: ('aceptar'|'rechazar')) => {
-     console.log(e)
-     try{
-         const r = axios.value.post(`/solicitud/${props.solicitud.id_solicitud}/${e}/`);
-         emit('updated')
-     }catch(e){
-
-     }
- }
 </script>
 
 <template>
