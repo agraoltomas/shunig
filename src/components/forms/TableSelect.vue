@@ -6,7 +6,7 @@ import Select from "@/volt/Select.vue"
 const model = defineModel();
 
 
-const props = defineProps<{ tipo: TablaEstatica, name?: string, fluid?: boolean }>();
+const props = defineProps<{ tipo: TablaEstatica, name?: string, fluid?: boolean, placeholder?: string }>();
 interface ITablaEstatica {
     id: number,
 
@@ -27,7 +27,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Select :fluid :name="name" placeholder="Seleccione" v-model="model" :options="data" option-label="descripcion" option-value="id"></Select>
+    <Select :fluid :name="name" :placeholder="placeholder" v-model="model" :options="data" option-label="descripcion" option-value="id"></Select>
 </template>
 
 <style scoped>

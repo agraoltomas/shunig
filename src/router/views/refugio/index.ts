@@ -27,6 +27,7 @@ const routes = [
     { path: 'solicitudes', component: () => import('@/router/views/refugio/solicitudes/SolicitudesView.vue') },
     { path: 'solicitud/:id', component: () => import('@/router/views/refugio/solicitudes/SolicitudDetalleView.vue') },
     { path: 'patrocinador/:id', component: () => import('@/router/views/refugio/PatrocinadorView.vue') },
+    {path: 'evento-vacunacion/ingresar/', component: () => import ('@/router/views/refugio/vacunacion/EventoVacunacionIngresoView.vue') },
 ]
 
 export default routes

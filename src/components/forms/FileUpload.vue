@@ -2,18 +2,31 @@
 import {  type Ref, ref, useTemplateRef } from 'vue'
 import Message from '@/volt/Message.vue'
 import type { Maybe } from '@/lib/tipos/generics'
-import {FormField} from '@primevue/forms'
-
+import { useModalStore } from '@/stores/modales.ts'
+import { Cropper } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css';
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const fileInput = useTemplateRef('fileInput')
+
 const file = defineModel<Maybe<File>>()
 const error: Ref<Maybe<string>> = ref(null)
+
+
+
 const props = withDefaults(defineProps<{ preview?: boolean, name?: string }>(), {
     preview: true,
-
 })
-const handleFileSelection = (f: any) => {
+
+const modals = useModalStore()
+const cropping = ref(false)
+const cropImage = async () => {
+    console.log("before")
+    cropping.value = true
+    await new Promise(resolve => setTimeout(resolve, 1000))
+}
+const handleFileSelection = async (f: any) => {
     error.value = null
+    await cropImage()
     if (!(fileInput.value) || !fileInput.value.files || fileInput.value.files.length == 0) return
     if (fileInput.value.files.length > 0) {
         const newFile = Array.from(fileInput.value.files)[0]
@@ -30,6 +43,7 @@ const handleFileSelection = (f: any) => {
 const openFilePicker = () => {
     fileInput.value?.click()
 }
+
 const sizeDisplay = (size: number): string => {
     let currSize = size
     if (currSize < 1000) {
@@ -56,7 +70,7 @@ const toURL = (f: File) => {
         <div class="flex flex-row gap-3 py-3">
                 <input  hidden @change="handleFileSelection" type="file" ref="fileInput" />
             <div class="flex flex-row gap-3">
-                <Button pt:label="max-h-fit" icon="pi pi-plus" :label="file ? 'Cambiar  ' : 'Subir imagen'" @click="openFilePicker"></Button>
+                <Button pt:label="max-h-fit" icon="pi pi-plus" :label="file ? 'Cambiar' : 'Subir imagen'" @click="openFilePicker"></Button>
             </div>
             <Message severity="error" v-if="error" fluid>{{ error }}</Message>
             <div v-else-if="!file" class="my-auto">
@@ -73,8 +87,19 @@ const toURL = (f: File) => {
                 </div>
             </div>
         </div>
-        <Image v-if="preview && file" class="size-32" :src="toURL(file)"></Image>
+
+        <div v-if="cropping && file">
+            <Cropper
+                class="cropper"
+                :src="toURL(file)"
+                :stencil-props="{
+                          aspectRatio: 4/5
+                        }"
+                @change="(d: Event) => {console.log(d)}"></Cropper>
+        </div>
+        <Image v-else-if="preview && file" class="size-32" :src="toURL(file)"></Image>
     </div>
+
 </template>
 
 <style scoped>

@@ -10,9 +10,13 @@ const {unwrap} = useResponse()
 export const useEventosVacunacionStore = defineStore('eventos-vacunacion', () => {
     const eventos: Ref<IEventoVacunacion[]> = ref([])
 
-    const listar = async () => {
+    const listar = async (f?: { id_refugio?: string}) => {
         try{
-            const r = await unwrap<IEventoVacunacion[]>(axios.value.get(rutas_api.eventos_vacunacion.LIST()))
+            const r = await unwrap<IEventoVacunacion[]>(axios.value.get(rutas_api.eventos_vacunacion.LIST(),{
+                params: {
+                    ...f
+                }
+            }))
             eventos.value = r.data
         }catch(err){
             eventos.value = []

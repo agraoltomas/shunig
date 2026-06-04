@@ -3,6 +3,7 @@ import { type Reactive, reactive, type Ref } from 'vue'
 import type { IMascota } from '@/lib/tipos/mascotas'
 import type { Maybe } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
+import type { IEventoVacunacion } from '@/lib/tipos/vacunacion.ts'
 
 export interface IModalesContext {
     adopcion: Maybe<{ mascota: Maybe<IMascota>, usuario: Maybe<User> }>,
@@ -17,6 +18,8 @@ export interface IModalesContext {
     verArticuloStock: any,
     nuevoArticuloStock: any,
     estado_salud: Maybe<IMascota>,
+    editar_evento_vacunacion: Maybe<IEventoVacunacion>,
+    inscripcion_evento_vacunacion: Maybe<IEventoVacunacion>,
 }
 export const useModalStore = defineStore('modales',() => {
     const modales: Reactive<{[k: string]: boolean}> = reactive({
@@ -31,7 +34,9 @@ export const useModalStore = defineStore('modales',() => {
         nuevoProducto: false,
         nuevoArticuloStock: false,
         verArticuloStock: false,
-        estado_salud: false
+        estado_salud: false,
+        editar_evento_vacunacion: false,
+        inscripcion_evento_vacunacion: false,
     });
     const context: Reactive<IModalesContext> = reactive({
         adopcion: null,
@@ -45,13 +50,17 @@ export const useModalStore = defineStore('modales',() => {
         nuevoProducto: null,
         nuevoArticuloStock: null,
         verArticuloStock: null,
-        estado_salud: null
+        estado_salud: null,
+        editar_evento_vacunacion: null,
+        inscripcion_evento_vacunacion: null
     })
-    const abrir = < K extends keyof IModalesContext>(name: K, c?: IModalesContext[K]) => {
+    const abrir = < K extends keyof IModalesContext>(name: K, c?: IModalesContext[K], onTop?: boolean) => {
         console.log(name, c)
-        Object.keys(modales).forEach((k) => {
-            modales[k] = false
-        })
+        if(!onTop){
+            Object.keys(modales).forEach((k) => {
+                modales[k] = false
+            })
+        }
         if (name in modales) {
             modales[name] = true
             if(c) context[name] = c

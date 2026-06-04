@@ -13,6 +13,9 @@ import EventoCard from '@/components/eventos/voluntarios/EventoCard.vue'
 import { useAxios } from '@/lib/axios.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import { useResponse } from '@/lib/utils/response.ts'
+import Modal from '@/components/modal/Modal.vue'
+import InscripcionEventoVacunacion from '@/components/vacunacion/InscripcionEventoVacunacion.vue'
+import { useModalStore } from '@/stores/modales.ts'
 const eventoVacunacion = useEventosVacunacionStore()
 
 const eventos: Ref<IEventoVacunacion[]> = ref([])
@@ -26,6 +29,7 @@ interface IVacuna{
     id_vacunacion: string,
     id_tipo_vacuna: string
 }
+const modales = useModalStore()
 const getVacunas = async (e: IEventoVacunacion) => {
     try{
         const r = await unwrap<IVacuna[]>(axios.value.get(rutas_api.vacunas.ANIMAL(11)))
@@ -37,6 +41,8 @@ const getVacunas = async (e: IEventoVacunacion) => {
         }
     }catch(error){}
 }
+
+
 </script>
 
 <template>
@@ -62,7 +68,7 @@ const getVacunas = async (e: IEventoVacunacion) => {
                         <EventoCard v-for="e in eventos" :evento="e">
                             <template #end="evento">
                                 <div class="h-full flex flex-col">
-                                    <Button class="my-auto!" label="Inscribir" icon="pi pi-pen-to-square" @click="() => getVacunas(evento)"></Button>
+                                    <Button class="my-auto!" label="Inscribir" icon="pi pi-pen-to-square" @click="() => modales.abrir('inscripcion_evento_vacunacion', e)"></Button>
                                 </div>
                             </template>
                         </EventoCard>
@@ -74,6 +80,16 @@ const getVacunas = async (e: IEventoVacunacion) => {
             </TabPanels>
         </Tabs>
     </div>
+    <Modal nombre="inscripcion_evento_vacunacion">
+        <template #header>
+            <div class="text-xl font-semibold text-gray-500 p-5">
+                <i class="pi pi-calendar-plus p-1"></i>Inscribir animales al evento
+            </div>
+        </template>
+        <template #default="{context: {inscripcion_evento_vacunacion}}">
+            <InscripcionEventoVacunacion v-if="inscripcion_evento_vacunacion" :evento="inscripcion_evento_vacunacion"></InscripcionEventoVacunacion>
+        </template>
+    </Modal>
 </template>
 
 <style scoped>

@@ -15,8 +15,8 @@ app.use(router)
 app.use(PrimeVue, {
   unstyled: true,
 })
-
 app.use(ToastService);
 registerAll(app);
+// @ts-ignore
 
 app.mount('#app')

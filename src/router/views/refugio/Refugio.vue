@@ -89,8 +89,8 @@ if (!authStore.user) {
         <div class="flex flex-row gap-3">
             <Button icon="pi pi-plus" icon-pos="left" label="Animal"
                     @click="() => modalesStore.abrir('nuevoAnimal')"></Button>
-            <Button disabled icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"
-                    @click="() => modalesStore.abrir('vacunacion')"></Button>
+            <Button @click="() => router.push('/refugio/evento-vacunacion/ingresar/')"
+                    icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"></Button>
             
         </div>
         <!--                <Dialog :visible="true" modal class="bg-white!">-->

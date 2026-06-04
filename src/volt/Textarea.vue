@@ -1,4 +1,4 @@
-<template>
+ <template>
     <Textarea
         unstyled
         :pt="theme"
@@ -20,13 +20,13 @@ const theme = ref<TextareaPassThroughOptions>({
     root: `appearance-none rounded-md outline-hidden
         bg-surface-0 dark:bg-surface-950
         p-filled:bg-surface-50 dark:p-filled:bg-surface-800
-        text-surface-700 dark:text-surface-0
-        placeholder:text-surface-500 dark:placeholder:text-surface-400
-        border border-surface-300 dark:border-surface-700
-        enabled:hover:border-surface-400 dark:enabled:hover:border-surface-600
+        text-gray-700 dark:text-gray-0
+        placeholder:text-gray-400 dark:placeholder:text-gray-400
+        border border-gray-300 dark:border-gray-700
+        enabled:hover:border-gray-400 dark:enabled:hover:border-gray-600
         enabled:focus:border-primary
         disabled:bg-primary-100/30 disabled:text-slate-800 disabled:border-none
-        dark:disabled:bg-surface-700 dark:disabled:text-surface-400
+        dark:disabled:bg-surface-700 dark:disabled:text-gray-400
         p-invalid:border-red-400 dark:p-invalid:border-red-300
         p-invalid:placeholder:text-red-600 dark:p-invalid:placeholder:text-red-400
         px-3 py-2 p-fluid:w-full

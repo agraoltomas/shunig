@@ -35,13 +35,13 @@ const theme = ref<InputNumberPassThroughOptions>({
         root: `appearance-none rounded-md outline-hidden flex-auto
         bg-surface-0 dark:bg-surface-950
         p-filled:bg-surface-50 dark:p-filled:bg-surface-800
-        text-surface-900 dark:text-surface-0
-        placeholder:text-surface-800 dark:placeholder:text-surface-400
-        border border-surface-300 dark:border-surface-700 
-        enabled:hover:border-surface-400 dark:enabled:hover:border-surface-600
+        text-gray-900 dark:text-gray-0
+        placeholder:text-gray-800 dark:placeholder:text-gray-400
+        border border-gray-300 dark:border-gray-700
+        enabled:hover:border-gray-400 dark:enabled:hover:border-gray-600
         enabled:focus:border-primary
-        disabled:bg-surface-200 disabled:text-surface-500 
-        dark:disabled:bg-surface-700 dark:disabled:text-surface-400
+        disabled:bg-surface-200 disabled:text-gray-500
+        dark:disabled:bg-surface-700 dark:disabled:text-gray-400
         p-invalid:border-red-400 dark:p-invalid:border-red-300
         p-invalid:placeholder:text-red-600 dark:p-invalid:placeholder:text-red-400
         px-3 py-2 p-fluid:w-full
@@ -55,11 +55,11 @@ const theme = ref<InputNumberPassThroughOptions>({
     buttonGroup: `p-stacked:flex p-stacked:flex-col p-stacked:absolute p-stacked:top-px p-stacked:end-px p-stacked:h-[calc(100%-2px)] p-stacked:z-10`,
     incrementButton: `flex items-center justify-center grow-0 shrink-0 basis-auto cursor-pointer w-10
         bg-transparent enabled:hover:bg-surface-100 enabled:active:bg-surface-200
-        border border-surface-300 enabled:hover:border-surface-300 enabled:active:border-surface-300
-        text-surface-400 enabled:hover:text-surface-500 enabled:active:text-surface-600
+        border border-gray-300 enabled:hover:border-gray-300 enabled:active:border-gray-300
+        text-gray-400 enabled:hover:text-gray-500 enabled:active:text-gray-600
         dark:bg-transparent dark:enabled:hover:bg-surface-800 dark:enabled:active:bg-surface-700
-        dark:border-surface-700 dark:enabled:hover:border-surface-700 dark:enabled:active:border-surface-700
-        dark:text-surface-400 dark:enabled:hover:text-surface-300 dark:enabled:active:text-surface-200
+        dark:border-gray-700 dark:enabled:hover:border-gray-700 dark:enabled:active:border-gray-700
+        dark:text-gray-400 dark:enabled:hover:text-gray-300 dark:enabled:active:text-gray-200
         transition-colors duration-200 disabled:pointer-events-none
         p-stacked:relative p-stacked:flex-auto p-stacked:border-none
         p-stacked:p-0 p-stacked:rounded-tr-[5px]
@@ -68,11 +68,11 @@ const theme = ref<InputNumberPassThroughOptions>({
     incrementIcon: ``,
     decrementButton: `flex items-center justify-center grow-0 shrink-0 basis-auto cursor-pointer w-10
         bg-transparent enabled:hover:bg-surface-100 enabled:active:bg-surface-200
-        border border-surface-300 enabled:hover:border-surface-300 enabled:active:border-surface-300
-        text-surface-400 enabled:hover:text-surface-500 enabled:active:text-surface-600
+        border border-gray-300 enabled:hover:border-gray-300 enabled:active:border-gray-300
+        text-gray-400 enabled:hover:text-gray-500 enabled:active:text-gray-600
         dark:bg-transparent dark:enabled:hover:bg-surface-800 dark:enabled:active:bg-surface-700
-        dark:border-surface-700 dark:enabled:hover:border-surface-700 dark:enabled:active:border-surface-700
-        dark:text-surface-400 dark:enabled:hover:text-surface-300 dark:enabled:active:text-surface-200
+        dark:border-gray-700 dark:enabled:hover:border-gray-700 dark:enabled:active:border-gray-700
+        dark:text-gray-400 dark:enabled:hover:text-gray-300 dark:enabled:active:text-gray-200
         transition-colors duration-200 disabled:pointer-events-none
         p-stacked:relative p-stacked:flex-auto p-stacked:border-none
         p-stacked:p-0 p-stacked:rounded-br-[5px]

@@ -15,17 +15,16 @@ import { ptViewMerge } from './utils'
 
 const inputBase = `
     appearance-none outline-hidden
-    bg-surface-0 dark:bg-surface-950
-    text-surface-900 dark:text-surface-0
-    placeholder:text-surface-700 dark:placeholder:text-surface-400
-    border border-surface-300 dark:border-surface-700
-    enabled:hover:border-surface-400 dark:enabled:hover:border-surface-600
+    bg-white dark:bg-primary-950
+    text-primary-900 dark:text-primary-0
+    placeholder:text-primary-700 dark:placeholder:text-primary-400
+        border border-gray-300 rounded-lg dark:border-primary-700
+    enabled:hover:border-primary-400 dark:enabled:hover:border-primary-600
     enabled:focus:border-primary
-    disabled:bg-surface-200 disabled:text-surface-800
+    disabled:bg-primary-200 disabled:text-surface-800
     dark:disabled:bg-surface-600 dark:disabled:text-surface-400
     p-invalid:border-red-400 dark:p-invalid:border-red-300
     px-3 py-2 p-fluid:w-full
-    rounded-l-md
     transition-colors duration-200
     shadow-[0_1px_2px_0_rgba(18,18,23,0.05)]
 `
@@ -63,9 +62,9 @@ const theme = ref({
     `,
 
     panel: `
-    bg-surface-0 dark:bg-surface-900
-    text-surface-900 dark:text-surface-0
-    border border-surface-200 dark:border-surface-700
+    bg-surface-0 dark:bg-primary-900
+     dark:text-primary-0
+    border border-primary-200 dark:border-primary-700
     rounded-md
     shadow-lg
     p-0
@@ -78,13 +77,13 @@ const theme = ref({
     header: `
         flex items-center justify-between
         px-5 py-4
-        border-b border-surface-200 dark:border-surface-700
+        border-b border-primary-200 dark:border-primary-700
     `,
 
     title: `
         flex items-center justify-center gap-2
         font-semibold
-        text-surface-900 dark:text-surface-0
+        text-primary-900 dark:text-primary-0
     `,
 
     table: `
@@ -94,7 +93,7 @@ const theme = ref({
     tableHeaderCell: `
         text-center
         font-semibold
-        text-surface-600 dark:text-surface-300
+        text-primary-600
         py-2
     `,
 
@@ -115,8 +114,8 @@ month: `
     inline-flex items-center justify-center
     h-10 rounded-md
     cursor-pointer
-    text-surface-700 dark:text-surface-100
-    hover:bg-surface-100 dark:hover:bg-surface-800
+    text-primary-700 dark:text-primary-100
+    hover:bg-primary-100 dark:hover:bg-primary-800
     transition-colors duration-200
 `,
 
