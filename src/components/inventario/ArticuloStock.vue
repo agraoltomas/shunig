@@ -116,10 +116,6 @@ const resolver = ({ values }: FormResolverOptions) => {
     errors.id_origen_stock.push({ message: 'Seleccione el origen del stock' })
     }
 
-    if (!values.descripcion) {
-        errors.descripcion.push({ message: 'Ingrese una descripción' })
-    }
-
     if (origenDeLaDonacion.value && !donacionSeleccionada.value) {
     errors.id_donacion.push({ message: 'Debe seleccionar una donación' })
     }
@@ -271,7 +267,7 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
             </FormCol>
 
             <FormCol :span="6">
-                <Label for="descripcion" required>Descripción</Label>
+                <Label for="descripcion">Descripción</Label>
                 <InputText id="descripcion" fluid name="descripcion"></InputText>
                 <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
                     {{ $form.descripcion.error?.message }}
