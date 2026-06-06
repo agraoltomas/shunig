@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useJWTToken } from '@/lib/token.ts'
 
 
-axios.defaults.baseURL = `http://${import.meta.env.VITE_API_BASE}`
+axios.defaults.baseURL = `https://${import.meta.env.VITE_API_BASE}`
 axios.defaults.headers['Content-Type'] = 'application/json'
 export const useAxios = () => {
     const { jwt_token } = useJWTToken()

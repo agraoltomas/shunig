@@ -50,6 +50,9 @@ const ingresarReporte = async () => {
                 <Label required>Detalle</Label>
                 <Textarea maxlength="200" minlength="100" size="large" class="min-h-36" min
                           v-model="detalle"></Textarea>
+                <div class="h-fit flex flex-row justify-end">
+                    <span>{{detalle ? detalle.length : 0}}/200</span>
+                </div>
             </FormCol>
         </FormRow>
         <FormRow>

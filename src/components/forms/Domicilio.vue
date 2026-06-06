@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<{
     disabled?: boolean,
     label?: Maybe<string>|boolean,
     border?: boolean,
+    class?: string,
     background?: boolean }>(), {
     disabled: false,
     label: "Domicilio",
@@ -41,7 +42,7 @@ const validate = async () => {
 
 <template>
     <Label v-if="label" :class="['text-2xl! m-auto  w-full text-center rounded-lg', background ? 'bg-surface-50' : ''] ">{{ typeof label == 'string' ? label : ''}}</Label>
-    <div :class="[' rounded-lg py-3 flex flex-col gap-6',border ? 'border border-surface-300 px-3' : '']">
+    <div :class="[' rounded-lg py-3 flex flex-col gap-6',props.class,border ? 'border border-surface-300 px-3' : '']">
         <FormRow>
             <FormCol :span="6" :gap="4">
                 <Label required>Dirección</Label>

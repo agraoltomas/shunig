@@ -58,9 +58,9 @@ const refugioBanner = useTemplateRef("refugioBanner");
         <div class="flex flex-row">
             <div class="basis-[50%] flex flex-col gap-3 mt-20">
                 <h1 class="text-4xl py-3 pb-4 text-center font-bold">Adoptá. Rescatá. <p class="text-primary">Transitá</p></h1>
-                <h1 class="text-2xl text-center w-96 mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </h1>
+                <h1 class="text-2xl text-center w-96 mx-auto"> </h1>
                 <div class="flex flex-row gap-10 justify-center">
-                    <Button label="Quiero ayudar" icon="pi pi-heart-fill"></Button>
+                    <Button label="Quiero ayudar" icon="pi pi-heart-fill" @click="() => router.push('register?t=transito')"></Button>
                     <Button variant="outlined" label="¿Sos un refugio?" @click="() => refugioBanner?.scrollIntoView({behavior: 'smooth'})"></Button>
                 </div>
             </div>

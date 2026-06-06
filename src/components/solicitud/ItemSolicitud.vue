@@ -14,8 +14,8 @@ const props = defineProps<{ solicitud: IDatosSolicitud}>()
 
 <template>
     <div class=" shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-lg flex flex-row gap-3 justify-between">
-        <div class="max-h-50 overflow-hidden m-3 rounded-lg text-center">
-            <img class="w-70  rounded-lg " :src="solicitud.imagen" />
+        <div class="max-h-50 overflow-hidden my-3 rounded-lg text-center flex items-center mx-auto">
+            <img class="w-40 rounded-lg " :src="solicitud.imagen" />
         </div>
         <div class="flex flex-col justify-start gap-2 my-5 items-start w-1/2">
             <h1 class="text-3xl font-bold">{{ solicitud.animal_nombre }}</h1>
