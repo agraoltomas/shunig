@@ -252,9 +252,9 @@ const resolver = ({ values }: FormResolverOptions) => {
             </div>  
             <hr class="border-surface-500/80! my-3" />
             <div class="grid grid-cols-3 gap-4">
-                <DataBlock label="Alerta baja" :data="producto.cantidad_alerta_baja"></DataBlock>
-                <DataBlock label="Alerta moderada" :data="producto.cantidad_alerta_moderada"></DataBlock>
-                <DataBlock label="Alertas activas" :data="producto.alerta_stock_activa ? 'Sí' : 'No'"></DataBlock>
+                <DataBlock label="Cantidad mínima" :data="producto.cantidad_alerta_baja"></DataBlock>
+                <DataBlock label="Cantidad moderada" :data="producto.cantidad_alerta_moderada"></DataBlock>
+                <DataBlock label="Alertas" :data="producto.alerta_stock_activa ? 'Sí' : 'No'"></DataBlock>
             </div>            
         </div>
         

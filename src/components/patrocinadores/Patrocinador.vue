@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, type Reactive, useTemplateRef, type TemplateRef } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import moment from 'moment'
 import DataBlock from '@/components/generales/DataBlock.vue'
@@ -11,7 +11,8 @@ import { useToast } from '@/lib/toast/toast.ts'
 import { useModalStore } from '@/stores/modales'
 import { Form, type FormResolverOptions} from '@primevue/forms'
 import type { FormSubmitEvent } from '@primevue/forms/form'
-import { useRouter } from 'vue-router'
+import DataTable from '@/volt/DataTable.vue'
+import type { IDonacionPatrocinador } from '@/lib/tipos/donaciones'
 
 const toast = useToast();
 const modalesStore = useModalStore();
@@ -27,6 +28,7 @@ const emits = defineEmits<{
 
 const editando = ref(false);
 //const form: TemplateRef<typeof Form> = useTemplateRef("form");
+const donaciones = ref<IDonacionPatrocinador[]>([])
 
 
 const valores = reactive({
@@ -34,6 +36,18 @@ const valores = reactive({
     contacto: props.patrocinador.contacto,
     email: props.patrocinador.email,
     descripcion: props.patrocinador.descripcion
+})
+
+const cargarDonacionesPatrocinador = async () => {
+    const r = await axios.get(`/donacion/patrocinador/${props.patrocinador.id_patrocinador}`)
+
+    if ([200, 201].includes(r.status)) {
+        donaciones.value = r.data.data;
+    }
+}
+
+onMounted(async () => {
+    await cargarDonacionesPatrocinador()
 })
 
 const actualizarPatrocinador = async (e: FormSubmitEvent) => {
@@ -79,10 +93,16 @@ const resolver = ({ values }: FormResolverOptions) => {
     }
 }
 
+const formatearFecha = (fecha?: string | null) => {
+    return fecha ? moment.utc(fecha).format('DD-MM-YYYY') : '-'
+}
+
+
 </script>
 
 <template>
-    <div class="flex justify-center mt-3">
+    <div class="flex flex-col items-center mt-3">
+        <!--patrocinador-->
     <Panel v-if="patrocinador" class="border-white! border-0 overflow-auto m-3 w-[60%]" pt:header="p-0!">        
         <template #header>
             <div class="w-full h-full">
@@ -146,25 +166,33 @@ const resolver = ({ values }: FormResolverOptions) => {
 
             <div class="flex justify-end gap-3 px-6 py-4">
                 <Button type="submit" icon="pi pi-check" label="Guardar"/>
-                <Button icon="pi pi-times" label="Cancelar" @click="editando = false" />
+                <Button tyoe="button" icon="pi pi-times" label="Cancelar" @click="editando = false" />
            
             </div>
         </Form>
         </div>
 
-        <div v-else class="flex justify-center">
-            <div class="flex flex-col mx-6 gap-3 pt-5 ">
-                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
+       <div v-else class="px-6 pt-5">
+            <div class="flex flex-row gap-4 mb-5">
+                <div class="rounded-lg bg-surface-300 px-2 py-1 text-lg font-semibold w-fit">
+                    Código patrocinador | {{ patrocinador.id_patrocinador }}
+                </div>
+
+                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold w-fit">
                     Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
                 </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
                 <DataBlock label="Contacto" :data="patrocinador.contacto" />
-                <hr class="border-surface-500/80!" />
                 <DataBlock label="Email" :data="patrocinador.email" />
-                <hr class="border-surface-500/80!" />
+            </div>
+
+            <hr class="border-surface-500/80! my-3" />
+
+            <div>
                 <DataBlock label="Descripción" :data="patrocinador.descripcion" />
-               
-            </div>          
-            
+            </div>
         </div>
          <div v-if="!editando" class="flex justify-between items-center">
             <Button class="mx-4" icon="pi pi-undo" label="Volver" @click="$router.go(-1)"></Button>
@@ -178,6 +206,50 @@ const resolver = ({ values }: FormResolverOptions) => {
             </div>
         </div>
         
+    </Panel>
+    <!--fin patrocinador-->
+
+    <!--donaciones-->
+    <Panel v-if="patrocinador && !editando" class="border-white! border-0 overflow-auto m-3 w-[60%]" pt:header="p-0!">
+        <template #header>
+            <div class="w-full h-full">
+                <div class="w-full h-full text-center text-3xl font-semibold pl-3 py-4">
+                    Donaciones
+                </div>
+            </div>
+        </template>
+
+        <div class="pb-5">
+            <DataTable :value="donaciones">
+                <template #empty>
+                    <div class="m-auto text-gray-500 w-fit p-3">
+                        No hay donaciones registradas para este patrocinador
+                    </div>
+                </template>
+
+                <Column header="Producto" field="producto" style="width:25%"></Column>
+
+                <Column header="Fecha solicitud" style="width:18%">
+                    <template #body="{ data }">
+                        {{ formatearFecha(data.fecha_solicitud) }}
+                    </template>
+                </Column>
+
+                <Column header="Estado" field="estado_solicitud" style="width:15%"></Column>
+
+                <Column header="Fecha confirmación" style="width:18%">
+                    <template #body="{ data }">
+                        {{ formatearFecha(data.fecha_confirmacion) }}
+                    </template>
+                </Column>
+
+                <Column header="Recepción" style="width:20%">
+                    <template #body="{ data }">
+                        {{ formatearFecha(data.fecha_recepcion) }}
+                    </template>
+                </Column>
+            </DataTable>
+        </div>
     </Panel>
     </div>
 </template>

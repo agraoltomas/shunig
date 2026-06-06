@@ -27,8 +27,7 @@ const initialValues: Partial<DatosArticuloStock> = reactive({
     fecha_vencimiento: null,
     id_origen_stock: null,
     id_donacion: null,
-    descripcion: null,
-    registrar_recepcion: false
+    descripcion: null
 })
 
 interface DatosArticuloStock {
@@ -37,8 +36,7 @@ interface DatosArticuloStock {
     fecha_vencimiento: Maybe<Date>,
     id_origen_stock: Maybe<number>,
     id_donacion: Maybe<number>,
-    descripcion: Maybe<string>,
-    registrar_recepcion: boolean
+    descripcion: Maybe<string>
 }
 
 const props = defineProps<{
@@ -79,8 +77,7 @@ const ingresarArticuloAlStock = async (d: any) => {
             ? moment(initialValues.fecha_vencimiento).format('YYYY-MM-DD')
             : null,
         id_origen_stock: initialValues.id_origen_stock,
-        id_donacion: origenDeLaDonacion.value ? donacionSeleccionada.value?.id_donacion : null,
-        registrar_recepcion: false
+        id_donacion: origenDeLaDonacion.value ? donacionSeleccionada.value?.id_donacion : null
     })
 
     if ([200, 201].includes(r.status)) {
@@ -101,8 +98,7 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
         fecha_vencimiento: [],
         id_origen_stock: [],
         id_donacion: [],
-        descripcion: [],
-        registrar_recepcion:[]
+        descripcion: []
     }
 
     if (!values.marca) {
