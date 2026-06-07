@@ -22,7 +22,7 @@ const popover= useTemplateRef("detalleSolicitudPopover");
 
 <template>
     <div>
-        <Button ref="openPopover" icon="pi pi-eye" @click="show"></Button>
+        <Button class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" ref="openPopover" icon="pi pi-eye" @click="show"></Button>
         <Popover ref="detalleSolicitudPopover">
             <div class="flex flex-col gap-3">
                 <div>datos usuario</div>

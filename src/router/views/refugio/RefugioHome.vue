@@ -30,7 +30,7 @@ const loadSolicitudes = async () => {
 </script>
 
 <template>
-    <div class="grid grid-cols-4">
+    <div class="grid grid-cols-4 mt-5 mb-15">
         <Panel class="col-span-2 m-3  b-white shadow-2xl max-h-[75vh]!"  header="Refugio - resumen">
             <div class="grid grid-cols-12 grid-rows-5 gap-0.5 h-56 content-center">
                 <Panel pt:content="p-0" pt:header="p-0! m-0!" class="col-span-2 row-span-2 flex flex-col py-3">
@@ -53,7 +53,7 @@ const loadSolicitudes = async () => {
                 </Panel>
             </div>
         </Panel>
-        <Panel class="col-span-2  m-3    border-2 shadow-2xl overflow-y-auto max-h-[75vh]!">
+        <Panel class="col-span-2  m-3  border-2 shadow-2xl overflow-y-auto max-h-[75vh]!">
             <template #header>
                 <div class="flex flex-row gap-3">
                     <span class="text-lg font-semibold">Alertas</span>

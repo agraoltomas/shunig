@@ -21,9 +21,9 @@ const emits = defineEmits<{ aceptar: [], rechazar: []}>()
 </script>
 
 <template>
-    <div class="w-[80vw] m-auto flex flex-col gap-3">
+    <div class="w-[80vw] m-auto flex flex-col gap-3 w-3/4 mt-5 mb-15">
         <!--        HEADER-->
-        <div class="shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded p-3 flex flex-row">
+        <div class="shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-2xl p-3 flex flex-row">
             <div class="max-h-60 overflow-hidden m-3 rounded-lg text-center " v-if="solicitud?.animal">
                 <img v-if="solicitud.animal.imagen" class="w-70  rounded-lg " :src="solicitud.animal.imagen" />
                 <SinImagen v-else></SinImagen>
