@@ -6,7 +6,7 @@ const quantity: Ref<Maybe<number>> = ref(10)
 </script>
 
 <template>
-    <Button :badge="quantity" icon="pi pi-bell"></Button>
+    <Button :badge="quantity?.toString()" icon="pi pi-bell"></Button>
 <!--    <OverlayBadge severity="danger" :value="null"  size="sm all">-->
 <!--        <div  class="pi pi-bell text-white self-center h-fit"></div>-->
 <!--    </OverlayBadge>-->

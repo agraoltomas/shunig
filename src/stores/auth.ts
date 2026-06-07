@@ -6,10 +6,11 @@ import { useAxios } from '@/lib/axios.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import { AxiosError } from 'axios'
 import { useJWTToken } from '@/lib/token.ts'
+import { useLoadingComposable } from '@/lib/utils/loading.ts'
 
 const token = useJWTToken()
 const { axios } = useAxios()
-
+const {loading, startLoading, stopLoading } = useLoadingComposable()
 export const useAuthStore = defineStore('auth', () => {
 
 
