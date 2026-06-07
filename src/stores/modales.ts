@@ -20,6 +20,7 @@ export interface IModalesContext {
     estado_salud: Maybe<IMascota>,
     editar_evento_vacunacion: Maybe<IEventoVacunacion>,
     inscripcion_evento_vacunacion: Maybe<IEventoVacunacion>,
+    cropping: Maybe<File>,
 }
 export const useModalStore = defineStore('modales',() => {
     const modales: Reactive<{[k: string]: boolean}> = reactive({
@@ -37,6 +38,7 @@ export const useModalStore = defineStore('modales',() => {
         estado_salud: false,
         editar_evento_vacunacion: false,
         inscripcion_evento_vacunacion: false,
+        cropping: false
     });
     const context: Reactive<IModalesContext> = reactive({
         adopcion: null,
@@ -52,7 +54,8 @@ export const useModalStore = defineStore('modales',() => {
         verArticuloStock: null,
         estado_salud: null,
         editar_evento_vacunacion: null,
-        inscripcion_evento_vacunacion: null
+        inscripcion_evento_vacunacion: null,
+        cropping: null
     })
     const abrir = < K extends keyof IModalesContext>(name: K, c?: IModalesContext[K], onTop?: boolean) => {
         console.log(name, c)

@@ -86,7 +86,7 @@ const showDialog = ref(false)
         </div>
         <div class="text-center m-auto text-slate-500">¿No tenés cuenta aún?</div>
         <Button :outlined="true" class="w-fit m-auto" icon="pi pi-user px-1" label="Registrarme"
-                @click="() => router.push('/register')"></Button>
+                @click="() => router.push('/register?t=adopcion')"></Button>
     </Dialog>
 </template>
 

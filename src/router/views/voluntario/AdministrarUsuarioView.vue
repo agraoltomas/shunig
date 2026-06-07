@@ -14,6 +14,8 @@ import type { FormSubmitEvent } from '@primevue/forms/form'
 import { useAxios } from '@/lib/axios.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import Contenedor from '@/components/generales/Contenedor.vue'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
+import DangerButton from '@/volt/DangerButton.vue'
 
 const { user } = useAuthStore()
 const { axios } = useAxios()
@@ -36,6 +38,13 @@ const updateDatos = async (e: FormSubmitEvent) => {
     } catch (error) {
     }
 }
+const eliminarCuenta = async () => {
+    let check = prompt("Para confirmar la eliminacion escriba `ELIMINAR`");
+    while(!(check == "ELIMINAR")) {
+        if(check === null)return null;
+        check = prompt("Para confirmar la eliminacion escriba `ELIMINAR`");
+    }
+}
 </script>
 
 <template>
@@ -47,7 +56,7 @@ const updateDatos = async (e: FormSubmitEvent) => {
 
             </div>
             <div class=" flex flex-row gap-3">
-                <Contenedor class="h-fit">
+                <Contenedor class="h-fit w-100">
                     <FormRow :gap="3">
                         <FormCol :span="12">
                             <Label required>Mail</label>
@@ -71,7 +80,7 @@ const updateDatos = async (e: FormSubmitEvent) => {
                     </FormRow>
                 </Contenedor>
                 <Contenedor>
-                    <Domicilio v-model:value="datosUsuario.domicilio" label="Datos de domicilio" name="domicilio"
+                    <Domicilio class="w-150"  v-model:value="datosUsuario.domicilio" label="Datos de domicilio" name="domicilio"
                                :background="false" :border="false"
                     ></Domicilio>
                 </Contenedor>
@@ -79,6 +88,16 @@ const updateDatos = async (e: FormSubmitEvent) => {
             <div class="flex flex-row justify-end py-3">
                 <Button type="submit" label="Actualizar"></Button>
             </div>
+            <ContenedorTitulo title="Baja de usuario">
+                <div> <i class="pi pi-exclamation-triangle text-red-500"></i>
+                    Esta acción es permanente y no se puede deshacer.
+                </div>
+                Al eliminar tu cuenta perderás acceso a todos tus datos, solicitudes e inscripciones.
+                Esta acción es irreversible y no podrá deshacerse.
+                <div class="w-fit">
+                    <DangerButton label="Dar de baja" @click="() => eliminarCuenta()"></DangerButton>
+                </div>
+            </ContenedorTitulo>
         </div>
 
     </Form>

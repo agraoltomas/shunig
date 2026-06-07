@@ -6,6 +6,7 @@ import { useAxios } from '@/lib/axios.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useResponse } from '@/lib/utils/response.ts'
 import type { IMascota } from '@/lib/tipos/mascotas'
+import SinImagen from '@/components/generales/SinImagen.vue'
 const props = defineProps<{ evento: IEventoVacunacion }>();
 const { axios } = useAxios()
 const {user} = useAuthStore()
@@ -29,9 +30,10 @@ onMounted(async () => {
     </div>
     <div>
         <div v-for="animal in animales" class="flex flex-row p-3 gap-3 justify-around">
-            <div class="flex items-center overflow-x-hidden">
-                <img class="w-40 my-auto" :src="animal.imagen"/>
+            <div v-if="animal.imagen" class="flex items-center overflow-x-hidden rounded-lg">
+                <img class="w-30 my-auto" :src="animal.imagen"/>
             </div>
+            <SinImagen v-else></SinImagen>
             <div class="flex flex-col gap-3">
                 <div class="py-1 text-2xl font-semibold">
                     {{ animal.nombre}}

@@ -24,7 +24,7 @@ const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
 
 <template>
     <div class="flex flex-row gap-4 pt-3">
-        <div class="flex flex-col gap-3 mx-3 h-full">
+        <div class="flex flex-col gap-3 mx-3 h-full items-center min-w-80">
             <Image v-if="mascota.imagen" class="" pt:image="max-w-72!" :src="mascota.imagen"></Image>
             <SinImagen v-else></SinImagen>
             <slot></slot>

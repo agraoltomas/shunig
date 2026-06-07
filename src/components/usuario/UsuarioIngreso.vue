@@ -37,15 +37,23 @@ interface DatosUsuario {
 const toast = useToast()
 const tipo = defineModel<Maybe<TipoUsuario>>('tipo')
 const route = useRoute()
+
 const defered  = ref(false);
 onMounted(() => {
     if(route.query.t){
         switch (route.query.t){
             case 'refugio':
                 tipo.value = TipoUsuario.Refugio
-                defered.value = true
+                break;
+            case 'adopcion':
+                tipo.value = TipoUsuario.Adoptante
+                break;
+            case 'transito':
+                tipo.value = TipoUsuario.VoluntarioTransito
                 break;
         }
+        defered.value = true
+
     }
 })
 const datosUsuario: Reactive<DatosUsuario> = reactive({
@@ -162,7 +170,7 @@ const ingresarUsuario = async (e: FormSubmitEvent) => {
         <FormRow>
             <FormCol :span="12">
                 <Label required>Registrarme como</Label>
-                <Select class="max-w-fit" v-model="tipo" option-label="descripcion" option-value="id"
+                <Select :disabled="defered" class="max-w-fit" v-model="tipo" option-label="descripcion" option-value="id"
                         placeholder="Seleccione una opción"
                         :options="[ {id: TipoUsuario.Adoptante, descripcion: 'Adoptante'},{id: TipoUsuario.VoluntarioTransito, descripcion: 'Voluntario de Tránsito'},{ id: TipoUsuario.Refugio, descripcion: 'Refugio'}]"></Select>
             </FormCol>
