@@ -52,8 +52,8 @@ const theme = ref<ButtonPassThroughOptions>({
     `,
     loadingIcon: ``,
     icon: `p-right:order-1 p-bottom:order-2`,
-    label: `font-medium text-lg font-semibold p-icon-only:invisible p-icon-only:w-0
-        p-small:text-sm p-large:text-[1.125rem]`,
+    label: `font-medium p-icon-only:invisible p-icon-only:w-0
+    p-small:text-sm p-large:text-[1.125rem]`,
     pcBadge: {
         root: `min-w-4 h-4 leading-4`
     }

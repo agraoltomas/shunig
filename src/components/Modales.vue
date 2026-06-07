@@ -19,11 +19,11 @@ const data = ref('')
 </script>
 
 <template>
-    <Dialog v-model:visible="store.modales.nuevoAnimal" modal header="Alta de animal" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
+    <Dialog v-model:visible="store.modales.nuevoAnimal" modal header="Alta de animal" class="w-[60%] max-h-[82vh]"
+            pt:header="border-b-2 mb-5" pt:content="max-h-[68vh] overflow-y-auto">
         <template #header>
             <div class="flex flex-col w-full">
-                <div class="font-semibold m-auto text-2xl pb-0!">
+                <div class="font-semibold m-auto text-2xl pb-0! my-3">
                     Alta de animal
                 </div>
             </div>
@@ -55,14 +55,12 @@ const data = ref('')
         </template>
     </Modal>
 
-    <Dialog v-model:visible="store.modales.nuevoPatrocinador" modal header="Alta de patrocinador" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
-        <template #header>
-            <div class="flex flex-col w-full">
-                <div class="font-semibold m-auto text-2xl pb-0!">
+    <Dialog v-model:visible="store.modales.nuevoPatrocinador" modal header="Alta de patrocinador" class="w-[60%] max-h-[82vh]"
+            pt:header="border-b-2 mb-5" pt:content="max-h-[68vh] overflow-y-auto">
+        <template #header>            
+               <div class="font-semibold m-auto text-2xl pb-0! my-3">
                     Alta de patrocinador
                 </div>
-            </div>
         </template>
         <IngresoPatrocinador class="mt-3" @close="() => store.cerrar('nuevoPatrocinador')"></IngresoPatrocinador>
     </Dialog>
@@ -79,23 +77,21 @@ const data = ref('')
         </template>
     </Modal>
 
-    <Dialog v-model:visible="store.modales.nuevoProducto" modal header="Alta de producto" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
+    <Dialog v-model:visible="store.modales.nuevoProducto" modal header="Alta de producto" class="w-[60%] max-h-[82vh]"
+            pt:header="border-b-2 mb-5" pt:content="max-h-[68vh] overflow-y-auto">
         <template #header>
-            <div class="flex flex-col w-full">
-                <div class="font-semibold m-auto text-2xl pb-0!">
+                <div class="font-semibold m-auto text-2xl pb-0! my-3">
                     Alta de producto
                 </div>
-            </div>
         </template>
         <IngresoProducto class="mt-3" @close="() => store.cerrar('nuevoProducto')"></IngresoProducto>
     </Dialog>
 
-    <Dialog v-model:visible="store.modales.nuevoArticuloStock" modal header="Alta de artículo" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
+    <Dialog v-model:visible="store.modales.nuevoArticuloStock" modal header="Alta de artículo" class="w-[60%] max-h-[82vh]"
+            pt:header="border-b-2 mb-5" pt:content="max-h-[68vh] overflow-y-auto">
         <template #header>
             <div class="flex flex-col w-full">
-                <div class="font-semibold m-auto text-2xl pb-0!">
+                <div class="font-semibold m-auto text-2xl pb-0! my-3">
                     Alta de artículo
                 </div>
             </div>
@@ -104,16 +100,17 @@ const data = ref('')
                                @close="() => store.cerrar('nuevoArticuloStock')"></IngresoArticuloStock>
     </Dialog>
 
-    <Dialog v-model:visible="store.modales.verArticuloStock" modal header="Detalle del artículo" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
+    <Dialog v-model:visible="store.modales.verArticuloStock" modal header="Detalle del artículo" class="w-[60%] max-h-[82vh]"
+            pt:header="border-b-2 mb-5" pt:content="max-h-[68vh] overflow-y-auto">
         <template #header>
             <div class="flex flex-col w-full">
-                <div class="font-semibold m-auto text-2xl pb-0!">
+                <div class="font-semibold m-auto text-2xl pb-0! my-3">
                     Detalle del artículo
                 </div>
             </div>
         </template>
         <ArticuloStock v-if="store.context.verArticuloStock" :articulo="store.context.verArticuloStock.articulo"
+        :nombre-producto="store.context.verArticuloStock.nombreProducto"
                        class="mt-3" @close="() => store.cerrar('verArticuloStock')" @eliminado="() => {
             store.context.verArticuloStock.eliminaStock?.()
             store.cerrar('verArticuloStock')}"

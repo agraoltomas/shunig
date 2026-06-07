@@ -50,15 +50,40 @@ const desactivarRefugio = async () => {
                 <div class="p-3 text-2xl font-semibold border-b border-b-surface-500">Menú</div>
             </template>
         </Menu>
-        <Panel v-if="menuSelected == 'general'" class="m-3">
-            <h1 class="text-2xl p-3">Zona de peligro</h1>
-            <div class="border border-surface-500 p-3 rounded-lg">
-                <div class="flex flex-row justify-between">
-                    <DataBlock class="max-w-[75%]" label="Desactivar el refugio" data="Se marcará el refugio como inactivo y no se podrán realizar acciones en éste"></DataBlock>
-                    <DangerButton label="Desactivar" class="h-fit! my-auto mr-5!" @click="desactivarRefugio" icon="pi pi-trash"></DangerButton>
+        <section
+                v-if="menuSelected === 'general'"
+                class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
+            >
+                <div class="flex flex-row text-xl gap-3 mb-4">
+                    <div class="bg-red-100 rounded-full p-1 min-w-9 h-fit text-center">
+                        <i class="pi pi-exclamation-triangle text-red-500"></i>
+                    </div>
+
+                    <div class="font-semibold h-fit my-auto">
+                        Zona de peligro
+                    </div>
                 </div>
-            </div>
-        </Panel>
+
+                <div class="rounded-xl border border-red-200 bg-red-50/50 p-4">
+                    <div class="flex flex-row justify-between gap-5 items-center">
+                        <div class="flex flex-col gap-1 max-w-[75%]">
+                            <div class="font-semibold text-gray-800">
+                                Desactivar el refugio
+                            </div>
+
+                            <div class="text-gray-600">
+                                Se marcará el refugio como inactivo y no se podrán realizar acciones en este refugio.
+                            </div>
+                        </div>
+
+                        <DangerButton
+                            label="Desactivar"
+                            icon="pi pi-trash"
+                            @click="desactivarRefugio"
+                        />
+                    </div>
+                </div>
+            </section>
         <Panel v-else-if="menuSelected == 'datos'" class="m-3">
             <RefugioActualizarDatos class="py-5"/>
         </Panel>

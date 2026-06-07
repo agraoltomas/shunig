@@ -28,7 +28,7 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
                 command: () => router.push('/refugio/transito')
             },
             {
-                label: 'Solicitúdes pendientes',
+                label: 'Solicitudes pendientes',
                 command: () => router.push('/refugio/solicitudes')
             },
             {
@@ -81,16 +81,16 @@ if (!authStore.user) {
     </Menubar>
     <div class="mx-3 rounded-lg flex flex-row justify-between my-2">
         <div class="w-[50%] my-auto">
-            <Button type="button" icon="pi pi-bars" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
+            <Button type="button" icon="pi pi-bars" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 " @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
             <Menu pt:submenulabel="text-black font-semibold text-center bg-gray-100" ref="menuAccesoRapido"
                   id="overlay_menu" :model="itemsMenuAccesoRapido" :popup="true">
             </Menu>
         </div>
         <div class="flex flex-row gap-3">
-            <Button icon="pi pi-plus" icon-pos="left" label="Animal"
+            <Button icon="pi pi-plus" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 " icon-pos="left" label="Animal"
                     @click="() => modalesStore.abrir('nuevoAnimal')"></Button>
             <Button @click="() => router.push('/refugio/evento-vacunacion/ingresar/')"
-                    icon="pi pi-plus" icon-pos="left" label="Evento de Vacunación"></Button>
+                    icon="pi pi-plus" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 " icon-pos="left" label="Evento de Vacunación"></Button>
             
         </div>
         <!--                <Dialog :visible="true" modal class="bg-white!">-->

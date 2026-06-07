@@ -2,20 +2,20 @@
 import { ref, reactive, onMounted } from 'vue'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import moment from 'moment'
-import DataBlock from '@/components/generales/DataBlock.vue'
 import FormRow from '@/components/forms/FormRow.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Label from '@/components/forms/Label.vue'
 import axios from '@/lib/axios.ts'
 import { useToast } from '@/lib/toast/toast.ts'
 import { useModalStore } from '@/stores/modales'
-import { Form, type FormResolverOptions} from '@primevue/forms'
+import { Form, type FormResolverOptions } from '@primevue/forms'
 import type { FormSubmitEvent } from '@primevue/forms/form'
 import DataTable from '@/volt/DataTable.vue'
 import type { IDonacionPatrocinador } from '@/lib/tipos/donaciones'
+import DangerButton from '@/volt/DangerButton.vue'
 
-const toast = useToast();
-const modalesStore = useModalStore();
+const toast = useToast()
+const modalesStore = useModalStore()
 
 const props = defineProps<{
     patrocinador: IPatrocinador
@@ -24,12 +24,10 @@ const props = defineProps<{
 const emits = defineEmits<{
     actualizado: [patrocinador: IPatrocinador]
     eliminado: []
-}>();
+}>()
 
-const editando = ref(false);
-//const form: TemplateRef<typeof Form> = useTemplateRef("form");
+const editando = ref(false)
 const donaciones = ref<IDonacionPatrocinador[]>([])
-
 
 const valores = reactive({
     nombre: props.patrocinador.nombre,
@@ -38,11 +36,21 @@ const valores = reactive({
     descripcion: props.patrocinador.descripcion
 })
 
+const inicialesPatrocinador = (nombre: string) => {
+    return nombre
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((parte) => parte[0])
+        .join('')
+        .toUpperCase()
+}
+
 const cargarDonacionesPatrocinador = async () => {
     const r = await axios.get(`/donacion/patrocinador/${props.patrocinador.id_patrocinador}`)
 
     if ([200, 201].includes(r.status)) {
-        donaciones.value = r.data.data;
+        donaciones.value = r.data.data
     }
 }
 
@@ -51,44 +59,57 @@ onMounted(async () => {
 })
 
 const actualizarPatrocinador = async (e: FormSubmitEvent) => {
-    if (!props.patrocinador) return;
-    console.log('Valores modificados del patrocinador:', valores)
-    const r = await axios.patch(`/patrocinador/${props.patrocinador.id_patrocinador}`, e.values);
-    if([200,201].includes(r.status)){
-        const patrocinadorActualizado = r.data.data;
+    if (!props.patrocinador) return
+
+    const r = await axios.patch(`/patrocinador/${props.patrocinador.id_patrocinador}`, e.values)
+
+    if ([200, 201].includes(r.status)) {
+        const patrocinadorActualizado = r.data.data
+
         Object.assign(valores, {
             nombre: patrocinadorActualizado.nombre,
             contacto: patrocinadorActualizado.contacto,
             email: patrocinadorActualizado.email,
             descripcion: patrocinadorActualizado.descripcion
-        });
-        toast.add({severity:"success", summary:"Éxito!", detail: 
-        `${e.values.nombre} se modificó exitosamente`
         })
-        editando.value = false;
+
+        toast.add({
+            severity: 'success',
+            summary: 'Éxito!',
+            detail: `${e.values.nombre} se modificó exitosamente`
+        })
+
+        editando.value = false
         emits('actualizado', patrocinadorActualizado)
     }
 }
 
 const resolver = ({ values }: FormResolverOptions) => {
     const errors: { [K in keyof typeof valores]: { message: string }[] } = {
-        nombre: [], contacto: [], email: [], descripcion: []
+        nombre: [],
+        contacto: [],
+        email: [],
+        descripcion: []
     }
 
     if (!values.nombre) {
         errors.nombre.push({ message: 'El nombre es obligatorio' })
     }
+
     if (!values.contacto) {
         errors.contacto.push({ message: 'Los datos de contacto son obligatorios' })
     }
+
     if (!values.email) {
         errors.email.push({ message: 'El email es obligatorio' })
     }
+
     if (!values.descripcion) {
         errors.descripcion.push({ message: 'La descripción es obligatoria' })
     }
+
     return {
-        values, // (Optional) Used to pass current form values to submit event.
+        values,
         errors
     }
 }
@@ -96,130 +117,291 @@ const resolver = ({ values }: FormResolverOptions) => {
 const formatearFecha = (fecha?: string | null) => {
     return fecha ? moment.utc(fecha).format('DD-MM-YYYY') : '-'
 }
-
-
 </script>
 
 <template>
-    <div class="flex flex-col items-center mt-3">
-        <!--patrocinador-->
-    <Panel v-if="patrocinador" class="border-white! border-0 overflow-auto m-3 w-[60%]" pt:header="p-0!">        
-        <template #header>
-            <div class="w-full h-full">
-               <div class="bg-surface-800 w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white">
-                        {{ editando ? valores.nombre : patrocinador.nombre }}
+    <div class="w-[80vw] m-auto flex flex-col gap-4 mt-6 mb-15">
+        <!-- HEADER / DETALLE PRINCIPAL -->
+        <div
+            v-if="patrocinador"
+            class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
+        >
+            <div v-if="!editando" class="gap-6">
+                <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+        <span class="font-bold text-2xl">
+            Detalle del producto
+        </span>
+
+        <div class="flex flex-row gap-3">
+            <Button
+                class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
+                outlined
+                severity="secondary"
+                icon="pi pi-undo"
+                label="Volver"
+                @click="$router.go(-1)"
+            />
+
+            <Button
+                outlined
+                severity="success"
+                icon="pi pi-pencil"
+                label="Editar"
+                @click="editando = true"
+            />
+
+            <DangerButton
+                outlined
+                icon="pi pi-trash"
+                label="Eliminar"
+                @click="modalesStore.abrir('eliminar', {
+                   nombre: patrocinador.nombre,
+                            endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
+                            volverPrincipal: '/refugio/patrocinadores'
+                })"
+            />
+        </div>
+    </div>
+                <div class="flex flex-row gap-5 grow">
+                    <div class="rounded-full bg-primary-200/30 w-28 h-28 flex items-center justify-center shrink-0">
+                        <div class="text-primary-500 text-4xl font-bold">
+                            {{ inicialesPatrocinador(patrocinador.nombre) }}
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 grow">
+                        <div class="flex flex-row gap-4 items-center">
+                            <div class="font-bold text-3xl">
+                                {{ patrocinador.nombre }}
+                            </div>
+
+                            <Tag severity="success" value="Patrocinador" />
+                        </div>
+
+                        <div class="flex flex-row flex-wrap gap-4 pb-4 shadow-[0_0.5px_0_0_rgba(0,0,0,0.12)] w-fit">
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-hashtag text-primary-500"></span>
+                                <span>Código #{{ patrocinador.id_patrocinador }}</span>
+                            </div>
+
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-calendar text-primary-500"></span>
+                                <span>{{ formatearFecha(patrocinador.fecha_alta) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mt-2">
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-phone text-primary-500"></span>
+                                <div>
+                                    <div class="text-sm text-gray-500">Contacto</div>
+                                    <div class="font-semibold">{{ patrocinador.contacto }}</div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-envelope text-primary-500"></span>
+                                <div>
+                                    <div class="text-sm text-gray-500">Email</div>
+                                    <div class="font-semibold">{{ patrocinador.email }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </template>
 
-        <div v-if="editando" class="flex justify-center">
-            <Form ref="form" v-slot="$form" :initialValues="valores" :resolver @submit="actualizarPatrocinador" class="flex flex-col mx-6 gap-3 pt-5">
-
-            <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold">
-                Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
+               
             </div>
 
-            <FormRow class="text-start text-lg font-semibold">
-                <FormCol modo="horizontal" :span="12">
-                    <Label>Nombre</Label>
-                    <InputText fluid name="nombre" />
-                    <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
-                        {{ $form.nombre.error?.message }}
-                    </Message>
-                </FormCol>
-            </FormRow>
+            <!-- EDICIÓN -->
+            <div v-else>
+                <div class="flex flex-row justify-between items-center mb-5">
+                    <div>
+                        <div class="text-3xl font-bold mb-2">
+                            Editar patrocinador
+                        </div>
+                        <div class="text-xl mb-2">
+                        <span>
+                            <span class="mr-4">{{ patrocinador.nombre}}</span>
+                                <span class="pi pi-hashtag text-primary-500 mr-1"></span>
+                                <span class="mr-4">Código #{{ patrocinador.id_patrocinador }}</span>
+                          
 
-            <FormRow class="text-start text-lg font-semibold">
-                <FormCol modo="horizontal" :span="12">
-                    <Label>Contacto</Label>
-                    <InputText
-                        fluid name="contacto"
-                    />
-                    <Message v-if="$form.contacto?.invalid" severity="error" size="small" variant="simple">
-                         {{ $form.contacto.error?.message }}
-                        </Message>
-                </FormCol>
-            </FormRow>
+                                <span class="pi pi-calendar text-primary-500 mr-1"></span>
+                                <span>{{ formatearFecha(patrocinador.fecha_alta) }}</span>
+                            
+                        
+                        </span>                        
+                    </div>
+                        <div class="text-gray-500">
+                            Modificá los datos principales del patrocinador.
+                        </div>
+                    </div>
 
-            <FormRow class="text-start text-lg font-semibold">
-                <FormCol modo="horizontal" :span="12">
-                    <Label>Email</Label>
-                    <InputText
-                        fluid name="email"
-                    />
-                    <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
-                                {{ $form.email.error?.message }}
-                    </Message>
-                </FormCol>
-            </FormRow>
+                    <div class="rounded-full bg-primary-200/30 w-20 h-20 flex items-center justify-center">
+                        <i class="pi pi-user-edit text-primary-500 text-3xl"></i>
+                    </div>
+                </div>
 
-            <FormRow class="text-start text-lg font-semibold">
-                <FormCol :span="12">
-                    <Label>Descripción</Label>
-                    <Textarea name="descripcion"
-                    />
-                    <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
-                         {{ $form.descripcion.error?.message }}
-                    </Message>
-                </FormCol>
-            </FormRow>
+                <Form
+                    ref="form"
+                    v-slot="$form"
+                    :initialValues="valores"
+                    :resolver
+                    @submit="actualizarPatrocinador"
+                    class="flex flex-col gap-4"
+                >
 
-            <div class="flex justify-end gap-3 px-6 py-4">
-                <Button type="submit" icon="pi pi-check" label="Guardar"/>
-                <Button tyoe="button" icon="pi pi-times" label="Cancelar" @click="editando = false" />
-           
+                    <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4">
+                        <div class="flex flex-row text-xl gap-3 mb-4">
+                            <div class="bg-primary-200/30 rounded-full p-1 min-w-9 h-fit text-center">
+                                <i class="pi pi-user text-primary-500"></i>
+                            </div>
+                            <div class="font-semibold h-fit my-auto">
+                                Datos principales
+                            </div>
+                        </div>
+
+                        <FormRow class="w-full">
+                            <FormCol :span="6">
+                                <Label for="nombre" required>Nombre</Label>
+                                <InputText id="nombre" fluid name="nombre" />
+                                <Message
+                                    v-if="$form.nombre?.invalid"
+                                    severity="error"
+                                    size="small"
+                                    variant="simple"
+                                >
+                                    {{ $form.nombre.error?.message }}
+                                </Message>
+                            </FormCol>
+
+                            <FormCol :span="6">
+                                <Label for="contacto" required>Contacto</Label>
+                                <InputText id="contacto" fluid name="contacto" />
+                                <Message
+                                    v-if="$form.contacto?.invalid"
+                                    severity="error"
+                                    size="small"
+                                    variant="simple"
+                                >
+                                    {{ $form.contacto.error?.message }}
+                                </Message>
+                            </FormCol>
+                        </FormRow>
+
+                        <FormRow class="w-full">
+                            <FormCol :span="12">
+                                <Label for="email" required>Email</Label>
+                                <InputText id="email" fluid name="email" />
+                                <Message
+                                    v-if="$form.email?.invalid"
+                                    severity="error"
+                                    size="small"
+                                    variant="simple"
+                                >
+                                    {{ $form.email.error?.message }}
+                                </Message>
+                            </FormCol>
+                        </FormRow>
+                    </div>
+
+                    <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4">
+                        <div class="flex flex-row text-xl gap-3 mb-4">
+                            <div class="bg-primary-200/30 rounded-full p-1 min-w-9 h-fit text-center">
+                                <i class="pi pi-pencil text-primary-500"></i>
+                            </div>
+                            <div class="font-semibold h-fit my-auto">
+                                Descripción
+                            </div>
+                        </div>
+
+                        <FormRow class="w-full">
+                            <FormCol :span="12">
+                                <Label for="descripcion" required>Descripción</Label>
+                                <Textarea
+                                    id="descripcion"
+                                    fluid
+                                    name="descripcion"
+                                    :auto-resize="true"
+                                    rows="4"
+                                />
+                                <Message
+                                    v-if="$form.descripcion?.invalid"
+                                    severity="error"
+                                    size="small"
+                                    variant="simple"
+                                >
+                                    {{ $form.descripcion.error?.message }}
+                                </Message>
+                            </FormCol>
+                        </FormRow>
+                    </div>
+
+                    <div class="flex justify-end gap-3 py-2">
+                        <Button
+                            type="button" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                            icon="pi pi-times"
+                            label="Cancelar"
+                            @click="editando = false"
+                        />
+
+                        <Button
+                            type="submit" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                            icon="pi pi-check"
+                            label="Guardar"
+                        />
+                    </div>
+                </Form>
             </div>
-        </Form>
         </div>
 
-       <div v-else class="px-6 pt-5">
-            <div class="flex flex-row gap-4 mb-5">
-                <div class="rounded-lg bg-surface-300 px-2 py-1 text-lg font-semibold w-fit">
-                    Código patrocinador | {{ patrocinador.id_patrocinador }}
+        <!-- DESCRIPCIÓN -->
+        <div
+            v-if="patrocinador && !editando"
+            class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
+        >
+            <div class="flex flex-row text-xl gap-3">
+                <div class="bg-primary-200/30 rounded-full p-1 min-w-9 h-fit text-center">
+                    <i class="pi pi-align-left text-primary-500"></i>
                 </div>
-
-                <div class="rounded-lg bg-gray-200 px-2 py-1 text-lg font-semibold w-fit">
-                    Fecha de alta | {{ moment(patrocinador.fecha_alta).format('DD-MM-YYYY') }}
+                <div class="font-semibold h-fit my-auto">
+                    Descripción
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <DataBlock label="Contacto" :data="patrocinador.contacto" />
-                <DataBlock label="Email" :data="patrocinador.email" />
-            </div>
-
-            <hr class="border-surface-500/80! my-3" />
-
-            <div>
-                <DataBlock label="Descripción" :data="patrocinador.descripcion" />
+            <div class="p-3">
+                <Textarea
+                    fluid
+                    disabled
+                    :value="patrocinador.descripcion"
+                    :auto-resize="true"
+                    rows="3"
+                />
             </div>
         </div>
-         <div v-if="!editando" class="flex justify-between items-center">
-            <Button class="mx-4" icon="pi pi-undo" label="Volver" @click="$router.go(-1)"></Button>
-            <div class="flex justify-end gap-3 px-6 py-4">
-                <Button icon="pi pi-pencil" label="Editar" @click="editando = true" />
-                <DangerButton icon="pi pi-trash" label="Eliminar" @click="modalesStore.abrir('eliminar', {
-                    nombre: patrocinador.nombre,
-                    endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
-                    volverPrincipal: '/refugio/patrocinadores'})">
-                </DangerButton>
-            </div>
-        </div>
-        
-    </Panel>
-    <!--fin patrocinador-->
 
-    <!--donaciones-->
-    <Panel v-if="patrocinador && !editando" class="border-white! border-0 overflow-auto m-3 w-[60%]" pt:header="p-0!">
-        <template #header>
-            <div class="w-full h-full">
-                <div class="w-full h-full text-center text-3xl font-semibold pl-3 py-4">
-                    Donaciones
+        <!-- DONACIONES -->
+        <div
+            v-if="patrocinador && !editando"
+            class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
+        >
+            <div class="flex flex-row justify-between items-center mb-4">
+                <div class="flex flex-row text-xl gap-3">
+                    <div class="bg-primary-200/30 rounded-full p-1 min-w-9 h-fit text-center">
+                        <i class="pi pi-gift text-primary-500"></i>
+                    </div>
+                    <div class="font-semibold h-fit my-auto">
+                        Donaciones
+                    </div>
                 </div>
-            </div>
-        </template>
 
-        <div class="pb-5">
+                <Tag
+                    severity="info"
+                    :value="`${donaciones.length} registros`"
+                />
+            </div>
+
             <DataTable :value="donaciones">
                 <template #empty>
                     <div class="m-auto text-gray-500 w-fit p-3">
@@ -250,7 +432,6 @@ const formatearFecha = (fecha?: string | null) => {
                 </Column>
             </DataTable>
         </div>
-    </Panel>
     </div>
 </template>
 

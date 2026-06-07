@@ -69,9 +69,9 @@ const confirmarEliminacion = async () => {
     
         <div class="flex flex-row justify-end gap-3">
             
-            <DangerButton icon="pi pi-trash" label="Eliminar" :disabled="eliminando"
+            <DangerButton icon="pi pi-trash" outlined label="Eliminar" :disabled="eliminando"
             @click="confirmarEliminacion"></DangerButton>
-            <Button icon="pi pi-times" label="Cancelar" :disabled="eliminando" @click="cancelar"></Button>
+            <Button icon="pi pi-times" outlined label="Cancelar" :disabled="eliminando" @click="cancelar"></Button>
         </div>
     </div>
    

@@ -1,46 +1,68 @@
 <script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
+import moment from 'moment'
 import DataTable from '@/volt/DataTable.vue'
+import MultiSelect from '@/volt/MultiSelect.vue'
 import { useModalStore } from '@/stores/modales.ts'
 import type { IProducto } from '@/lib/tipos/productos'
-import { useRouter } from 'vue-router'
-import moment from 'moment'
-import Alerta from "@/components/generales/Alerta.vue"
-import { EAlerta } from '../generales/alertas'
-import { computed, reactive } from 'vue'
-import MultiSelect from '@/volt/MultiSelect.vue'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
+import { useRouter } from 'vue-router'
+import Alerta from '@/components/generales/Alerta.vue'
+import { EAlerta } from '../generales/alertas'
 import axios from '@/lib/axios.ts'
 import { useToast } from '@/lib/toast/toast.ts'
-
-//Pagina principal del inventario del refugio, muestra una tabla con los datos de los productos generales
 
 const router = useRouter()
 const toast = useToast()
 const modalesStore = useModalStore()
-const props = defineProps<{
-    productos: IProducto[]
-    patrocinadores: IPatrocinador[]
-}>()
 
+const props = withDefaults(defineProps<{
+    productos?: IProducto[]
+    patrocinadores?: IPatrocinador[]
+}>(), {
+    productos: () => [],
+    patrocinadores: () => []
+})
 
-// ALERTAS
-const obtenerAlertaStock =(producto: IProducto)=>{
-    if(!producto.alerta_stock_activa){
-        return null;
-    }
-    const cantidad = Number(producto.cantidad || 0);
-    const cantidadBaja = Number(producto.cantidad_alerta_baja || 0);
-    const cantidadModerada = Number(producto.cantidad_alerta_moderada || 0);
-    if(cantidad <= cantidadBaja){
-        return EAlerta.StockBajo;
-    }else if(cantidad <= cantidadModerada){
-        return EAlerta.StockModerado;
-    }else{
-        return EAlerta.StockAlto;
-    }
-}
+const busqueda = ref('')
 
 const patrocinadoresPorProducto = reactive<Record<number, number[]>>({})
+
+const productosFiltrados = computed(() => {
+    const texto = busqueda.value.trim().toLowerCase()
+
+    if (!texto) {
+        return props.productos
+    }
+
+    return props.productos.filter((producto) => {
+        return [
+            producto.codigo_producto,
+            producto.nombre,
+            producto.tipo_producto,
+            producto.descripcion,
+            producto.unidad_stock,
+            producto.medida
+        ].some((valor) => valor?.toLowerCase().includes(texto))
+    })
+})
+
+const totalProductos = computed(() => {
+    return props.productos.length
+})
+
+const totalStock = computed(() => {
+    return props.productos.reduce((total, producto) => {
+        return total + Number(producto.cantidad || 0)
+    }, 0)
+})
+
+const productosConAlerta = computed(() => {
+    return props.productos.filter((producto) => {
+        const alerta = obtenerAlertaStock(producto)
+        return alerta === EAlerta.StockBajo || alerta === EAlerta.StockModerado
+    }).length
+})
 
 const opcionesPatrocinadores = computed(() => {
     return props.patrocinadores.map((patrocinador) => ({
@@ -49,23 +71,44 @@ const opcionesPatrocinadores = computed(() => {
     }))
 })
 
+const obtenerAlertaStock = (producto: IProducto) => {
+    if (!producto.alerta_stock_activa) {
+        return null
+    }
+
+    const cantidad = Number(producto.cantidad || 0)
+    const cantidadBaja = Number(producto.cantidad_alerta_baja || 0)
+    const cantidadModerada = Number(producto.cantidad_alerta_moderada || 0)
+
+    if (cantidad <= cantidadBaja) {
+        return EAlerta.StockBajo
+    }
+
+    if (cantidad <= cantidadModerada) {
+        return EAlerta.StockModerado
+    }
+
+    return EAlerta.StockAlto
+}
+
 const solicitarDonacion = async (producto: IProducto) => {
     const patrocinadoresSeleccionados = patrocinadoresPorProducto[producto.id_producto] || []
 
     if (patrocinadoresSeleccionados.length === 0) {
-        toast.add({ severity: 'warn', summary: 'Atención',detail: 'Debe seleccionar al menos un patrocinador'});
-        return;
+        toast.add({
+            severity: 'warn',
+            summary: 'Atención',
+            detail: 'Debe seleccionar al menos un patrocinador'
+        })
+
+        return
     }
 
-    console.log('Solicitar donación', {
+    const r = await axios.post('/solicitud-donacion', {
         id_producto: producto.id_producto,
         patrocinadores: patrocinadoresSeleccionados
     })
 
-    const r = await axios.post("/solicitud-donacion", {
-        id_producto: producto.id_producto,
-        patrocinadores: patrocinadoresSeleccionados
-    })
     if ([200, 201].includes(r.status)) {
         toast.add({
             severity: 'success',
@@ -77,83 +120,216 @@ const solicitarDonacion = async (producto: IProducto) => {
     }
 }
 
+const formatearFecha = (fecha?: string | null) => {
+    return fecha ? moment.utc(fecha).format('DD-MM-YYYY') : '-'
+}
 
+const cantidadProducto = (producto: IProducto) => {
+    return `${producto.cantidad ?? 0} ${producto.unidad_stock || ''}`
+}
 </script>
 
 <template>
-    <div>
-        <DataTable :value="productos">
-            <template #empty>
-                <div class="m-auto text-gray-500 w-fit p-3">No hay resultados</div>
-            </template>
-            <template #header>
-                <div class="flex flex-row bg-surface-50 gap-3">
-                    <div class="flex flex-row py-1 pl-3">
-                        <InputText class="rounded-e-none"></InputText>
+    <div class="p-4">
+        <div class="flex flex-col gap-5">
+            <!-- Descripción + botón -->
+            <div class="flex justify-between items-center gap-4">
+                <p class="text-gray-500">
+                    Productos disponibles en el inventario del refugio y control de stock.
+                </p>
+
+                <Button
+                    icon="pi pi-plus"
+                    label="Agregar producto" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 "
+                    severity="success"
+                    @click="modalesStore.abrir('nuevoProducto')"
+                />
+            </div>
+
+            <!-- Buscador -->
+            <div class="flex gap-3 items-center">
+                <IconField class="w-96">
+                    <InputText
+                        v-model="busqueda"
+                        class="w-full"
+                        placeholder="Buscar por código, producto o tipo..."
+                    />
+                </IconField>
+            </div>
+
+            <!-- Tabla -->
+            <DataTable
+                :value="productosFiltrados"
+                paginator
+                :rows="10"
+                stripedRows
+                class="rounded-lg overflow-hidden"
+            >
+                <template #empty>
+                    <div class="text-center text-gray-500 p-4">
+                        No hay productos registrados
                     </div>
-                    <div class="my-auto flex w-full justify-between items-center">
-                        <Button>Filtrar
-                            <svg class="mt-1" width="14" height="14" viewBox="0 0 14 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path
-                                    d="M7.01744 10.398C6.91269 10.3985 6.8089 10.378 6.71215 10.3379C6.61541 10.2977 6.52766 10.2386 6.45405 10.1641L1.13907 4.84913C1.03306 4.69404 0.985221 4.5065 1.00399 4.31958C1.02276 4.13266 1.10693 3.95838 1.24166 3.82747C1.37639 3.69655 1.55301 3.61742 1.74039 3.60402C1.92777 3.59062 2.11386 3.64382 2.26584 3.75424L7.01744 8.47394L11.769 3.75424C11.9189 3.65709 12.097 3.61306 12.2748 3.62921C12.4527 3.64535 12.6199 3.72073 12.7498 3.84328C12.8797 3.96582 12.9647 4.12842 12.9912 4.30502C13.0177 4.48162 12.9841 4.662 12.8958 4.81724L7.58083 10.1322C7.50996 10.2125 7.42344 10.2775 7.32656 10.3232C7.22968 10.3689 7.12449 10.3944 7.01744 10.398Z"
-                                    fill="currentColor"></path>
-                            </svg>
-                        </Button>
-                        <Button icon="pi pi-plus" icon-pos="left" label="Agregar producto" 
-                        @click="() => modalesStore.abrir('nuevoProducto')"></Button>
-                    </div>
-                </div>
-            </template>
-            <Column header="Código" field="codigo_producto" style="width:5%">
-            </Column>
-            <Column header="Producto" field="nombre" style="width:25%">
-            </Column>
-            <Column header="Tipo de producto" field="tipo_producto"  style="width:15%">
-            </Column>
-            <Column header="Cantidad total" field="cantidad" style="width:10%">
-                <template #body="{ data: producto }">
-                {{ producto.cantidad}} - {{ producto.unidad_stock}}
                 </template>
-            </Column>
-            <Column header="Última actualización" style="width:10%">
-		    <template #body="{data: producto}">{{ 
-                producto.fecha_modificacion ? moment.utc(producto.fecha_modificacion).format('DD-MM-YYYY') 
-            : "-" }}</template></Column>
-            <Column header="Alertas" style="width:17%">
-                <template #body="{data: producto}">
-                    <div>
-                        <Alerta v-if="obtenerAlertaStock(producto)!==null" :tipo="obtenerAlertaStock(producto)!"></Alerta>
-                        <span v-else>-</span>
-                    </div>
-                </template>            
-            </Column>
-            <Column header="Solicitar donación" style="width:17%">
-                <template #body="{ data: producto }">
-               <MultiSelect v-model="patrocinadoresPorProducto[producto.id_producto]" :options="opcionesPatrocinadores" 
-               optionLabel="label" optionValue="value" placeholder="Seleccionar" filter class="w-full">
-                    <template #value>
-                        <span>Seleccionar</span>
-                    </template>
-                    <template #footer>
-                        <div class="flex justify-end p-3 border-t border-surface-200">
-                            <Button size="small" icon="pi pi-send" label="Solicitar" 
-                            :disabled="!(patrocinadoresPorProducto[producto.id_producto]?.length)" 
-                            @click.stop="solicitarDonacion(producto)"></Button>
+
+                <Column header="Producto" style="width: 25%">
+                    <template #body="{ data: producto }">
+                        <div class="flex items-center gap-3">
+                            <Avatar
+                                :label="producto.codigo_producto?.slice(0, 2).toUpperCase()"
+                                shape="circle"
+                                class="bg-primary-100 text-primary-700"
+                            />
+
+                            <div>
+                                <div class="font-semibold text-gray-700">
+                                    {{ producto.nombre }}
+                                </div>
+
+                                <div class="text-sm text-gray-500">
+                                    {{ producto.codigo_producto }}
+                                </div>
+                            </div>
                         </div>
                     </template>
-                </MultiSelect>
-                </template>            
-            </Column>            
-            <Column>
-                <template #body="{data}">
-                    <Button icon="pi pi-eye" @click="() => router.push(`/refugio/inventario/producto/${data.id_producto}`)"></Button>
+                </Column>
+
+                <Column header="Tipo" field="tipo_producto" style="width: 14%" />
+
+                <Column header="Cantidad total" style="width: 13%">
+                    <template #body="{ data: producto }">
+                        <span class="font-semibold">
+                            {{ cantidadProducto(producto) }}
+                        </span>
+                    </template>
+                </Column>
+
+                <Column header="Última actualización" style="width: 14%">
+                    <template #body="{ data: producto }">
+                        {{ formatearFecha(producto.fecha_modificacion) }}
+                    </template>
+                </Column>
+
+                <Column header="Alertas" style="width: 14%">
+                    <template #body="{ data: producto }">
+                        <Alerta
+                            v-if="obtenerAlertaStock(producto) !== null"
+                            :tipo="obtenerAlertaStock(producto)!"
+                        />
+                        <span v-else>-</span>
+                    </template>
+                </Column>
+
+                <Column header="Solicitar donación" style="width: 18%">
+                    <template #body="{ data: producto }">
+                        <MultiSelect
+                            v-model="patrocinadoresPorProducto[producto.id_producto]"
+                            :options="opcionesPatrocinadores"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Seleccionar"
+                            filter
+                            class="w-full"
+                        >
+                            <template #value>
+                                <span>Seleccionar</span>
+                            </template>
+
+                            <template #footer>
+                                <div class="flex justify-end p-3 border-t border-surface-200">
+                                    <Button
+                                        size="small" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                                        icon="pi pi-send"
+                                        label="Solicitar"
+                                        severity="success"
+                                        :disabled="!(patrocinadoresPorProducto[producto.id_producto]?.length)"
+                                        @click.stop="solicitarDonacion(producto)"
+                                    />
+                                </div>
+                            </template>
+                        </MultiSelect>
+                    </template>
+                </Column>
+
+                <Column header="Acciones" style="width: 10%">
+                    <template #body="{ data }">
+                        <div class="flex gap-2">
+                            <Button
+                                icon="pi pi-eye" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                                
+                                severity="secondary"
+                                @click="router.push(`/refugio/inventario/producto/${data.id_producto}`)"
+                            />
+                        </div>
+                    </template>
+                </Column>
+            </DataTable>
+
+            <div class="text-sm text-gray-500">
+                Mostrando {{ productosFiltrados.length }} de {{ totalProductos }} productos
+            </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="grid grid-cols-3 gap-4 mt-5">
+            <Card>
+                <template #content>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
+                            <i class="pi pi-box text-xl"></i>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-3xl font-bold text-gray-700">
+                                {{ totalProductos }}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                Total productos
+                            </span>
+                        </div>
+                    </div>
                 </template>
-            </Column>
-        </DataTable>
+            </Card>
+
+            <Card>
+                <template #content>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                            <i class="pi pi-warehouse text-xl"></i>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-3xl font-bold text-gray-700">
+                                {{ totalStock }}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                Stock total
+                            </span>
+                        </div>
+                    </div>
+                </template>
+            </Card>
+
+            <Card>
+                <template #content>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center">
+                            <i class="pi pi-exclamation-triangle text-xl"></i>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-3xl font-bold text-gray-700">
+                                {{ productosConAlerta }}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                Productos con alerta
+                            </span>
+                        </div>
+                    </div>
+                </template>
+            </Card>
+        </div>
     </div>
 </template>
 
 <style scoped>
-
 </style>

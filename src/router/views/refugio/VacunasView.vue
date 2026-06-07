@@ -31,7 +31,11 @@ const eventosPasados = computed(() => {
 </script>
 
 <template>
-    <Contenedor class="w-[75%] m-auto mt-10">
+    <div class="w-3/4 m-auto mt-5">
+        <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold rounded-2xl">
+            <span class="text-white">Eventos de vacunación</span></div>
+    </div>
+    <Contenedor class="w-[75%] m-auto mt-10 mb-15">
         <Tabs value="1">
             <TabList value="1">
                 <Tab value="1">
