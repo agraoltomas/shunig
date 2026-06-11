@@ -32,11 +32,8 @@ const props = defineProps<{ solicitud: ISolicitudCompleta }>()
             <!--            4-->
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Están castradas?</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.cantidad_personas }}</span></div>
+            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.mascotas_castradas ? 'Sí' :'No' }}</span></div>
             <!--            5-->
-            <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
-            <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Tiene experiencia transitando?</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.hay_ninios ? 'Sí' :'No' }}</span></div>
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Tiene experiencia transitando?</div>
             <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.hay_ninios ? 'Sí' :'No' }}</span></div>

@@ -20,9 +20,9 @@ const solicitudes: Ref<IDatosSolicitud[]> = ref([])
 const router = useRouter()
 const loadSolicitudes = async () => {
     startLoading()
-    if (!authUser.user) return
+    if (!authStore.user) return
     try {
-        const r = await axios.value.get(rutas_api.solicitud.USUARIO(authUser.user.id_usuario))
+        const r = await axios.value.get(rutas_api.solicitud.USUARIO(authStore.user.id_usuario))
         const response: MessageResponse<IDatosSolicitud[]> = r.data
         solicitudes.value = response.data
     } catch (error) {

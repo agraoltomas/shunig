@@ -6,6 +6,7 @@ import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import { useResponse } from '@/lib/utils/response.ts'
 import { useAxios } from '@/lib/axios.ts'
+import type { Maybe } from '@/lib/tipos/generics'
 
 const {unwrap} = useResponse()
 const {axios} = useAxios()
@@ -38,22 +39,43 @@ const saveNewMessage = (message: string) => {
     if(messageWindow.value)messageWindow.value.scrollTop = messageWindow.value.scrollHeight
 
 }
-const sendConversation = async () => {
+
+interface ChatResponse{
+    modulo: ('interaccion_basica'),
+    message: string,
+    results: Maybe<any[]>
+}
+const ask = async (message: string): Promise<Maybe<ChatResponse>> => {
     try{
         const r = await unwrap(axios.value.post(rutas_api.chatbot.PREGUNTAR(),{
-            pregunta: JSON.stringify(messages.value.slice(0,5)),
+            pregunta:message,
         }))
-
+        console.log(r)
+        return r.data
     }catch (e){
-
+        return null
     }
 }
 const sendMessage = async () => {
     if(!currentMessage.value)return
     startLoading()
+    const message = currentMessage.value
     currentMessage.value = null
-    saveNewMessage(currentMessage.value!)
-    currentMessage.value = null
+    saveNewMessage(message)
+    const response = await ask(message)
+    console.log(response)
+    if(response){
+        switch (response.modulo){
+            case 'interaccion_basica':
+                messages.value.push({
+                    content: response.message,
+                    type: 'message',
+                    role: "chat",
+                    time: moment(),
+                })
+        }
+    }
+    stopLoading()
 }
 
 

@@ -18,7 +18,7 @@ const props = defineProps<{ solicitud: ISolicitudCompleta }>()
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Cuántas horas estará solo?</div>
             <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3  pr-3 flex justify-start font-semibold">
-                <div>{{ solicitud.detalle.tipo_vivienda}}</div>
+                <div>{{ solicitud.detalle.horas_solo}}</div>
             </div>
             <!--            2-->
             <i v-if="solicitud.detalle.tiempo_disponible_dias" class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>

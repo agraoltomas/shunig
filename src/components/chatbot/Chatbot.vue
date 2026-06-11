@@ -46,7 +46,7 @@ const toggleChat = () => {
             </div>
         </div>
     </div>
-    <div v-if="showing">
+    <div :hidden="!showing">
         <ChatBox @close="() => showing = false"></ChatBox>
     </div>
 </template>

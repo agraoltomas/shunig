@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{ model?: MenuItem[], context?: ('refugio
 });
 
 const {refugio} = useRefugioStore();
-const authUser = useAuthStore()
+const authStore = useAuthStore()
 const pt: Ref<MenubarPassThroughOptions> = ref({
     root: ``,
     rootList: `gap-3 items-center flex flex-row
@@ -29,7 +29,7 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
     start: "min-w-55",
     end: "w-full"
 })
-const to = { path: refugio ? '/refugio' : authUser.user ? '/usuario' : '/' }
+const to = { path: refugio ? '/refugio' : authStore.user ? '/usuario' : '/' }
 </script>
 
 <template>
