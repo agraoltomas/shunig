@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, } from 'pinia'
 import { type Ref, ref } from 'vue'
 import { useAxios } from '@/lib/axios.ts'
 import type { User } from '@/lib/tipos/usuarios'
@@ -9,6 +9,7 @@ import type { IRefugio } from '@/lib/tipos/refugio'
 
 
 export const useRefugioStore = defineStore('refugio', () => {
+
     const axiosService = useAxios();
 
     const refugio: Ref<Maybe<IRefugio>> = ref(null);

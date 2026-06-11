@@ -5,13 +5,13 @@ import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useResponse } from '@/lib/utils/response.ts'
 import { type Ref, ref } from 'vue'
-import type { IMascota } from '@/lib/tipos/mascotas'
+import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
 const { axios } = useAxios()
 const {unwrap} = useResponse()
 
 const {loading, startLoading, stopLoading } = useLoadingComposable()
 export const useUsuarioStore = defineStore('usuario',() => {
-    const {user} = useAuthStore()
+    const authStore = useAuthStore()
     const getUsuario = (id: string|number) => {
         const { axios} = useAxios()
         try {
@@ -23,13 +23,13 @@ export const useUsuarioStore = defineStore('usuario',() => {
 
 
     }
-    const animales: Ref<IMascota[]> = ref([])
+    const animales: Ref<IMascotaTransito[]> = ref([])
     const loadAnimalesUsuario = async () => {
-        if(!user)return
+        if(!authStore.user)return
         if(animales.value.length == 0){
             startLoading()
             try{
-                const r = await unwrap(axios.value.get(`/animal/usuario/${user.id_usuario}/`))
+                const r = await unwrap(axios.value.get(`/animal/usuario/${authStore.user.id_usuario}/`))
                 animales.value = r.data
             }catch (error) {
             }finally{

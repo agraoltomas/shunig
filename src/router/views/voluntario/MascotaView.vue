@@ -12,12 +12,15 @@ import ProgressSpinner from '@/volt/ProgressSpinner.vue'
 import PanelSurface from '@/components/generales/PanelSurface.vue'
 import MascotaDetalle from '@/components/mascotas/MascotaDetalle.vue'
 import moment from 'moment/moment'
-import ReporteTabla from '@/components/transito/ReporteTabla.vue'
+import ReporteTabla from '@/components/reporte/ReporteTabla.vue'
 import Modal from '@/components/modal/Modal.vue'
 import type { Reporte } from '@/lib/tipos/reportes'
 import { rutas_api } from '@/rutas_api.ts'
 import { useResponse } from '@/lib/utils/response.ts'
 import { useToast } from '@/lib/toast/toast.ts'
+import Contenedor from '@/components/generales/Contenedor.vue'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
+import ReporteTablaVoluntario from '@/components/reporte/ReporteTablaVoluntario.vue'
 
 const { unwrap, tryLogError } = useResponse()
 const route = useRoute()
@@ -71,19 +74,19 @@ const reportes: Ref<Reporte[]> = ref([])
 </script>
 
 <template>
-    <PanelSurface :header="mascota?.nombre" class="mx-36">
+    <div class="w-[75vw] m-auto">
         <div v-if="loading">
             <ProgressSpinner></ProgressSpinner>
         </div>
-        <div v-else class="flex flex-row gap-3">
+        <Contenedor v-else class="flex flex-row gap-3">
             <MascotaDetalle v-if="mascota" :mascota="mascota">
             </MascotaDetalle>
-        </div>
-        <PanelSurface header="Reportes" class="m-0! mt-8!">
+        </Contenedor>
+        <ContenedorTitulo  title="Reportes"  class="m-0! mt-8!">
             <ProgressSpinner v-if="loading"></ProgressSpinner>
-            <ReporteTabla v-else-if="mascota" :reportes="reportes" class="m-auto" :mascota="mascota"></ReporteTabla>
-        </PanelSurface>
-    </PanelSurface>
+            <ReporteTablaVoluntario v-else-if="mascota" :reportes="reportes" class="m-auto" :mascota="mascota"></ReporteTablaVoluntario>
+        </ContenedorTitulo>
+    </div>
 </template>
 
 <style scoped>

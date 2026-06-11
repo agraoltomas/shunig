@@ -24,7 +24,7 @@ const refugio: Ref<Maybe<IRefugio>> = ref(null)
 const refugios: Ref<IRefugio[]> = ref([])
 const tipo: Ref<Maybe<string>> = ref(null)
 const animales: Ref<IMascota[]> = ref([])
-const { user } = useAuthStore()
+const authStore = useAuthStore()
 const { unwrap, tryUnwrapError, tryLogError } = useResponse()
 const { axios } = useAxios()
 const toast = useToast()
@@ -35,7 +35,7 @@ onMounted(() => {
     loadRefugios()
 })
 const loadRefugios = async () => {
-    if (!user) return
+    if (!authStore.user) return
     try {
         const r = await unwrap(axios.value.get(rutas_api.refugio.LIST()))
         refugios.value = r.data
@@ -122,7 +122,7 @@ const showAnimal = (a: IMascota) => {
                 <ProgressSpinner v-if="loading"></ProgressSpinner>
                 <AnimalCard v-for="animal in animales" :animal="animal" label="Transitar">
                     <SurfaceButton class="mx-auto!" label="Transitar"
-                                   @click.capture=" () => modal.abrir('nuevoTransito', { mascota: animal, usuario: user })">
+                                   @click.capture=" () => modal.abrir('nuevoTransito', { mascota: animal, usuario: authStore.user })">
                         <template #icon>
                             <img class="size-5 text-white" :src="handshake"></img>
                         </template>

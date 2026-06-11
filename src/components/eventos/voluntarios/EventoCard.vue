@@ -13,6 +13,7 @@ onMounted(() => {
 const date = computed(() => {
     return moment(props.evento.fecha_evento)
 })
+
 const cupos = computed(() => {
     const inscriptos = parseInt(props.evento.inscriptos)
     if (isNaN(inscriptos)) return props.evento.cupo_maximo
@@ -22,10 +23,11 @@ const cupos = computed(() => {
 
 <template>
     <div class="flex flex-row border rounded-xl p-3 gap-3 border-primary-200/40 border-1.5">
-        <div class="flex flex-col gap-1 px-3 bg-primary-200/20 rounded-lg text-center justify-between py-4">
+        <div class="flex flex-col gap-1 px-3 bg-primary-200/20 rounded-lg items-center justify-between py-4">
             <i class="pi pi-calendar text-primary-600 text-2xl"></i>
             <span class="text-3xl text-bold">{{ date.format('DD') }}</span>
             <span class="text-3xl text-bold text-primary-400">{{ date.format('MMM') }}</span>
+            <span class="text-sm pt-2 text-gray-500">{{ evento.rango_horario}}</span>
         </div>
         <EventoCardDetalle :evento="evento"></EventoCardDetalle>
         <div>

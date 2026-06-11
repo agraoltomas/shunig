@@ -2,6 +2,7 @@
 import { computed, onMounted, type Ref, ref } from 'vue'
 import DataTable from '@/volt/DataTable.vue'
 import { useAxios } from '@/lib/axios.ts'
+import { IconField } from 'primevue'
 
 import type { IMascota, IMascotaTransito } from '@/lib/tipos/mascotas'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
@@ -11,12 +12,10 @@ import { useLoadingComposable } from '@/lib/utils/loading.ts'
 
 const router = useRouter()
 
-// const mascotas: Ref<IMascota[]> = ref([])
 
 const mascotas: Ref<IMascota[]> = ref([]);
 const refugioStore = useRefugioStore()
 const axiosService = useAxios()
-const props = defineProps<{ mascotas: IMascota[]}>()
 const {startLoading, stopLoading, loading} = useLoadingComposable()
 
 
@@ -41,10 +40,10 @@ const mascotasFiltradas = computed(() => {
     const texto = busqueda.value.trim().toLowerCase();
 
     if (!texto) {
-        return props.mascotas
+        return mascotas.value
     }
 
-    return props.mascotas.filter((mascota) => {
+    return mascotas.value.filter((mascota) => {
         return [
             mascota.nombre,
             mascota.especie,
@@ -96,7 +95,7 @@ const mascotasFiltradas = computed(() => {
             <Column header="Raza" field="raza"></Column>
             <Column>
                 <template #body="{data}">
-                    <Button label="Gestionar" @click="() => router.push(`/refugio/transito/${data.id_vinculo}`)"></Button>
+                    <Button label="Gestionar" class="bg-refugio-500! border-refugio-500!" @click="() => router.push(`/refugio/transito/${data.id_vinculo}`)"></Button>
                 </template>
             </Column>
             <Column>

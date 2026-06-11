@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+    import paw from "@/assets/images/paw-solid-full-purple.svg"
 </script>
 
 <template>

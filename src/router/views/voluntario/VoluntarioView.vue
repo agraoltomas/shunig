@@ -60,7 +60,7 @@ const toggle = (event: Event) => {
                 <div class="flex flex-row gap-5 justify-around" id="buttons">
                     <Notificaciones></Notificaciones>
                     <Button :title="`ir a ${refugioStore.refugio.nombre}`" v-if="refugioStore.refugio" icon="pi pi-home"
-                            class="flex-col! h-fit my-auto" @click="() => router.push('/refugio')"></Button>
+                            class="flex-col! h-fit my-auto bg-refugio-500! border-refugio-500! hover:bg-refugio-300! hover:border-refugio-300!" @click="() => router.push('/refugio')"></Button>
                 </div>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>

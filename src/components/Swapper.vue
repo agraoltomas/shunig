@@ -16,11 +16,11 @@ const { refugio, loadContextRefugio } = useRefugioStore()
 const {loading, stopLoading, startLoading } = useLoadingComposable()
 onMounted(async () => {
     startLoading()
-    console.log(axiosService.axios.value)
+    console.log(authStore.user, refugio)
     if(!authStore.user)return router.push('/login');
     await loadContextRefugio(authStore.user);
     if(!refugio) return router.push('/usuario');
-
+    stopLoading()
 })
 </script>
 

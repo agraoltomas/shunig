@@ -17,21 +17,21 @@ import Contenedor from '@/components/generales/Contenedor.vue'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 import DangerButton from '@/volt/DangerButton.vue'
 
-const { user } = useAuthStore()
+const authStore = useAuthStore()
 const { axios } = useAxios()
 const datosUsuario = {
-    domicilio: user?.domicilio,
-    nombre: user?.nombre,
-    apellido: user?.apellido,
-    email: user?.email,
-    telefono: user?.telefono
+    domicilio: authStore.user?.domicilio,
+    nombre: authStore.user?.nombre,
+    apellido: authStore.user?.apellido,
+    email: authStore.user?.email,
+    telefono: authStore.user?.telefono
 
 }
 const updateDatos = async (e: FormSubmitEvent) => {
     if (!confirm('actualizar datos?')) return
-    if (!user) return
+    if (!authStore.user) return
     try {
-        const r = await axios.value.patch(rutas_api.usuario.UPDATE({ id_usuario: user.id_usuario }), {
+        const r = await axios.value.patch(rutas_api.usuario.UPDATE({ id_usuario: authStore.user.id_usuario }), {
             ...e.values
         })
 

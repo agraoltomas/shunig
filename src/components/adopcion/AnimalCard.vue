@@ -10,7 +10,6 @@ const props = withDefaults(defineProps<{ animal: IMascota, label?: string }>(), 
     label: 'Seleccionar',
 })
 const modal = useModalStore()
-const { user } = useAuthStore()
 </script>
 
 <template>

@@ -16,31 +16,18 @@ import { useResponse } from '@/lib/utils/response.ts'
 import Modal from '@/components/modal/Modal.vue'
 import InscripcionEventoVacunacion from '@/components/vacunacion/InscripcionEventoVacunacion.vue'
 import { useModalStore } from '@/stores/modales.ts'
+
 const eventoVacunacion = useEventosVacunacionStore()
 
 const eventos: Ref<IEventoVacunacion[]> = ref([])
-const {axios} = useAxios()
-const {unwrap} = useResponse()
+
 onMounted(async () => {
-    eventos.value = await eventoVacunacion.listar()
-    console.log(eventos.value)
-});
-interface IVacuna{
-    id_vacunacion: string,
-    id_tipo_vacuna: string
-}
+    await eventoVacunacion.cargar({ estado: 'disponible' })
+    await eventoVacunacion.cargarInscripcionesUsuario()
+
+})
+
 const modales = useModalStore()
-const getVacunas = async (e: IEventoVacunacion) => {
-    try{
-        const r = await unwrap<IVacuna[]>(axios.value.get(rutas_api.vacunas.ANIMAL(11)))
-        const vacunas = r.data;
-        if(vacunas.map(v => v.id_tipo_vacuna).includes(e.vacuna_tipo.toString())){
-            console.log("La tiene")
-        }else{
-            console.log("No la tiene")
-        }
-    }catch(error){}
-}
 
 
 </script>
@@ -65,10 +52,11 @@ const getVacunas = async (e: IEventoVacunacion) => {
             <TabPanels>
                 <TabPanel :value="1">
                     <div class="flex flex-col gap-1">
-                        <EventoCard v-for="e in eventos" :evento="e">
+                        <EventoCard v-for="e in eventoVacunacion.eventos" :evento="e">
                             <template #end="evento">
                                 <div class="h-full flex flex-col">
-                                    <Button class="my-auto!" label="Inscribir" icon="pi pi-pen-to-square" @click="() => modales.abrir('inscripcion_evento_vacunacion', e)"></Button>
+                                    <Button class="my-auto!" label="Inscribir" icon="pi pi-pen-to-square"
+                                            @click="() => modales.abrir('inscripcion_evento_vacunacion', e)"></Button>
                                 </div>
                             </template>
                         </EventoCard>
@@ -82,12 +70,13 @@ const getVacunas = async (e: IEventoVacunacion) => {
     </div>
     <Modal nombre="inscripcion_evento_vacunacion">
         <template #header>
-            <div class="text-xl font-semibold text-gray-500 p-5">
+            <div class="text-xl font-semibold text-white p-5">
                 <i class="pi pi-calendar-plus p-1"></i>Inscribir animales al evento
             </div>
         </template>
         <template #default="{context: {inscripcion_evento_vacunacion}}">
-            <InscripcionEventoVacunacion v-if="inscripcion_evento_vacunacion" :evento="inscripcion_evento_vacunacion"></InscripcionEventoVacunacion>
+            <InscripcionEventoVacunacion v-if="inscripcion_evento_vacunacion"
+                                         :evento="inscripcion_evento_vacunacion"></InscripcionEventoVacunacion>
         </template>
     </Modal>
 </template>

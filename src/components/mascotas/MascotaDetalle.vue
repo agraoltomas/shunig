@@ -10,7 +10,7 @@ import { useModalStore } from '@/stores/modales.ts'
 import moment from 'moment'
 import { useRouter } from 'vue-router'
 import { TipoSolicitud } from '@/lib/tipos/solicitud.ts'
-import Popover from "@/volt/Popover.vue"
+import Popover from '@/volt/Popover.vue'
 import HistorialAnimal from '@/components/mascotas/HistorialAnimal.vue'
 import { useTemplateRef } from 'vue'
 
@@ -19,7 +19,7 @@ const props = defineProps<{ mascota: IMascota }>()
 const router = useRouter()
 import dog from '@/assets/images/dog.png'
 
-const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
+// const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
 </script>
 
 <template>
@@ -30,7 +30,14 @@ const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
             <slot></slot>
         </div>
         <div class="flex flex-col mx-6 gap-3">
-            <Button class="w-fit!"  label="Ver historial" icon="pi pi-book" @click="(e) => historialPopover?.toggle(e)"></Button>
+            <div class="flex flex-row gap-3">
+                <div class="font-bold text-3xl">{{ mascota.nombre }}</div>
+                <div class="flex flex-row gap-1 bg-gray-100 p-2 rounded text-gray-500">
+                    <i class="pi pi-calendar p-1"></i>
+                    <div class="flex flex-row gap-1">ingreso: <span
+                        class="font-semibold">{{ moment(mascota.fecha_ingreso).format('DD-MM-YYYY') }}</span></div>
+                </div>
+            </div>
             <div class="w-full flex flex-row gap-3">
             </div>
             <div class=" flex flex-row gap-5 flex-wrap">
@@ -40,15 +47,11 @@ const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
                 </div>
                 <div class="flex flex-row gap-3 bg-gray-100 p-2 rounded">
                     <i :class="['p-1 pi', mascota.id_sexo == 2 ? 'pi-venus' : 'pi-mars']"></i>
-                    <div>{{mascota.sexo}}</div>
+                    <div>{{ mascota.sexo }}</div>
                 </div>
                 <div class="flex flex-row gap-3 bg-gray-100 p-2 rounded">
                     <i class="pi pi-calendar p-1"></i>
                     <div>{{ mascota.edad }} años</div>
-                </div>
-                <div class="flex flex-row gap-1 bg-gray-100 p-2 rounded text-gray-500">
-                    <i class="pi pi-calendar p-1"></i>
-                    <div class="flex flex-row gap-1">ingreso: <span class="font-semibold">{{moment(mascota.fecha_ingreso).format('DD-MM-YYYY')}}</span></div>
                 </div>
                 <div>
 
@@ -58,19 +61,16 @@ const historialPopover = useTemplateRef<typeof Popover>("historialPopover");
                      :icon="mascota.es_castrado ? 'pi pi-check' : 'pi pi-times'" value="Castrado"></Tag>
             </div>
             <div class="flex flex-row gap-6 ">
-                <div class="font-semibold  text-slate-400">Especie</div>
-                <div>{{mascota.especie}}</div>
+                <div class="font-semibold  text-slate-400">Raza</div>
+                <div>{{ mascota.raza }}</div>
             </div>
             <div class="flex flex-col gap-3">
                 <div class="font-semibold  text-slate-400">Observaciones</div>
-                <div>{{mascota.observaciones ?? '-'}}</div>
+                <div>{{ mascota.observaciones ?? '-' }}</div>
             </div>
         </div>
     </div>
     <div></div>
-    <Popover ref="historialPopover">
-        <HistorialAnimal :id_animal="mascota.id_animal"></HistorialAnimal>
-    </Popover>
 </template>
 
 <style scoped>

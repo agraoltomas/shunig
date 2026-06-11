@@ -18,6 +18,7 @@ export const rutas_api = {
         LIST: () => `/animal/`,
         salud: {
             LIST: (id_animal: string) => `/animal/${id_animal}/salud/`,
+            REGISTRAR: (id_animal: string) => `/animal/${id_animal}/salud/`,
         }
     },
     transito: {
@@ -38,8 +39,16 @@ export const rutas_api = {
     },
     eventos_vacunacion:{
         LIST: () => `/vacunas/eventos/`,
+        INSCRIBIR: (id_evento: string|number, id_animal: string|number) => `/vacunas/eventos/${id_evento}/inscripcion/${id_animal}/`,
+        INSCRIPCIONES_USUARIO: ()  => `/vacunas/inscripciones/`,
+        INSCRIPCIONES_EVENTO: () => `/vacunas/inscripciones/`,
+        GET: (id_evento: string|number) => `/vacunas/eventos/${id_evento}/`,
+        CREAR: (id_refugio: string|number) => `/refugio/${id_refugio}/eventos/`,
     },
     vacunas: {
         ANIMAL: (id_animal: string|number) => `/animal/${id_animal}/vacunas/`,
+    },
+    chatbot: {
+        PREGUNTAR: () => `/ai/`
     }
 }

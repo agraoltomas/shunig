@@ -2,7 +2,7 @@
 
 import DataListGroup, { type DataListItem } from '@/components/generales/DataListGroup.vue'
 import type { IMascota } from '@/lib/tipos/mascotas'
-import { computed, onMounted, type Ref, ref } from 'vue'
+import { computed, onMounted, reactive, type Ref, ref } from 'vue'
 import { useAxios } from '@/lib/axios.ts'
 import { useResponse } from '@/lib/utils/response.ts'
 import { rutas_api } from '@/rutas_api.ts'
@@ -17,12 +17,13 @@ import TableSelect from '@/components/forms/TableSelect.vue'
 import FormCol from '@/components/forms/FormCol.vue'
 import Modal from '@/components/modal/Modal.vue'
 import Label from '@/components/forms/Label.vue'
+import { useToast } from '@/lib/toast/toast'
 
 const props = defineProps<{ mascota: IMascota }>()
 const { axios } = useAxios()
 const { unwrap } = useResponse()
-
-export interface EstadoSalud {
+const toast = useToast()
+export interface EstadoSalud  {
     id_estado_salud: string,
     id_animal: string,
     fecha_estado_salud: string,
@@ -36,7 +37,8 @@ onMounted(async () => {
     try {
         const r = await unwrap<EstadoSalud[]>(axios.value.get(rutas_api.animales.salud.LIST(props.mascota.id_animal)))
         registros.value = r.data
-    }catch (error) {}
+    } catch (error) {
+    }
 })
 const into = computed(() => {
     return registros.value.map(r => ({
@@ -45,6 +47,32 @@ const into = computed(() => {
     }))
 })
 const modal = useModalStore()
+const nuevoRegistro = reactive({
+    observacion: null,
+    estado_salud: null
+})
+
+const registrar = async () =>{
+    if(!nuevoRegistro.observacion || !nuevoRegistro.estado_salud)return;
+    try{
+        const r = await unwrap(axios.value.post(rutas_api.animales.salud.REGISTRAR(props.mascota.id_animal),{
+            ...nuevoRegistro
+        }))
+        if(r){
+            Object.assign(nuevoRegistro, {
+                observacion: null,
+                estado_salud: null
+            })
+            modal.cerrar('estado_salud')
+            toast.add({severity: "success", detail: "Estado de salud  registrado"})
+        }
+    }catch(error){
+
+    }finally {
+
+    }
+
+}
 </script>
 
 <template>
@@ -55,15 +83,17 @@ const modal = useModalStore()
             </div>
             <div class="font-semibold h-fit my-auto pr-2">Estado de salud</div>
         </div>
-        <Timeline :value="into" align="left"  class="w-full" pt:eventopposite="hidden">
+        <Timeline :value="into" align="left" class="w-full" pt:eventopposite="hidden">
             <template #marker="{item}">
                 <i :class="['text-primary-500 text-center p-1 bg-primary-50 rounded-full',item.icon]"></i>
             </template>
             <template #content="{item}">
                 <div class="flex flex-col gap-1">
-                    <div class="font-semibold">{{ item.estado_salud}}<i v-if="item.observaciones" class="pi pi-info-circle px-1 text-gray-400" :title="item.observaciones"></i></div>
-                    <div class="text-gray-400">{{ moment(item.fecha_estado_salud).format("DD/MM/YYYY")}}</div>
-<!--                    <div class="text-sm text-gray-400">{{ item.observaciones}}</div>-->
+                    <div class="font-semibold">{{ item.estado_salud }}<i v-if="item.observaciones"
+                                                                         class="pi pi-info-circle px-1 text-gray-400"
+                                                                         :title="item.observaciones"></i></div>
+                    <div class="text-gray-400">{{ moment(item.fecha_estado_salud).format('DD/MM/YYYY') }}</div>
+                    <!--                    <div class="text-sm text-gray-400">{{ item.observaciones}}</div>-->
                 </div>
             </template>
         </Timeline>
@@ -76,19 +106,19 @@ const modal = useModalStore()
             <div>
                 <FormRow>
                     <FormCol :span="12">
-                        <Label>
+                        <Label required>
                             <i class="pi pi-heart p-1"></i>Estado de salud
                         </Label>
-                        <TableSelect :tipo="TablaEstatica.EstadoSalud"></TableSelect>
+                        <TableSelect v-model="nuevoRegistro.estado_salud" :tipo="TablaEstatica.EstadoSalud"></TableSelect>
                     </FormCol>
                     <FormCol :span="12">
-                        <Label><i class="pi pi-clipboard p-1 text-grey-300! font-normal!"></i>Observación</Label>
-                        <Textarea :maxlength="150" ></Textarea>
+                        <Label required><i class="pi pi-clipboard p-1 text-grey-300! font-normal!"></i>Observación</Label>
+                        <Textarea required v-model="nuevoRegistro.observacion" :maxlength="150"></Textarea>
                     </FormCol>
                 </FormRow>
-                        <div class="flex flex-row justify-end w-full py-3">
-                            <Button label="Cargar"></Button>
-                        </div>
+                <div class="flex flex-row justify-end w-full py-3">
+                    <Button label="Cargar" @click="registrar"></Button>
+                </div>
             </div>
         </template>
     </Modal>

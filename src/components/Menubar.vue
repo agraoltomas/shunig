@@ -10,10 +10,13 @@ import { useRefugioStore } from '@/stores/refugio.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 
 const router = useRouter()
-const props = withDefaults(defineProps<{ model?: MenuItem[] }>(),{ model: () => []});
+const props = withDefaults(defineProps<{ model?: MenuItem[], context?: ('refugio'|'usuario') }>(),{
+    model: () => [],
+    context: 'usuario'
+});
 
 const {refugio} = useRefugioStore();
-const {user} = useAuthStore()
+const authUser = useAuthStore()
 const pt: Ref<MenubarPassThroughOptions> = ref({
     root: ``,
     rootList: `gap-3 items-center flex flex-row
@@ -26,12 +29,12 @@ const pt: Ref<MenubarPassThroughOptions> = ref({
     start: "min-w-55",
     end: "w-full"
 })
-const to = { path: refugio ? '/refugio' : user ? '/usuario' : '/' }
+const to = { path: refugio ? '/refugio' : authUser.user ? '/usuario' : '/' }
 </script>
 
 <template>
     <Menubar :model="model"
-             class="mb-3 p-3 border-gray-300 bg-primary-500 flex flex-row justify-between  "
+             :class="['mb-3 p-3 border-gray-300 flex flex-row justify-between  ', context == 'refugio' ? 'bg-refugio-500' : 'bg-primary-500']"
              :pt="pt">
         <template #item="{ item }">
         </template>

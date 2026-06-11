@@ -13,20 +13,19 @@ import FormCol from '@/components/forms/FormCol.vue'
 import EditarEvento from '@/components/vacunacion/EditarEvento.vue'
 import AccionesEventoRefugio from '@/components/vacunacion/AccionesEventoRefugio.vue'
 
-const { listar } = useEventosVacunacionStore()
-const eventos: Ref<IEventoVacunacion[]> = ref([])
+const eventosStore = useEventosVacunacionStore()
 const { refugio } = useRefugioStore()
 
 onMounted(async () => {
     if (!refugio) return
-    eventos.value = await listar({ id_refugio: refugio?.id_refugio.toString() })
-    console.log(eventos)
+    await eventosStore.cargar({ id_refugio: refugio?.id_refugio.toString() })
+    console.log(eventosStore.eventos)
 })
 const eventosProximos = computed(() => {
-    return eventos.value.filter(e => moment(e.fecha_evento).isSameOrAfter(moment()))
+    return eventosStore.eventos.filter(e => moment(e.fecha_evento).isSameOrAfter(moment()))
 })
 const eventosPasados = computed(() => {
-    return eventos.value.filter(e => moment(e.fecha_evento).isBefore(moment()))
+    return eventosStore.eventos.filter(e => moment(e.fecha_evento).isBefore(moment()))
 })
 </script>
 
@@ -51,7 +50,7 @@ const eventosPasados = computed(() => {
             <TabPanels>
                 <TabPanel value="1">
                     <div class="flex flex-col gap-3">
-                        <EventoCard v-for="e in eventos" :evento="e">
+                        <EventoCard v-for="e in eventosStore.eventos" :evento="e">
                             <template #end="e">
                                 <AccionesEventoRefugio :evento="e"></AccionesEventoRefugio>
                             </template>
@@ -77,7 +76,7 @@ const eventosPasados = computed(() => {
     </Contenedor>
     <Modal nombre="editar_evento_vacunacion">
         <template #header>
-            <div class="text-xl font-semibold text-gray-500 p-5">
+            <div class="text-xl font-semibold text-white p-5">
                 <i class="pi pi-pen-to-square p-1"></i>Editar evento de vacunación
             </div>
         </template>

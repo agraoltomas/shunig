@@ -11,6 +11,7 @@ const props = defineProps<{
     title: { label: string; icon?: String },
     items: DataListItem[]
 }>()
+
 </script>
 
 <template>

@@ -32,6 +32,9 @@ import DataListGroup from '@/components/generales/DataListGroup.vue'
 import EstadoSalud from '@/components/mascotas/EstadoSalud.vue'
 import Footer from '@/components/generales/Footer.vue'
 import Modal from '@/components/modal/Modal.vue'
+import HistorialAnimal from '@/components/mascotas/HistorialAnimal.vue'
+import VacunasAnimal from '@/components/mascotas/VacunasAnimal.vue'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 
 const props = defineProps<{ mascota: IMascota }>()
 const emit = defineEmits<{ actualizado: [] }>()
@@ -39,7 +42,7 @@ const emit = defineEmits<{ actualizado: [] }>()
 const modalStore = useModalStore()
 const { axios } = useAxios()
 const { startLoading, loading, stopLoading } = useLoadingComposable()
-const { user } = useAuthStore()
+const authStore = useAuthStore()
 const router = useRouter()
 const toImageSource = (f: File): string => {
     return URL.createObjectURL(f)
@@ -171,13 +174,13 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                 </Tag>
                 <div v-else class="flex flex-row gap-3 justify-around">
                     <Button label="Adoptar" icon-pos="left"
-                            @click="() => modalStore.abrir('adopcion', {mascota, usuario: user})">
+                            @click="() => modalStore.abrir('adopcion', {mascota, usuario: authStore.user})">
                         <template #icon>
                             <img class="size-5 text-white" :src="paw"></img>
                         </template>
                     </Button>
                     <Button label="Asignar tránsito" icon-pos="left"
-                            @click="() => modalStore.abrir('nuevoTransito', {mascota, usuario: user})">
+                            @click="() => modalStore.abrir('nuevoTransito', {mascota, usuario: authStore.user})">
                         <template #icon>
                             <img class="size-5 text-white" :src="handshake"></img>
                         </template>
@@ -198,14 +201,9 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
     <div class="flex flex-row gap-5 m-auto w-3/4">
         <EstadoSalud class="w-1/3" :mascota="mascota"></EstadoSalud>
 
-        <Contenedor class="w-1/3">
-            <div class="flex flex-row text-xl gap-3 pb-3">
-                <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
-                    <i class="text-primary-500 text-center pi pi-heart"></i>
-                </div>
-                <div class="font-semibold h-fit my-auto pr-2">Eventos de vacunacion</div>
-            </div>
-        </Contenedor>
+        <ContenedorTitulo title="Eventos de vacunación" icon="pi pi-heart" class="w-1/3">
+                <VacunasAnimal :mascota="mascota"></VacunasAnimal>
+        </ContenedorTitulo>
         <Contenedor class="w-1/3">
             <div class="flex flex-row text-xl gap-3 pb-3">
                 <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
@@ -213,6 +211,7 @@ const imageDisplay: Ref<Maybe<File>> = ref(props.mascota.imagen ? new File(Array
                 </div>
                 <div class="font-semibold h-fit my-auto pr-2">Historial de hogares</div>
             </div>
+                <HistorialAnimal :id_animal="mascota.id_animal"></HistorialAnimal>
         </Contenedor>
     </div>
     <Panel v-if="loading" class="col-span-12 row-span-4 col-start-5">

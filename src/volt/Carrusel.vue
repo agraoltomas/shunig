@@ -46,7 +46,7 @@ const showDialog = ref(false)
                 </Button>
                 <transition name="fade" mode="out-in" v-if="currentPet" class="bg-black/30">
                     <div class="rounded-lg w-105" :key="currentPet.nombre">
-                        <Image pt:image=" block! m-auto" v-if="currentPet.imagen" :src="currentPet.imagen"
+                        <Image pt:image="w-105 block! m-auto" v-if="currentPet.imagen" :src="currentPet.imagen"
                                :alt="currentPet.nombre" />
                         <div class="p-7 flex flex-col text-center">
                             <h2 class="text-2xl text-white">{{ currentPet.nombre }}</h2>

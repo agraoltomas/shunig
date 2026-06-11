@@ -28,12 +28,16 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
                 command: () => router.push('/refugio/transito')
             },
             {
+              label: 'Animales adoptados',
+              command: () => router.push('/refugio/adopcion')
+            },
+            {
                 label: 'Solicitudes pendientes',
                 command: () => router.push('/refugio/solicitudes')
             },
             {
                 label: 'Eventos de vacunación',
-                command: () => router.push('/refugio/vacunas')
+                command: () => router.push('/refugio/vacunacion')
             },
             {
                 label: 'Control de stock',
@@ -58,9 +62,8 @@ if (!authStore.user) {
 </script>
 
 <template>
-    <Menubar>
+    <Menubar context="refugio">
         <template #end>
-
             <div class="flex flex-row gap-3">
                 <div v-if="refugio" class=" m-auto h-full w-full text-center flex flex-row justify-start">
                     <div class="font-semibold text-3xl text-white m-auto px-5">

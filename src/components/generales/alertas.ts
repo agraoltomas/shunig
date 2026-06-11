@@ -6,8 +6,5 @@ export enum EAlerta{
     SolicitudPendiente,
     StockBajo,
     StockModerado,
-    StockAlto,
-    DineroBajo,
-    DineroModerado,
-    DineroAlto
+    StockAlto
 }

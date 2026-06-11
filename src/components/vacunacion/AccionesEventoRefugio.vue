@@ -2,12 +2,12 @@
 import type { IEventoVacunacion } from '@/lib/tipos/vacunacion.ts'
 import moment from 'moment'
 import { useModalStore } from '@/stores/modales.ts'
+import { useRouter } from 'vue-router'
+import { dayDiff } from '@/lib/utils/eventos.ts'
 
 const props = defineProps<{ evento: IEventoVacunacion&{cupos:number}}>()
-const dayDiff = (f: string) => {
-    console.log(moment(f), moment(), moment(f).diff(moment(), 'days'))
-    return moment(f).diff(moment(), 'days')
-}
+const router = useRouter()
+
 const messageEventTiming = (e: IEventoVacunacion) => {
     const diff = dayDiff(e.fecha_evento)
     console.log(diff)
@@ -31,12 +31,11 @@ const modales = useModalStore()
         </div>
         <div class="text-gray-600">{{messageEventTiming(evento) }}</div>
         <div class="flex flex-rew gap-3 justify-between">
-            <Button icon="pi pi-eye" label="Ver detalles" outlined></Button>
+            <Button icon="pi pi-eye" label="Ver detalles" outlined @click="() => router.push(`/refugio/vacunacion/${evento.id_evento_vacunacion}/`)"></Button>
             <Button v-if="!(dayDiff(evento.fecha_evento) < 0)" icon="pi pi-pencil" label="Editar" outlined @click="() => modales.abrir('editar_evento_vacunacion',evento)"></Button>
         </div>
     </div>
 </template>
 
 <style scoped>
-
 </style>

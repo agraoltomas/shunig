@@ -7,10 +7,13 @@ import { useModalStore } from '@/stores/modales.ts'
 import type { IProducto } from '@/lib/tipos/productos'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import { useRouter } from 'vue-router'
-import Alerta from '@/components/generales/Alerta.vue'
 import { EAlerta } from '../generales/alertas'
 import axios from '@/lib/axios.ts'
 import { useToast } from '@/lib/toast/toast.ts'
+import AlertaSmall from '@/components/generales/AlertaSmall.vue'
+import Contenedor from '@/components/generales/Contenedor.vue'
+import Avatar from '@/volt/Avatar.vue'
+import { IconField } from 'primevue'
 
 const router = useRouter()
 const toast = useToast()
@@ -140,7 +143,8 @@ const cantidadProducto = (producto: IProducto) => {
 
                 <Button
                     icon="pi pi-plus"
-                    label="Agregar producto" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 "
+                    label="Agregar producto"
+                    class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500 "
                     severity="success"
                     @click="modalesStore.abrir('nuevoProducto')"
                 />
@@ -211,7 +215,7 @@ const cantidadProducto = (producto: IProducto) => {
 
                 <Column header="Alertas" style="width: 14%">
                     <template #body="{ data: producto }">
-                        <Alerta
+                        <AlertaSmall
                             v-if="obtenerAlertaStock(producto) !== null"
                             :tipo="obtenerAlertaStock(producto)!"
                         />
@@ -237,7 +241,8 @@ const cantidadProducto = (producto: IProducto) => {
                             <template #footer>
                                 <div class="flex justify-end p-3 border-t border-surface-200">
                                     <Button
-                                        size="small" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                                        size="small"
+                                        class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
                                         icon="pi pi-send"
                                         label="Solicitar"
                                         severity="success"
@@ -254,8 +259,9 @@ const cantidadProducto = (producto: IProducto) => {
                     <template #body="{ data }">
                         <div class="flex gap-2">
                             <Button
-                                icon="pi pi-eye" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
-                                
+                                icon="pi pi-eye"
+                                class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+
                                 severity="secondary"
                                 @click="router.push(`/refugio/inventario/producto/${data.id_producto}`)"
                             />
@@ -271,62 +277,57 @@ const cantidadProducto = (producto: IProducto) => {
 
         <!-- Métricas -->
         <div class="grid grid-cols-3 gap-4 mt-5">
-            <Card>
-                <template #content>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
-                            <i class="pi pi-box text-xl"></i>
-                        </div>
+            <Contenedor>
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
+                        <i class="pi pi-box text-xl"></i>
+                    </div>
 
-                        <div class="flex flex-col">
+                    <div class="flex flex-col">
                             <span class="text-3xl font-bold text-gray-700">
                                 {{ totalProductos }}
                             </span>
-                            <span class="text-sm text-gray-500">
+                        <span class="text-sm text-gray-500">
                                 Total productos
                             </span>
-                        </div>
                     </div>
-                </template>
-            </Card>
+                </div>
+            </Contenedor>
 
-            <Card>
-                <template #content>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
-                            <i class="pi pi-warehouse text-xl"></i>
-                        </div>
+            <Contenedor>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                        <i class="pi pi-warehouse text-xl"></i>
+                    </div>
 
-                        <div class="flex flex-col">
+                    <div class="flex flex-col">
                             <span class="text-3xl font-bold text-gray-700">
                                 {{ totalStock }}
                             </span>
-                            <span class="text-sm text-gray-500">
+                        <span class="text-sm text-gray-500">
                                 Stock total
                             </span>
-                        </div>
                     </div>
-                </template>
-            </Card>
+                </div>
+            </Contenedor>
 
-            <Card>
-                <template #content>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center">
-                            <i class="pi pi-exclamation-triangle text-xl"></i>
-                        </div>
+            <Contenedor>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center">
+                        <i class="pi pi-exclamation-triangle text-xl"></i>
+                    </div>
 
-                        <div class="flex flex-col">
+                    <div class="flex flex-col">
                             <span class="text-3xl font-bold text-gray-700">
                                 {{ productosConAlerta }}
                             </span>
-                            <span class="text-sm text-gray-500">
+                        <span class="text-sm text-gray-500">
                                 Productos con alerta
                             </span>
-                        </div>
                     </div>
-                </template>
-            </Card>
+                </div>
+            </Contenedor>
         </div>
     </div>
 </template>

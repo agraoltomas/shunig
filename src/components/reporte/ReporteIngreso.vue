@@ -62,7 +62,7 @@ const ingresarReporte = async () => {
             </FormCol>
         </FormRow>
         <div>
-            <Button label="Cargar" :disabled="!validar" @click="ingresarReporte"></Button>
+            <Button label="Cargar" class="bg-refugio-500 border-refugio-500" :disabled="!validar" @click="ingresarReporte"></Button>
         </div>
     </div>
 </template>

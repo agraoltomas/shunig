@@ -14,15 +14,15 @@ import ItemSolicitud from '@/components/solicitud/ItemSolicitud.vue'
 import { useRouter } from 'vue-router'
 
 const { axios } = useAxios()
-const { user } = useAuthStore()
+const authStore = useAuthStore()
 const { loading, stopLoading, startLoading } = useLoadingComposable()
 const solicitudes: Ref<IDatosSolicitud[]> = ref([])
 const router = useRouter()
 const loadSolicitudes = async () => {
     startLoading()
-    if (!user) return
+    if (!authUser.user) return
     try {
-        const r = await axios.value.get(rutas_api.solicitud.USUARIO(user.id_usuario))
+        const r = await axios.value.get(rutas_api.solicitud.USUARIO(authUser.user.id_usuario))
         const response: MessageResponse<IDatosSolicitud[]> = r.data
         solicitudes.value = response.data
     } catch (error) {

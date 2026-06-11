@@ -40,7 +40,7 @@ onMounted(async () => {
             <Panel class="border-white! shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-2xl border-0 overflow-auto" pt:header="p-0!">
                 <template #header>
                     <div class="w-full h-full">
-                        <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold pl-3 py-4">
+                        <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold pl-3">
                             <span class="text-white">Control de stock</span>
                         
                         </div>

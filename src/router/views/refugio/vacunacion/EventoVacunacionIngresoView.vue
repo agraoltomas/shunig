@@ -10,8 +10,56 @@ import Label from '@/components/forms/Label.vue'
 import DatePicker from '@/volt/DatePicker.vue'
 import TableSelect from '@/components/forms/TableSelect.vue'
 import { TablaEstatica } from '@/lib/tipos/estaticos.ts'
+import { reactive } from 'vue'
+import { rutas_api } from '@/rutas_api.ts'
+import { useAxios } from '@/lib/axios.ts'
+import { useResponse } from '@/lib/utils/response.ts'
+import { useToast } from '@/lib/toast/toast.ts'
+import { useRouter } from 'vue-router'
+import moment from 'moment/moment'
 
-const { refugio} = useRefugioStore()
+const { refugio } = useRefugioStore()
+const router = useRouter()
+const { axios } = useAxios()
+const { unwrap } = useResponse()
+const toast = useToast()
+const validar = () => {
+    return dataIngreso.cupo_maximo
+        && dataIngreso.descripcion != null
+        && dataIngreso.tipo_vacuna != null
+        && dataIngreso.fecha_evento != null
+}
+const ingresar = async () => {
+    if(!refugio)return
+    if (!validar()) return
+    try {
+        const r = await unwrap(axios.value.post(rutas_api.eventos_vacunacion.CREAR(refugio.id_refugio),{
+            ...dataIngreso,
+            fecha_evento: moment(dataIngreso.fecha_evento).format('YYYY-MM-DD'),
+        }))
+        toast.add({severity:"success", detail: r.message})
+        Object.assign(dataIngreso, {
+            fecha_evento: null,
+            descripcion: null,
+            tipo_vacuna: null,
+            veterinario_responsable: null,
+            observaciones: null,
+            cupo_maximo: null
+        })
+
+    } catch (error) {
+    } finally {
+
+    }
+}
+const dataIngreso = reactive({
+    fecha_evento: null,
+    descripcion: null,
+    tipo_vacuna: null,
+    veterinario_responsable: null,
+    observaciones: null,
+    cupo_maximo: null
+})
 </script>
 
 <template>
@@ -22,17 +70,19 @@ const { refugio} = useRefugioStore()
                 <div class="text-gray-600">Registra un nuevo evento de vacunación para realizar en el refugio</div>
             </div>
             <div class="overflow-hidden rounded-full">
-                <img :src="vaccDog" class="py-5 w-40 "/>
+                <img :src="vaccDog" class="py-5 w-40 " />
             </div>
         </div>
         <Contenedor v-if="refugio" title="Refugio" icon="pi pi-home" class="m-3 flex flex-row">
             <div class="flex flex-row text-xl gap-3 pb-3 ">
                 <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
-                    <i  :class="['text-primary-500 text-center', 'pi pi-home']"></i>
+                    <i :class="['text-primary-500 text-center', 'pi pi-home']"></i>
                 </div>
                 <div class="font-semibold h-fit my-auto">Refugio</div>
             </div>
-            <div class="border rounded-lg border-gray-500 w-fit px-3 py-1 font-semibold mx-3 align-middle inline">{{ refugio.nombre}}</div>
+            <div class="border rounded-lg border-gray-500 h-fit px-3 py-1 font-semibold mx-3 align-middle inline">
+                {{ refugio.nombre }}
+            </div>
         </Contenedor>
         <div class="flex flex-row gap-3 mx-3">
             <ContenedorTitulo title="Información general" icon="pi pi-calendar" class="grow">
@@ -41,13 +91,14 @@ const { refugio} = useRefugioStore()
                         <Label required>
                             Fecha del evento
                         </Label>
-                        <DatePicker></DatePicker>
+                        <DatePicker v-model="dataIngreso.fecha_evento"></DatePicker>
                     </FormCol>
                 </FormRow>
                 <FormRow>
                     <FormCol :span="12">
                         <Label>Descripción</Label>
-                        <Textarea :maxlength="150" :auto-resize="true" placeholder="Ej: El próximo 29 de mayo realizaremos una jornada de vacunación abierta para perros y gatos. Será una excelente oportunidad para mantener al día el calendario sanitario de tu mascota y recibir asesoramiento de profesionales veterinarios."></Textarea>
+                        <Textarea v-model="dataIngreso.descripcion" :maxlength="150" :auto-resize="true"
+                                  placeholder="Ej: El próximo 29 de mayo realizaremos una jornada de vacunación abierta para perros y gatos. Será una excelente oportunidad para mantener al día el calendario sanitario de tu mascota y recibir asesoramiento de profesionales veterinarios."></Textarea>
                     </FormCol>
                 </FormRow>
             </ContenedorTitulo>
@@ -55,19 +106,22 @@ const { refugio} = useRefugioStore()
                 <FormRow>
                     <FormCol :span="12">
                         <Label required>Vacuna</Label>
-                        <TableSelect :tipo="TablaEstatica.Vacuna" placeholder="Seleccionar tipo de vacuna"></TableSelect>
+                        <TableSelect v-model="dataIngreso.tipo_vacuna" :tipo="TablaEstatica.Vacuna"
+                                     placeholder="Seleccionar tipo de vacuna"></TableSelect>
                     </FormCol>
                 </FormRow>
                 <FormRow>
                     <FormCol :span="12">
                         <Label>Veterinario responsable</Label>
-                        <InputText placeholder="Nombre del/la veterinari@"></InputText>
+                        <InputText v-model="dataIngreso.veterinario_responsable"
+                                   placeholder="Nombre del/la veterinari@"></InputText>
                     </FormCol>
                 </FormRow>
                 <FormRow>
                     <FormCol :span="12">
                         <Label>Observaciones</Label>
-                        <Textarea placeholder="Observaciones adicionales (opcional)"></Textarea>
+                        <Textarea v-model="dataIngreso.observaciones"
+                                  placeholder="Observaciones adicionales (opcional)"></Textarea>
                     </FormCol>
                 </FormRow>
             </ContenedorTitulo>
@@ -75,13 +129,13 @@ const { refugio} = useRefugioStore()
         <ContenedorTitulo class="m-3" title="Cupo" icon="pi pi-users">
             <div class="flex flex-row gap-5 items-center">
                 <Label required>Cupo maximo de animales</Label>
-                <InputNumber show-buttons :min="0"></InputNumber>
+                <InputNumber v-model="dataIngreso.cupo_maximo" show-buttons :min="0"></InputNumber>
                 <span class="text-gray-400 text-sm">Cantidad máxima de animales que se vacunarán en este evento</span>
             </div>
         </ContenedorTitulo>
         <div class="flex flex-row px-3 py-5 gap-3 justify-end">
             <Button variant="outlined">Cancelar</Button>
-            <Button icon="pi pi-save" label="Guardar evento"></Button>
+            <Button icon="pi pi-save" label="Guardar evento" @click="ingresar"></Button>
         </div>
     </div>
 

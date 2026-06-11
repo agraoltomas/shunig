@@ -1,6 +1,7 @@
 import type { Maybe } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import type { IMascota } from '@/lib/tipos/mascotas'
+import type { Reporte } from '@/lib/tipos/reportes'
 
 export interface ITransito {
     id_transito: string,
@@ -14,5 +15,7 @@ export interface DetalleTransito {
     transito: ITransito,
     animal: IMascota,
     usuario: User,
-    reportes: {}[]
+    reportes: Reporte[]
 }
+
+
