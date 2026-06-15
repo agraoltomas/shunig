@@ -13,21 +13,52 @@ import DisponibilidadYCompromiso from '@/components/solicitud/detalle/Disponibil
 import SolicitudVivienda from '@/components/solicitud/detalle/SolicitudVivienda.vue'
 import type { ISolicitudCompleta } from '@/lib/tipos/solicitud.ts'
 import { useRefugioStore } from '@/stores/refugio.ts'
+import Contenedor from '@/components/generales/Contenedor.vue'
+
+
 const props = withDefaults(defineProps<{ solicitud: ISolicitudCompleta, context?: ('usuario'|'refugio') }>(), {
     context: 'usuario'
 });
 const { refugio} = useRefugioStore()
 const emits = defineEmits<{ aceptar: [], rechazar: []}>()
 </script>
-
+<!--Vista del detalle de la solicitud sea de adopción o de tránsito-->
 <template>
-    <div class="w-[80vw] m-auto flex flex-col gap-3 w-3/4 mt-5 mb-15">
+    <div class="w-[75vw] m-auto flex flex-col gap-3 mt-10 mb-15">
         <!--        HEADER-->
-        <div class="shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-2xl p-3 flex flex-row">
-            <div class="max-h-60 overflow-hidden m-3 rounded-lg text-center " v-if="solicitud?.animal">
+        <Contenedor class="w-full overflow-auto m-auto" pt:header="p-0!">
+            <div class="flex flex-col gap-3">
+                <!-- Sector de botones -->
+        <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+            <span class="font-bold text-2xl">Detalle de la solicitud</span>
+            <div class="flex flex-row gap-3">
+                <Button
+                    class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
+                    outlined
+                    severity="secondary"
+                    icon="pi pi-undo"
+                    label="Volver"
+                    @click="$router.go(-1)"
+                />
+
+                <Button
+                    v-if="context === 'refugio' && solicitud.animal"
+                    outlined
+                    severity="success"
+                    icon="pi pi-arrow-up-right"
+                    label="Ver animal"
+                    @click="$router.push(`/refugio/mascota/${solicitud.animal.id_animal}`)"
+                />
+            </div>
+        </div>
+        <!-- fin sector de botones -->
+         <div class="flex flex-row gap-5">
+            <!--Imagen del animal-->
+             <div v-if="solicitud?.animal" class="max-h-60 overflow-hidden m-3 rounded-lg text-center " >
                 <img v-if="solicitud.animal.imagen" class="w-70  rounded-lg " :src="solicitud.animal.imagen" />
                 <SinImagen v-else></SinImagen>
             </div>
+            <!--fin imagen del animal-->
             <div class="flex flex-col my-3 mx-2 w-1/2 gap-3">
                 <div class="flex flex-row gap-4">
                     <div class="h-fit my-auto font-bold text-2xl">Solicitud #{{ solicitud.id_solicitud }}</div>
@@ -67,11 +98,15 @@ const emits = defineEmits<{ aceptar: [], rechazar: []}>()
                 </div>
 
             </div>
-            <div v-if="context == 'refugio'  && solicitud.id_estado == '2' && refugio" class="shadow-[rgba(0,0,0,0.1)] grow flex flex-col gap-3 ml-5 m-2">
-                <Button fluid severity="success" icon="pi pi-check" label="Aceptar" @click="() => $emit('aceptar')"></Button>
-                <DangerButton fluid severity="danger" icon="pi pi-times" label="Rechazar" @click="() => $emit('rechazar')"></DangerButton>
+             <div v-if="context == 'refugio'  && solicitud.id_estado == '2' && refugio" class="shadow-[rgba(0,0,0,0.1)] grow flex flex-col gap-3 ml-5 m-2">
+                <span class="font-semibold">Estado de la solicitud:</span>
+                <Button fluid outlined severity="success" icon="pi pi-check" label="Aceptar" @click="() => $emit('aceptar')"></Button>
+                <DangerButton fluid outlined severity="danger" icon="pi pi-times" label="Rechazar" @click="() => $emit('rechazar')"></DangerButton>
             </div>
-        </div>
+
+         </div>
+        </div>    
+        </Contenedor>
         <!--        END HEADER-->
         <div class="flex flex-row gap-3 w-full">
             <SolicitudInformacionPrincipal v-if="solicitud" :solicitud="solicitud"></SolicitudInformacionPrincipal>

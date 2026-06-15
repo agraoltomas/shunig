@@ -29,6 +29,8 @@ const toAlertaInfo = (a: AlertaGroup): AlertaInfo => {
             return {prioridad: 3, tipo_alerta: a.type, titulo: `${a.count} solicitud${a.count == 1 ? '' : 'es'} pendiente${a.count == 1 ? '' : 's'} `, descripcion: ''}
         case 'VacunaVencida':
             return {prioridad: 2, tipo_alerta: a.type, titulo: `${a.count} animal${a.count == 1 ? '' : 'es'} con vacuna vencida`, descripcion: ''}
+        case 'StockBajo':
+            return {prioridad: 3, tipo_alerta: a.type, titulo: `${a.count} producto${a.count == 1 ? '' : 's'} con stock bajo`, descripcion: '' }
         default:
             return { descripcion: '', prioridad: 1, tipo_alerta: "AnimalSinReporte", titulo: '' }
     }
@@ -53,11 +55,23 @@ const group = computed(() => {
     }
     return r
 })
+
+const alertasResumenOrdenadas = computed(() => {
+    return group.value
+        .map((alerta) => toAlertaInfo(alerta))
+        .sort((a, b) => {
+            return Number(b.prioridad) - Number(a.prioridad)
+        })
+})
 </script>
 
 <template>
     <div class="flex flex-col gap-3">
-        <AlertaResumen v-for="alerta in group" :alerta="toAlertaInfo(alerta)"></AlertaResumen>
+        <AlertaResumen
+            v-for="alerta in alertasResumenOrdenadas"
+            :key="alerta.tipo_alerta"
+            :alerta="alerta"
+        />
     </div>
 </template>
 

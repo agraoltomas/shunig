@@ -14,6 +14,7 @@ import type { DetalleAdopcion } from '@/lib/tipos/adopcion'
 import AdopcionDetalle from '@/components/adopcion/AdopcionDetalle.vue'
 import Contenedor from '@/components/generales/Contenedor.vue'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
+import paw from '@/assets/images/paw-solid-full.svg'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
 const { axios } = useAxios()
@@ -54,9 +55,10 @@ interface Reporte {
 const reportes: Ref<Reporte[]> = ref([])
 console.log(route)
 </script>
-
+<!--Vista de la gestión del animal adoptado-->
 <template>
-    <div v-if="adopcion" class="w-[75vw] m-auto ">
+    <div v-if="adopcion" class="w-[75vw] m-auto mt-10 mb-15">
+        <!--
         <div class="w-full h-full pb-3" v-if="adopcion.animal">
             <div
                 class="bg-refugio-500 rounded-lg w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center">
@@ -64,7 +66,46 @@ console.log(route)
                 <SecondaryButton icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!"
                                  @click="() => adopcion ? router.push(`/refugio/mascota/${adopcion.animal.id_animal}`) : null"></SecondaryButton>
             </div>
-        </div>
+        </div>-->
+        <Contenedor v-if="adopcion.animal" class="overflow-auto m-auto mb-5" pt:header="p-0!">
+            <div class="flex flex-col gap-3">
+                <!-- Sector de botones -->
+                <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+                    <span class="font-bold text-2xl">Detalle de la adopción</span>
+                    <div class="flex flex-row gap-3">
+                        <Button
+                                class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
+                                outlined
+                                severity="secondary"
+                                icon="pi pi-undo"
+                                label="Volver"
+                                @click="$router.go(-1)"></Button>
+                        <Button
+                                outlined
+                                severity="success"
+                                icon="pi pi-arrow-up-right"
+                                label="Ver animal"
+                                @click="() => router.push(`/refugio/mascota/${adopcion.animal.id_animal}`)"></Button>
+                    </div>
+                </div>
+                <!--fin sector de botones-->
+                <div class="flex flex-row gap-5 grow">
+                    <!-- resumen animal -->
+                    <div class="rounded-full bg-primary-500 w-10 h-10 flex items-center justify-center">
+                        <img class="size-5 text-4xl" :src="paw" aria-hidden="true"></img>
+                    </div>
+                    <div class="flex flex-col gap-4 grow">
+                        <div class="flex flex-row gap-4 items-center">
+                            <div class="font-bold text-3xl">
+                                {{ adopcion.animal.nombre }}
+                            </div>
+                            <Tag severity="info" value="Adoptado" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Contenedor>
+
         <div class="grid gap-3 grid-cols-12 grid-rows-4">
             <Contenedor class="col-span-4 row-span-2" v-if="loading">
                 <ProgressSpinner

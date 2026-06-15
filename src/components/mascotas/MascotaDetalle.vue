@@ -23,7 +23,7 @@ import dog from '@/assets/images/dog.png'
 </script>
 
 <template>
-    <div class="flex flex-row gap-4 pt-3">
+    <div class="flex flex-row gap-4">
         <div class="flex flex-col gap-3 mx-3 h-full items-center min-w-80">
             <Image v-if="mascota.imagen" class="" pt:image="max-w-72!" :src="mascota.imagen"></Image>
             <SinImagen v-else></SinImagen>
@@ -34,7 +34,7 @@ import dog from '@/assets/images/dog.png'
                 <div class="font-bold text-3xl">{{ mascota.nombre }}</div>
                 <div class="flex flex-row gap-1 bg-gray-100 p-2 rounded text-gray-500">
                     <i class="pi pi-calendar p-1"></i>
-                    <div class="flex flex-row gap-1">ingreso: <span
+                    <div class="flex flex-row gap-1">Ingreso: <span
                         class="font-semibold">{{ moment(mascota.fecha_ingreso).format('DD-MM-YYYY') }}</span></div>
                 </div>
             </div>

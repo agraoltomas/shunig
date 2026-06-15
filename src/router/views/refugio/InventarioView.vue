@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-cols-4 grid-rows-12 p-3 h-screen w-3/4 m-auto">
+    <div class="grid grid-cols-4 grid-rows-12 p-3 h-screen w-3/4 m-auto mb-15">
         <div class="col-span-4 row-span-12">
             <Panel class="border-white! shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-2xl border-0 overflow-auto" pt:header="p-0!">
                 <template #header>

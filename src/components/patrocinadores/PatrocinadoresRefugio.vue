@@ -6,14 +6,27 @@ import DangerButton from '@/volt/DangerButton.vue'
 import { useModalStore } from '@/stores/modales.ts'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import { useRouter } from 'vue-router'
+import Contenedor from '@/components/generales/Contenedor.vue'
 
 const router = useRouter()
 const modalesStore = useModalStore()
 
 const props = withDefaults(defineProps<{
     patrocinadores?: IPatrocinador[]
+    totalSolicitudesDonacion?: number
+    totalDonacionesRecibidas?: number
 }>(), {
-    patrocinadores: () => []
+    patrocinadores: () => [],
+    totalSolicitudesDonacion: 0,
+    totalDonacionesRecibidas: 0
+})
+
+const totalSolicitudesDonacion = computed(() => {
+    return props.totalSolicitudesDonacion
+})
+
+const totalDonacionesRecibidas = computed(() => {
+    return props.totalDonacionesRecibidas
 })
 
 const busqueda = ref('')
@@ -56,6 +69,7 @@ const formatearFecha = (fecha?: string | null) => {
 
 <template>
     <div class="p-4">
+        <!--tabla-->
             <div class="flex flex-col gap-5">
 
                 <!-- Descripción + botón -->
@@ -171,48 +185,63 @@ const formatearFecha = (fecha?: string | null) => {
                     Mostrando {{ patrocinadoresFiltrados.length }} de {{ totalPatrocinadores }} patrocinadores
                 </div>
             </div>
+            <!--fin tabla-->
        
 
-        <!-- Métricas -->
-        <div class="grid grid-cols-2 gap-4 mt-5">
-            <Card>
-                <template #content>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
-                            <i class="pi pi-users text-xl"></i>
-                        </div>
+<!-- metricas -->
+<div class="grid grid-cols-3 gap-4 mt-5">
+    <Contenedor>
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
+                <i class="pi pi-users text-xl"></i>
+            </div>
 
-                        <div class="flex flex-col">
-                            <span class="text-3xl font-bold text-gray-700">
-                                {{ totalPatrocinadores }}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                Total patrocinadores
-                            </span>
-                        </div>
-                    </div>
-                </template>
-            </Card>
-
-            <Card>
-                <template #content>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
-                            <i class="pi pi-search text-xl"></i>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <span class="text-3xl font-bold text-gray-700">
-                                {{ patrocinadoresFiltrados.length }}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                Resultados visibles
-                            </span>
-                        </div>
-                    </div>
-                </template>
-            </Card>
+            <div class="flex flex-col">
+                <span class="text-3xl font-bold text-gray-700">
+                    {{ totalPatrocinadores }}
+                </span>
+                <span class="text-sm text-gray-500">
+                    Total patrocinadores
+                </span>
+            </div>
         </div>
+    </Contenedor>
+
+    <Contenedor>
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center">
+                <i class="pi pi-send text-xl"></i>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-3xl font-bold text-gray-700">
+                    {{ totalSolicitudesDonacion }}
+                </span>
+                <span class="text-sm text-gray-500">
+                    Solicitudes de donación
+                </span>
+            </div>
+        </div>
+    </Contenedor>
+
+    <Contenedor>
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                <i class="pi pi-gift text-xl"></i>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-3xl font-bold text-gray-700">
+                    {{ totalDonacionesRecibidas }}
+                </span>
+                <span class="text-sm text-gray-500">
+                    Donaciones recibidas
+                </span>
+            </div>
+        </div>
+    </Contenedor>
+</div>
+<!-- fin metricas -->
     </div>
 </template>
 

@@ -35,18 +35,29 @@ import Dialog, { type DialogPassThroughOptions, type DialogProps } from 'primevu
 import { ref } from 'vue';
 import SecondaryButton from './SecondaryButton.vue';
 import { ptViewMerge } from './utils';
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 
 interface Props extends /* @vue-ignore */ DialogProps {}
 defineProps<Props>();
+    
+const route = useRoute();
 
-const theme = ref<DialogPassThroughOptions>({
+//diferencio los modales de usuario y refugio
+const headerColor = computed(() => {
+    return route.path.startsWith('/refugio')
+        ? 'bg-refugio-500 text-white'
+        : 'bg-primary-500 text-white'
+})
+
+const theme = computed<DialogPassThroughOptions>(() => ({
     root: `max-h-[90%] max-w-screen rounded-xl
          dark:border-surface-700
         bg-surface-0 dark:bg-surface-900
         text-surface-900 dark:text-surface-0 shadow-lg
         p-maximized:w-screen p-maximized:h-screen p-maximized:top-0 p-maximized:start-0p-maximized: max-h-full p-maximized:rounded-none`,
-    header: `flex items-center justify-between shrink-0 mb-5 text-center text-white bg-primary-500 rounded-t-xl`,
-    title: `font-bold text-2xl w-full`,
+    header: `flex items-center justify-between shrink-0 mb-5 text-center text-white rounded-t-xl ${headerColor.value}`,
+    title: `font-semibold m-auto text-2xl pb-0! my-3`,
     headerActions: `flex items-center gap-2`,
     content: `overflow-y-auto pt-0 px-5 pb-5 p-maximized:grow`,
     footer: `shrink-0 pt-0 px-5 pb-5 flex justify-end gap-2`,
@@ -57,5 +68,5 @@ const theme = ref<DialogPassThroughOptions>({
         leaveActiveClass: 'transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)]',
         leaveToClass: 'opacity-0 scale-75'
     }
-});
+}));
 </script>

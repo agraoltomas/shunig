@@ -56,45 +56,173 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
 }
 
 </script>
-
+<!--Vista del detalle del evento de vacunación-->
 <template>
-    <Contenedor v-if="loading"></Contenedor>
-    <div class="w-[70vw] m-auto" v-else-if="evento">
-        <RouterLink :to="{ path: '/refugio/vacunacion'}"
-                    class="mb-8 cursor-pointer flex flex-row gap-5 items-center font-semibold"><i
-            class="pi pi-arrow-left"></i>
-            <div class="h-fit">Volver a eventos de vacunacion</div>
-        </RouterLink>
-        <div class="flex flex-row justify-between gap-5">
-            <div class="text-3xl font-semibold">{{ evento.descripcion }}</div>
-            <div class="flex flex-row gap-3">
-                <Button class="h-fit" size="small" variant="outlined" label="Editar evento"
-                        icon="pi pi-pencil"></Button>
-                <DangerButton class="h-fit py-1!" icon="pi pi-trash" label="Cancelar evento"></DangerButton>
+    <Contenedor v-if="loading">
+        <ProgressSpinner
+            class="m-auto h-20! text-center"
+            pt:circle="stroke-red-100 p-progressspinner-circle"
+            pt:root="p-progressspinner w-full!"
+            pt:spin="p-progressspinner-spin"
+        />
+    </Contenedor>
+    <div v-else-if="evento" class="w-[75vw] m-auto mt-10 mb-15">
+        <Contenedor class="overflow-auto w-full mb-5" pt:header="p-0!">
+            <div class="flex flex-col gap-3">
+                <!-- Sector de botones -->
+                <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+                    <span class="font-bold text-2xl">Detalle del evento de vacunación</span>
+
+                    <div class="flex flex-row gap-3">
+                        <Button @click="$router.go(-1)" outlined
+                                severity="secondary"
+                                icon="pi pi-undo"
+                                label="Volver"
+                            class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
+                            hover:!bg-refugio-200 rounded-md px-4 py-2 flex flex-row gap-2 items-center no-underline">
+                        </Button>
+
+                        <Button
+                            outlined
+                            severity="success"
+                            icon="pi pi-pencil"
+                            label="Editar evento"
+                        />
+
+                        <DangerButton outlined
+                            icon="pi pi-trash"
+                            label="Cancelar evento"
+                        />
+                    </div>
+                </div>
+                <!-- fin sector de botones -->
+
+                <div class="flex flex-row gap-5 w-full">
+                    <!-- Icono evento -->
+                    <div class="rounded-full bg-primary-200/30 w-28 h-28 flex items-center justify-center shrink-0">
+                        <i class="pi pi-heart text-primary-500 text-4xl"></i>
+                    </div>
+
+                    <!-- Datos resumen -->
+                    <div class="flex flex-col gap-4 flex-1 min-w-0">
+                        <div class="flex flex-row flex-wrap gap-4 items-center">
+                            <div class="font-bold text-3xl">
+                                {{ evento.descripcion }}
+                            </div>
+
+                            <Tag
+                                v-if="dayDiff(evento.fecha_evento) == 0"
+                                value="Hoy"
+                                severity="danger"
+                            />
+
+                            <Tag
+                                v-else-if="dayDiff(evento.fecha_evento) > 0"
+                                value="Próximo"
+                                severity="warn"
+                            />
+
+                            <Tag
+                                v-else
+                                value="Finalizado"
+                                severity="success"
+                            />
+
+                            <Tag
+                                v-if="cupos == 0"
+                                value="Cupo completo"
+                                severity="danger"
+                            />
+                        </div>
+
+                        <div class="flex flex-row flex-wrap gap-4 pb-4 shadow-[0_0.5px_0_0_rgba(0,0,0,0.12)] w-fit">
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-calendar text-primary-500"></span>
+                                <span>{{ moment(evento.fecha_evento).format('DD/MM/YYYY') }}</span>
+                            </div>
+
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-clock text-primary-500"></span>
+                                <span>{{ evento.rango_horario }}</span>
+                            </div>
+
+                            <div class="flex flex-row gap-2 items-center">
+                                <span class="pi pi-map-marker text-primary-500"></span>
+                                <span>{{ domicilio.short(refugio?.domicilio) }}</span>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
             </div>
+        </Contenedor>
+        <!--KPIs-->
+        <div class="grid grid-cols-4 gap-4 mb-5">
+                <Contenedor class="w-full">
+                    <KPI title="Cantidad inscriptos"  :value="evento.inscriptos" icon="pi pi-clipboard" subtitle="Animales registrados">
+                    </KPI>
+                </Contenedor>
+                <Contenedor class="w-full">
+                    <KPI title="Cantidad vacunados"  :value="0" icon="pi pi-check-circle" subtitle="Animales con vacuna">
+                    </KPI>
+                </Contenedor>
+                <Contenedor class="w-full">
+                    <KPI title="Cupos ocupados"  :value="`${evento.inscriptos}/${evento.cupo_maximo}`" icon="pi pi-chart-pie" subtitle="Sobre total">
+                    </KPI>
+                </Contenedor>
+                <Contenedor class="w-full">
+                    <KPI title="Cupos libres"  :value="`${evento.cupo_maximo - parseInt(evento.inscriptos)}`" icon="pi pi-user-plus" subtitle="Disponibilidad">
+                    </KPI>
+                </Contenedor>
         </div>
-        <div class="py-3">
-            <Tag v-if="dayDiff(evento.fecha_evento) == 0" value="Hoy" severity="danger"></Tag>
-            <Tag v-else-if="dayDiff(evento.fecha_evento) > 0" value="Próximo" severity="warn"></Tag>
-            <Tag v-else value="Finalizado" severity="success"></Tag>
-            <Tag v-if="cupos == 0" value="Cupo completo" severity="success"></Tag>
-        </div>
-        <div class="grid grid-cols-5 grid-rows-4 gap-4">
-            <div class="flex flex-row justify-center gap-3 col-span-3">
-                <Contenedor class="">
-                    <KPI title="Cantidad de animales"  :value="evento.inscriptos" icon="pi pi-clipboard" subtitle="Inscriptos">
-                    </KPI>
-                </Contenedor>
-                <Contenedor class="">
-                    <KPI title="Cantidad de animales"  :value="0" icon="pi pi-clipboard" subtitle="Vacunados">
-                    </KPI>
-                </Contenedor>
-                <Contenedor class="">
-                    <KPI title="Cupos libres"  :value="`${evento.cupo_maximo - parseInt(evento.inscriptos)}/${evento.cupo_maximo}`" icon="pi pi-user-plus" subtitle="Sobre total">
-                    </KPI>
-                </Contenedor>
-            </div>
-            <ContenedorTitulo class="row-span-3 col-span-2 col-start-4" title="Información del evento"
+        <!--fin KPIs-->
+       
+        <div class="grid grid-cols-12 gap-5 items-start">            
+            <!--Animales para inscribir al evento-->
+            <Contenedor class="col-span-8 h-fit">
+                <DataTable :value="eventoStore.inscripcionesEvento">
+                    <Column header="Animal">
+                        <template #body="{data}">
+                            <div class="flex flex-row items-center gap-3">
+                                <div class="overflow-hidden ">
+                                    <img class="w-15 h-15  rounded-full object-cover" :src="data['imagen']" />
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <div class="px-1 font-semibold h-fit">{{ data['nombre'] }}</div>
+                                    <div class="text-sm"> {{ data['especie'] }}</div>
+                                    <div class="text-sm"> {{ data['raza'] }}</div>
+                                </div>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column header="Responsable">
+                        <template #body="{data}">
+                            <div class="flex flex-col gap-3">
+                                <div>{{ data['nombre_usuario'] }}</div>
+                                <div class="text-sm">{{ data['email'] }}</div>
+                                <div class="text-sm">{{ data['telefono'] }}</div>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column header="Acciones">
+                        <template #body="{data}">
+                            <div class="flex flex-row gap-3">
+                                <Button icon="pi pi-eye" aria-label="Ver detalle del animal" outlined
+                                        class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
+                            hover:!bg-refugio-200"></Button>
+                                <Button aria-label="Confirmar vacunación" icon="pi pi-check" 
+                                outlined class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
+                            hover:!bg-refugio-200"
+                                        @click="() => confirmarVacunacion(data)"></Button>
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </Contenedor>
+            <!--fin animales para inscribir al evento-->
+            <!--Informacion del evento-->
+            <ContenedorTitulo class="col-span-4 h-fit" title="Información del evento"
                               icon="pi pi-info-circle">
                 <div v-if="loading">
                     <ProgressSpinner></ProgressSpinner>
@@ -127,49 +255,17 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
                 </div>
                 <div></div>
             </ContenedorTitulo>
-            <Contenedor class="col-span-3 row-span-2 mt-0!">
-                <DataTable :value="eventoStore.inscripcionesEvento">
-                    <Column header="Animal">
-                        <template #body="{data}">
-                            <div class="flex flex-row items-center gap-3">
-                                <div class="overflow-hidden ">
-                                    <img class="w-15 h-15  rounded-full object-cover" :src="data['imagen']" />
-                                </div>
-                                <div class="flex flex-col gap-3">
-                                    <div class="px-1 font-semibold h-fit">{{ data['nombre'] }}</div>
-                                    <div class="text-sm"> {{ data['especie'] }}</div>
-                                    <div class="text-sm"> {{ data['raza'] }}</div>
-                                </div>
-                            </div>
-                        </template>
-                    </Column>
-                    <Column header="Responsable">
-                        <template #body="{data}">
-                            <div class="flex flex-col gap-3">
-                                <div>{{ data['nombre_usuario'] }}</div>
-                                <div class="text-sm">{{ data['email'] }}</div>
-                                <div class="text-sm">{{ data['telefono'] }}</div>
-                            </div>
-                        </template>
-                    </Column>
-                    <Column header="Acciones">
-                        <template #body="{data}">
-                            <div class="flex flex-row gap-3">
-                                <Button icon="pi pi-eye" outlined
-                                        class="border-refugio-500! text-refugio-500!"></Button>
-                                <Button icon="pi pi-check" outlined class="border-refugio-500! text-refugio-500!"
-                                        @click="() => confirmarVacunacion(data)"></Button>
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
-
-            </Contenedor>
+            <!--fin informacion del evento-->
         </div>
+
+
     </div>
+
     <div v-else>
         <Contenedor>
-            Evento inexistente
+            <div class="text-center">
+                Evento inexistente
+            </div>            
         </Contenedor>
     </div>
 </template>

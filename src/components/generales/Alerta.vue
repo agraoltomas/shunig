@@ -25,11 +25,11 @@ const iconoAlerta = (a: EAlerta) => {
         case EAlerta.SolicitudPendiente:
             return 'pi pi-file'
         case EAlerta.StockBajo:
-            return 'pi '
+            return 'pi pi-box'
         case EAlerta.StockModerado:
-            return 'pi'
+            return 'pi pi-box'
         case EAlerta.StockAlto:
-            return 'pi'
+            return 'pi pi-box'
     }
 }
 const routeAlerta = (a: IAlerta) => {
@@ -77,17 +77,17 @@ const props = withDefaults(defineProps<{ alerta: IAlerta }>(), {})
 </script>
 
 <template>
-    <div :class="['col-span-8 row-span-1 border rounded-lg p-3',mensajeSeverity(alerta)]">
+    <div :class="['border rounded-lg p-3',mensajeSeverity(alerta)]">
         <div class="flex flex-row justify-between">
             <div class="flex flex-col gap-3">
-                <div :class="['text-2xl font-semibold flex flex-row gap-3', textSeverity(alerta)]">
+                <div :class="['font-semibold flex flex-row gap-3', textSeverity(alerta)]">
                     <i :class="iconoAlerta(EAlerta[alerta.tipo_alerta])"></i>
                     <div>{{ alerta.titulo }}</div>
                 </div>
                 <div>{{ alerta.descripcion }}</div>
             </div>
-            <div class="h-fit my-auto pe-3">
-                <Button icon="pi pi-arrow-right" class="bg-refugio-500" @click="() => router.push(routeAlerta(alerta))"></Button>
+            <div class="h-fit my-auto">
+                <Button icon="pi pi-arrow-right" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="() => router.push(routeAlerta(alerta))"></Button>
             </div>
         </div>
     </div>

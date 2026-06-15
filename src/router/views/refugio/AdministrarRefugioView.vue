@@ -24,7 +24,7 @@ const opciones: MenuItem[] = [
 const menuSelected: Ref<('general'|'datos'|'permisos'|'rechazos')> = ref('general')
 const {axios} = useAxios();
 const { refugio, loadContextRefugio } = useRefugioStore();
-const authStore = useAuthStore();
+const {user} = useAuthStore();
 const toast = useToast();
 const desactivarRefugio = async () => {
     if(!confirm("Confirmar desactivacion del refugio?"))return;
@@ -33,7 +33,7 @@ const desactivarRefugio = async () => {
         const r = await axios.value.post(`refugio/${refugio.id_refugio}/desactivar/`, {});
         const response: MessageResponse<any> = r.data;
         if(response.ok)toast.add({ detail: "Refugio deshabilitado correctamente", severity: "success" });
-        if(authStore.user)await loadContextRefugio(authStore.user);
+        if(user)await loadContextRefugio(user);
     }catch (e){
         if(e instanceof AxiosError){
             const response: MessageResponse<never> = e.response?.data;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logo from '@/assets/images/logo_shunig_blanco_trans.png'
+//import logo from '@/assets/images/logo_shunig_blanco_trans.png'
 import { type Ref, ref, useTemplateRef } from 'vue'
 import moment, { type Moment } from 'moment/moment'
 import { useLoadingComposable } from '@/lib/utils/loading.ts'

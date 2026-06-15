@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
-import shuni from "@/assets/images/chatbot2.png"
+//import shuni from "@/assets/images/chatbot2.png"
 import paw from "@/assets/images/paw-solid-full.svg"
 import ChatBox from '@/components/chatbot/ChatBox.vue'
 const showing = ref(false);

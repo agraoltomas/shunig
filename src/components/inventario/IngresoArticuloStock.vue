@@ -105,8 +105,8 @@ const resolver = ({ values }: { values: Partial<Optional<DatosArticuloStock>> })
 
     if (values.cantidad === null || values.cantidad === undefined) {
         errors.cantidad.push({ message: 'Ingrese la cantidad' })
-    } else if (Number(values.cantidad) < 0) {
-        errors.cantidad.push({ message: 'La cantidad no puede ser negativa' })
+    } else if (Number(values.cantidad) <= 0) {
+        errors.cantidad.push({ message: 'La cantidad debe ser mayor a 0' })
     }
 
     if (!initialValues.fecha_vencimiento) {

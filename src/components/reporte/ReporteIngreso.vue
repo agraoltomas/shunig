@@ -47,8 +47,8 @@ const ingresarReporte = async () => {
     <div class="flex flex-col gap-3">
         <FormRow>
             <FormCol :span="12">
-                <Label required>Detalle</Label>
-                <Textarea maxlength="200" minlength="100" size="large" class="min-h-36" min
+                <Label for="detalle" required>Detalle</Label>
+                <Textarea id="detalle" maxlength="200" minlength="100" size="large" class="min-h-36" min
                           v-model="detalle"></Textarea>
                 <div class="h-fit flex flex-row justify-end">
                     <span>{{detalle ? detalle.length : 0}}/200</span>
@@ -57,12 +57,12 @@ const ingresarReporte = async () => {
         </FormRow>
         <FormRow>
             <FormCol :span="12">
-                <Label required>Subir foto</Label>
-                <FileUpload v-model="file"></FileUpload>
+                <Label for="foto" required>Subir foto</Label>
+                <FileUpload id="foto" v-model="file"></FileUpload>
             </FormCol>
         </FormRow>
         <div>
-            <Button label="Cargar" class="bg-refugio-500 border-refugio-500" :disabled="!validar" @click="ingresarReporte"></Button>
+            <Button label="Cargar" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" :disabled="!validar" @click="ingresarReporte"></Button>
         </div>
     </div>
 </template>

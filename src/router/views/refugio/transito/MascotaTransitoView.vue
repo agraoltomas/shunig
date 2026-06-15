@@ -17,6 +17,8 @@ import TransitoDetalle from '@/components/transito/TransitoDetalle.vue'
 import SecondaryButton from '@/volt/SecondaryButton.vue'
 import ReporteTabla from '@/components/reporte/ReporteTabla.vue'
 import Contenedor from '@/components/generales/Contenedor.vue'
+import handshake from '@/assets/images/handshake-regular-full-white.svg'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
 const { axios } = useAxios()
@@ -52,17 +54,58 @@ interface Reporte {
 }
 console.log(route)
 </script>
-
+<!--Vista de la gestión del animal en tránsito-->
 <template>
-    <div v-if="transito" class="w-[75vw] m-auto  ">
-            <div class="w-full h-full pb-3" v-if="transito.animal">
-                <div
-                    class="bg-refugio-500 rounded-lg w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center">
-                    {{ transito.animal.nombre }}
-                    <SecondaryButton icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!"
-                                         @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></SecondaryButton>
+    <div v-if="transito" class="w-[75vw] m-auto mt-10 mb-15">
+        <!--
+        <div class="w-full h-full pb-3" v-if="transito.animal">
+            <div
+                class="bg-refugio-500 rounded-lg w-full h-full text-center text-4xl font-bold pl-3 py-4 text-white flex flex-row gap-3 justify-center mb-5">
+                {{ transito.animal.nombre }}
+                <SecondaryButton aria-label="Ver detalle del animal" icon="pi pi-arrow-up-right" pt:icon="text-lg!" class="w-fit! h-fit! p-1!"
+                            @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></SecondaryButton>
+            </div>
+        </div>-->
+
+        <Contenedor v-if="transito.animal" class="overflow-auto m-auto mb-5" pt:header="p-0!">
+            <div class="flex flex-col gap-3">
+                <!-- Sector de botones -->
+                <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+                    <span class="font-bold text-2xl">Detalle del tránsito</span>
+                    <div class="flex flex-row gap-3">
+                        <Button
+                                class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
+                                outlined
+                                severity="secondary"
+                                icon="pi pi-undo"
+                                label="Volver"
+                                @click="$router.go(-1)"></Button>
+                        <Button
+                                outlined
+                                severity="success"
+                                icon="pi pi-arrow-up-right"
+                                label="Ver animal"
+                                @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></Button>
+                    </div>
+                </div>
+                <!--fin sector de botones-->
+                <div class="flex flex-row gap-5 grow">
+                    <!-- resumen animal -->
+                    <div class="rounded-full bg-primary-500 w-10 h-10 flex items-center justify-center">
+                        <img class="size-5 text-4xl" :src="handshake" aria-hidden="true"></img>
+                    </div>
+                    <div class="flex flex-col gap-4 grow">
+                        <div class="flex flex-row gap-4 items-center">
+                            <div class="font-bold text-3xl">
+                                {{ transito.animal.nombre }}
+                            </div>
+                            <Tag severity="info" value="En tránsito" />
+                        </div>
+                    </div>
                 </div>
             </div>
+        </Contenedor>
+
         <div class="grid gap-3 grid-cols-12 grid-rows-3">
             <Contenedor class="col-span-4 row-span-4" v-if="loading">
                 <ProgressSpinner
@@ -71,14 +114,14 @@ console.log(route)
                     pt:root="p-progressspinner w-full!"
                     pt:spin="p-progressspinner-spin" />
             </Contenedor>
-            <Contenedor class="col-span-4 row-span-2" v-else-if="transito?.usuario">
-                <h1 class="text-2xl pb-3  font-semibold underline text-center">Voluntario</h1>
+            <ContenedorTitulo title="Datos del voluntario" icon="pi pi-user" class="col-span-4 row-span-2" v-else-if="transito?.usuario">
                 <DataBlock label="Nombre"
                            :data="`${transito?.usuario.nombre} ${transito?.usuario.apellido}`"></DataBlock>
                 <DataBlock label="Domicilio" :data="domicilio.toText(transito?.usuario.domicilio)"></DataBlock>
                 <DataBlock label="Mail" :data="transito?.usuario.email"></DataBlock>
                 <DataBlock label="Alta" :data="moment(transito?.usuario.fecha_alta).format('DD/MM/YYYY')"></DataBlock>
-            </Contenedor>
+            </ContenedorTitulo>
+            
             <Contenedor class="col-span-4 row-span-1 row-start-3" v-if="loading">
                 <ProgressSpinner
                     class="m-auto h-20! text-center"

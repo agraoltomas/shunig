@@ -119,6 +119,7 @@
     --color-refugio-400: #664FB0;
     --color-refugio-500: #564394;
     --color-refugio-contrast: #ffffff;
+    --text-md: 17px;
 }
 .calendar-root[data-v-67f77862], .date-picker-root[data-v-67f77862] {
     --qalendar-blue: rgb(38 132 255);

@@ -31,8 +31,8 @@ const modales = useModalStore()
         </div>
         <div class="text-gray-600">{{messageEventTiming(evento) }}</div>
         <div class="flex flex-rew gap-3 justify-between">
-            <Button icon="pi pi-eye" label="Ver detalles" outlined @click="() => router.push(`/refugio/vacunacion/${evento.id_evento_vacunacion}/`)"></Button>
-            <Button v-if="!(dayDiff(evento.fecha_evento) < 0)" icon="pi pi-pencil" label="Editar" outlined @click="() => modales.abrir('editar_evento_vacunacion',evento)"></Button>
+            <Button icon="pi pi-eye" label="Ver detalles" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="() => router.push(`/refugio/vacunacion/${evento.id_evento_vacunacion}/`)"></Button>
+            <Button v-if="!(dayDiff(evento.fecha_evento) < 0)" icon="pi pi-pencil" label="Editar" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="() => modales.abrir('editar_evento_vacunacion',evento)"></Button>
         </div>
     </div>
 </template>

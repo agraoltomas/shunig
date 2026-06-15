@@ -34,9 +34,13 @@ const articulosDelStock = ref<IStock[]>([])
 
 const valores = reactive({
     nombre: props.producto.nombre,
-    id_tipo_producto: props.producto.id_tipo_producto,
+    id_tipo_producto: props.producto.id_tipo_producto
+        ? Number(props.producto.id_tipo_producto)
+        : null,
     descripcion: props.producto.descripcion,
-    id_unidad_stock: props.producto.id_unidad_stock,
+    id_unidad_stock: props.producto.id_unidad_stock
+        ? Number(props.producto.id_unidad_stock)
+        : null,
     medida: props.producto.medida,
     cantidad_alerta_baja: props.producto.cantidad_alerta_baja,
     cantidad_alerta_moderada: props.producto.cantidad_alerta_moderada,
@@ -51,6 +55,38 @@ const cantidadTotal = computed(() => {
 
 const cantidadTotalConUnidad = computed(() => {
     return `${cantidadTotal.value} ${props.producto.unidad_stock || ''}`
+})
+
+const estadoAlertaStock = computed(() => {
+    if (!props.producto.alerta_stock_activa) {
+        return {
+            severity: 'secondary',
+            value: 'Alerta desactivada'
+        }
+    }
+
+    const cantidad = Number(cantidadTotal.value || 0)
+    const cantidadBaja = Number(props.producto.cantidad_alerta_baja || 0)
+    const cantidadModerada = Number(props.producto.cantidad_alerta_moderada || 0)
+
+    if (cantidad <= cantidadBaja) {
+        return {
+            severity: 'danger',
+            value: 'Stock bajo'
+        }
+    }
+
+    if (cantidad <= cantidadModerada) {
+        return {
+            severity: 'warn',
+            value: 'Stock moderado'
+        }
+    }
+
+    return {
+        severity: 'success',
+        value: 'Stock suficiente'
+    }
 })
 
 const ultimaActualizacionProducto = computed(() => {
@@ -83,6 +119,23 @@ const articulosPorVencer = computed(() => {
     }).length
 })
 
+const cantidadPorVencer = computed(() => {
+    return articulosDelStock.value
+        .filter((articulo) => {
+            if (!articulo.fecha_vencimiento) {
+                return false
+            }
+
+            const fechaVencimiento = moment.utc(articulo.fecha_vencimiento)
+            const hoy = moment.utc()
+
+            return fechaVencimiento.isSameOrAfter(hoy) && fechaVencimiento.diff(hoy, 'days') <= 30
+        })
+        .reduce((total, articulo) => {
+            return total + Number(articulo.cantidad || 0)
+        }, 0)
+})
+
 const inicialesProducto = (nombre: string) => {
     return nombre
         .split(' ')
@@ -113,10 +166,7 @@ const actualizarProducto = async (e: FormSubmitEvent) => {
     if (!props.producto) return
 
     const r = await axios.patch(`/producto/${props.producto.id_producto}`, {
-        ...e.values,
-        id_tipo_producto: valores.id_tipo_producto,
-        id_unidad_stock: valores.id_unidad_stock,
-        alerta_stock_activa: valores.alerta_stock_activa
+        ...e.values
     })
 
     if ([200, 201].includes(r.status)) {
@@ -160,7 +210,7 @@ const resolver = ({ values }: FormResolverOptions) => {
         errors.nombre.push({ message: 'El nombre es obligatorio' })
     }
 
-    if (!valores.id_tipo_producto) {
+    if (!values.id_tipo_producto) {
         errors.id_tipo_producto.push({ message: 'Seleccione un tipo de producto' })
     }
 
@@ -168,7 +218,7 @@ const resolver = ({ values }: FormResolverOptions) => {
         errors.descripcion.push({ message: 'Ingrese una descripción' })
     }
 
-    if (!valores.id_unidad_stock) {
+    if (!values.id_unidad_stock) {
         errors.id_unidad_stock.push({ message: 'Seleccione la unidad del producto' })
     }
 
@@ -192,10 +242,10 @@ const resolver = ({ values }: FormResolverOptions) => {
     }
 }
 </script>
-
+<!--Vista del producto-->
 <template>
     <div class="w-[75vw] m-auto flex flex-col gap-4 min-h-screen w-3/4 m-auto mt-5 mb-15">
-        <!-- HEADER / DETALLE PRINCIPAL -->
+        <!-- Detalle principal con edición y sin edición-->
         <div
             v-if="producto"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -205,7 +255,7 @@ const resolver = ({ values }: FormResolverOptions) => {
         <span class="font-bold text-2xl">
             Detalle del producto
         </span>
-
+        <!--Seccion botones-->
         <div class="flex flex-row gap-3">
             <Button
                 class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
@@ -235,84 +285,86 @@ const resolver = ({ values }: FormResolverOptions) => {
                 })"
             />
         </div>
+        <!--fin seccion botones-->
     </div>
-                <div class="flex flex-row gap-5 grow">
-                    <div class="rounded-full bg-primary-200/30 w-28 h-28 flex items-center justify-center shrink-0">
-                        <div class="text-primary-500 text-4xl font-bold">
-                            {{ inicialesProducto(producto.nombre) }}
+    <div class="flex flex-row gap-5 grow">
+        <div class="rounded-full bg-primary-200/30 w-28 h-28 flex items-center justify-center shrink-0">
+            <div class="text-primary-500 text-4xl font-bold">
+                {{ inicialesProducto(producto.nombre) }}
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3 grow">
+            <div class="flex flex-row gap-4 items-center">
+                <div class="font-bold text-3xl">
+                    {{ producto.nombre }}
+                </div>
+
+                <Tag severity="success" :value="producto.tipo_producto" />
+                <Tag :severity="estadoAlertaStock.severity" :value="estadoAlertaStock.value"/>
+            </div>
+
+            <div class="flex flex-row flex-wrap gap-4 pb-4 shadow-[0_0.5px_0_0_rgba(0,0,0,0.12)] w-fit">
+                <div class="flex flex-row gap-2 items-center">
+                    <span class="pi pi-hashtag text-primary-500"></span>
+                    <span>{{ producto.codigo_producto }}</span>
+                </div>
+
+                <div class="flex flex-row gap-2 items-center">
+                    <span class="pi pi-calendar text-primary-500"></span>
+                    <span>{{ formatearFecha(producto.fecha_alta) }}</span>
+                </div>
+
+                <div class="flex flex-row gap-2 items-center">
+                    <span class="pi pi-box text-primary-500"></span>
+                    <span>{{ cantidadTotalConUnidad }}</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mt-2">
+                <div class="flex flex-row gap-2 items-center">
+                    <span class="pi pi-warehouse text-primary-500"></span>
+                    <div>
+                        <div class="text-sm text-gray-500">Unidad</div>
+                            <div class="font-semibold">
+                                {{ producto.unidad_stock || '-' }}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-3 grow">
-                        <div class="flex flex-row gap-4 items-center">
-                            <div class="font-bold text-3xl">
-                                {{ producto.nombre }}
-                            </div>
-
-                            <Tag severity="success" :value="producto.tipo_producto" />
-                        </div>
-
-                        <div class="flex flex-row flex-wrap gap-4 pb-4 shadow-[0_0.5px_0_0_rgba(0,0,0,0.12)] w-fit">
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-hashtag text-primary-500"></span>
-                                <span>{{ producto.codigo_producto }}</span>
-                            </div>
-
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-calendar text-primary-500"></span>
-                                <span>{{ formatearFecha(producto.fecha_alta) }}</span>
-                            </div>
-
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-box text-primary-500"></span>
-                                <span>{{ cantidadTotalConUnidad }}</span>
+                    <div class="flex flex-row gap-2 items-center">
+                        <span class="pi pi-tag text-primary-500"></span>
+                        <div>
+                            <div class="text-sm text-gray-500">Medida</div>
+                                <div class="font-semibold">
+                                    {{ producto.medida || '-' }}
+                                </div>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-4 mt-2">
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-warehouse text-primary-500"></span>
-                                <div>
-                                    <div class="text-sm text-gray-500">Unidad</div>
-                                    <div class="font-semibold">
-                                        {{ producto.unidad_stock || '-' }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-tag text-primary-500"></span>
-                                <div>
-                                    <div class="text-sm text-gray-500">Medida</div>
-                                    <div class="font-semibold">
-                                        {{ producto.medida || '-' }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-row gap-2 items-center">
-                                <span class="pi pi-clock text-primary-500"></span>
-                                <div>
-                                    <div class="text-sm text-gray-500">Última actualización</div>
+                        <div class="flex flex-row gap-2 items-center">
+                            <span class="pi pi-clock text-primary-500"></span>
+                            <div>
+                                <div class="text-sm text-gray-500">Última actualización</div>
                                     <div class="font-semibold">
                                         {{ formatearFecha(ultimaActualizacionProducto) }}
                                     </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- EDICIÓN -->
-            <div v-else>
-                <div class="flex flex-row justify-between items-center mb-5">
-                    <div>
-                        <div class="text-3xl font-bold mb-2">
-                            Editar producto
-                        </div>
-                         <div class="text-xl mb-2">
+        </div>
+
+        <!-- edición -->
+        <div v-else>
+            <div class="flex flex-row justify-between items-center mb-5">
+                <div>
+                    <div class="text-3xl font-bold mb-2">
+                        Editar producto
+                    </div>
+                    <div class="text-xl mb-2">
                         <span>
                             <span>{{ producto.nombre}}</span>
                         <span class="pi pi-hashtag text-primary-500 ml-2 mr-2"></span>
@@ -320,26 +372,25 @@ const resolver = ({ values }: FormResolverOptions) => {
                         </span>                        
                     </div>
 
-                        <div class="text-gray-500">
+                    <div class="text-gray-500">
                             Modificá los datos generales, la unidad y las alertas del producto.
-                        </div>
-                    </div>
-
-                    <div class="rounded-full bg-primary-200/30 w-20 h-20 flex items-center justify-center">
-                        <i class="pi pi-box text-primary-500 text-3xl"></i>
                     </div>
                 </div>
 
-                <Form
+                <div class="rounded-full bg-primary-200/30 w-20 h-20 flex items-center justify-center">
+                        <i class="pi pi-box text-primary-500 text-3xl"></i>
+                </div>
+            </div>
+
+            <Form
                     ref="form"
                     v-slot="$form"
                     :initialValues="valores"
                     :resolver
                     @submit="actualizarProducto"
-                    class="flex flex-col gap-4"
-                >
+                    class="flex flex-col gap-4">
 
-                    <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4">
+                <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4">
                         <div class="flex flex-row text-xl gap-3 mb-4">
                             <div class="bg-primary-200/30 rounded-full p-1 min-w-9 h-fit text-center">
                                 <i class="pi pi-box text-primary-500"></i>
@@ -350,7 +401,7 @@ const resolver = ({ values }: FormResolverOptions) => {
                             </div>
                         </div>
 
-                        <FormRow class="w-full">
+                        <FormRow class="w-full mb-5">
                             <FormCol :span="6">
                                 <Label for="nombre" required>Nombre</Label>
                                 <InputText id="nombre" fluid name="nombre" />
@@ -368,7 +419,6 @@ const resolver = ({ values }: FormResolverOptions) => {
                                 <Label for="tipoProducto" required>Tipo de producto</Label>
                                 <TableSelect
                                     id="tipoProducto"
-                                    v-model="valores.id_tipo_producto"
                                     name="id_tipo_producto"
                                     :tipo="TablaEstatica.Producto"
                                 />
@@ -389,7 +439,6 @@ const resolver = ({ values }: FormResolverOptions) => {
                                 <TableSelect
                                     id="unidad"
                                     name="id_unidad_stock"
-                                    v-model="valores.id_unidad_stock"
                                     :tipo="TablaEstatica.UnidadStock"
                                 />
                                 <Message
@@ -459,7 +508,7 @@ const resolver = ({ values }: FormResolverOptions) => {
                                 <Label for="alertaStockActiva">Alertas activas</Label>
                                 <div class="flex items-center gap-2 h-[42px]">
                                     <ToggleSwitch
-                                        id="alertaStockActiva"
+                                        id="alertaStockActiva" name="alerta_stock_activa"
                                         v-model="valores.alerta_stock_activa"
                                     />
                                     <span>
@@ -483,7 +532,7 @@ const resolver = ({ values }: FormResolverOptions) => {
 
                         <FormRow class="w-full">
                             <FormCol :span="12">
-                                <Label for="descripcion" required>Descripción</Label>
+                                <Label for="descripcion" class="sr-only" required>Descripción</Label>
                                 <Textarea
                                     id="descripcion"
                                     fluid
@@ -521,7 +570,7 @@ const resolver = ({ values }: FormResolverOptions) => {
             </div>
         </div>
 
-        <!-- DESCRIPCIÓN -->
+        <!-- descripcion del producto -->
         <div
             v-if="producto && !editando"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -546,8 +595,9 @@ const resolver = ({ values }: FormResolverOptions) => {
                 />
             </div>
         </div>
+        <!--fin descripcion-->
 
-        <!-- ALERTAS -->
+        <!-- alertas -->
         <div
             v-if="producto && !editando"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -585,8 +635,9 @@ const resolver = ({ values }: FormResolverOptions) => {
                 </div>
             </div>
         </div>
+        <!--fin alertas-->
 
-        <!-- STOCK -->
+        <!-- Stock del producto -->
         <div
             v-if="producto && !editando"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -605,13 +656,13 @@ const resolver = ({ values }: FormResolverOptions) => {
                 <div class="flex flex-row gap-2">
                     <Tag
                         severity="info"
-                        :value="`${articulosDelStock.length} artículos`"
+                        :value="`${cantidadTotal} artículos`"
                     />
 
                     <Tag
                         v-if="articulosPorVencer > 0"
                         severity="warn"
-                        :value="`${articulosPorVencer} por vencer`"
+                        :value="`${cantidadPorVencer} por vencer`"
                     />
                 </div>
             </div>
@@ -669,6 +720,7 @@ const resolver = ({ values }: FormResolverOptions) => {
                 />
             </div>
         </div>
+        <!--fin stock del producto-->
     </div>
 </template>
 

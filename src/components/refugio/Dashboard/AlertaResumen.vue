@@ -39,6 +39,8 @@ const icon = (a: AlertaInfo) => {
             return 'pi pi-clock'
         case 'VacunaVencida':
             return 'pi pi-pencil'
+        case 'StockBajo':
+            return 'pi pi-box'
     }
 }
 </script>
@@ -46,7 +48,7 @@ const icon = (a: AlertaInfo) => {
 <template>
     <div :class="['flex flex-row rounded-lg p-3', bgColor(alerta)]" >
         <div class="w-10 ">
-            <i :class="['p-1', icon(alerta)]"></i>
+            <i :class="['p-1', icon(alerta)]" aria-hidden="true"></i>
         </div>
         <div class="flex flex-col">
             <div :class="['text-sm font-semibold']">{{ alerta.titulo}}</div>

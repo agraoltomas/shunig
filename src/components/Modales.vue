@@ -32,7 +32,7 @@ const data = ref('')
     </Dialog>
 
     <Dialog v-model:visible="store.modales.vacunacion" modal header="Alta de evento de vacunación" class="w-[60%]"
-            pt:header="border-b-2 mb-5 border-surface-400">
+            pt:header="border-b-2 mb-5 bg-refugio-500">
         <template #header>
             <div class="flex flex-col w-full">
                 <div class="font-semibold m-auto text-2xl pb-0!">

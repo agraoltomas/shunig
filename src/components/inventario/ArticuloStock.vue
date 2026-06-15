@@ -39,8 +39,12 @@ const valores = reactive({
     fecha_vencimiento: props.articulo.fecha_vencimiento
         ? moment.utc(props.articulo.fecha_vencimiento).toDate()
         : null,
-    id_origen_stock: props.articulo.id_origen_stock,
-    id_donacion: props.articulo.id_donacion,
+    id_origen_stock: props.articulo.id_origen_stock
+        ? Number(props.articulo.id_origen_stock)
+        : null,
+    id_donacion: props.articulo.id_donacion
+        ? Number(props.articulo.id_donacion)
+        : null,
     descripcion: props.articulo.descripcion
 })
 
@@ -143,7 +147,7 @@ const resolver = ({ values }: FormResolverOptions) => {
     }
 
     if (!values.cantidad || Number(values.cantidad) <= 0) {
-        errors.cantidad.push({ message: 'Ingrese una cantidad válida' })
+        errors.cantidad.push({ message: 'La cantidad debe ser mayor a 0' })
     }
 
     if (!valores.fecha_vencimiento) {
@@ -493,7 +497,7 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
                 >
                     <FormRow class="w-full">
                         <FormCol :span="12">
-                            <Label for="donacion">
+                            <Label class="sr-only" for="donacion">
                                 Donación
                             </Label>
 
@@ -535,7 +539,7 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
                 >
                     <FormRow class="w-full">
                         <FormCol :span="12">
-                            <Label for="descripcion">
+                            <Label class="sr-only" for="descripcion">
                                 Descripción
                             </Label>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Contenedor from '@/components/generales/Contenedor.vue'
-import vaccDog from '@/assets/images/vacunas.png'
+//import vaccDog from '@/assets/images/vacunas.png'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 import { useRefugioStore } from '@/stores/refugio.ts'
 import FormRow from '@/components/forms/FormRow.vue'
@@ -63,17 +63,25 @@ const dataIngreso = reactive({
 </script>
 
 <template>
-    <div class="flex flex-col w-3/4 m-auto">
-        <div class="flex flex-row justify-around">
-            <div class="flex flex-col pt-10">
-                <div class="text-3xl font-bold">Nuevo evento de vacunación</div>
-                <div class="text-gray-600">Registra un nuevo evento de vacunación para realizar en el refugio</div>
+    <div class="w-3/4 m-auto flex flex-col gap-4 mt-10 mb-15">
+        <Contenedor class="overflow-auto" pt:header="p-0!">
+            <!--header-->
+            <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
+                <div>
+                    <div class="font-bold text-2xl">
+                        Nuevo evento de vacunación
+                    </div>
+                    <div class="text-gray-500 mt-1">
+                        Registrá un nuevo evento de vacunación para realizar en el refugio.
+                    </div>
+                </div>
+                <div class="rounded-full bg-primary-200/30 w-20 h-20 flex items-center justify-center shrink-0">
+                    <i class="pi pi-calendar-plus text-primary-500 text-3xl"></i>
+                </div>
             </div>
-            <div class="overflow-hidden rounded-full">
-                <img :src="vaccDog" class="py-5 w-40 " />
-            </div>
-        </div>
-        <Contenedor v-if="refugio" title="Refugio" icon="pi pi-home" class="m-3 flex flex-row">
+            <!--fin header-->
+            <!--refugio-->
+            <div v-if="refugio" title="Refugio" icon="pi pi-home" class="m-3 flex flex-row">
             <div class="flex flex-row text-xl gap-3 pb-3 ">
                 <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
                     <i :class="['text-primary-500 text-center', 'pi pi-home']"></i>
@@ -83,8 +91,11 @@ const dataIngreso = reactive({
             <div class="border rounded-lg border-gray-500 h-fit px-3 py-1 font-semibold mx-3 align-middle inline">
                 {{ refugio.nombre }}
             </div>
+            </div>
+            <!--fin refugio-->
         </Contenedor>
-        <div class="flex flex-row gap-3 mx-3">
+        <!--Detalles de evento de vacunacion-->
+        <div class="flex flex-row gap-3">
             <ContenedorTitulo title="Información general" icon="pi pi-calendar" class="grow">
                 <FormRow>
                     <FormCol :span="12">
@@ -126,7 +137,7 @@ const dataIngreso = reactive({
                 </FormRow>
             </ContenedorTitulo>
         </div>
-        <ContenedorTitulo class="m-3" title="Cupo" icon="pi pi-users">
+        <ContenedorTitulo title="Cupo" icon="pi pi-users">
             <div class="flex flex-row gap-5 items-center">
                 <Label required>Cupo maximo de animales</Label>
                 <InputNumber v-model="dataIngreso.cupo_maximo" show-buttons :min="0"></InputNumber>
@@ -134,11 +145,15 @@ const dataIngreso = reactive({
             </div>
         </ContenedorTitulo>
         <div class="flex flex-row px-3 py-5 gap-3 justify-end">
-            <Button variant="outlined">Cancelar</Button>
-            <Button icon="pi pi-save" label="Guardar evento" @click="ingresar"></Button>
+            <Button  icon="pi pi-times" label="Cancelar" 
+            class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="router.go(-1)"></Button>
+            <Button class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" 
+            icon="pi pi-save" label="Guardar evento" @click="ingresar"></Button>
         </div>
-    </div>
 
+
+        <!--fin detalles-->
+    </div>    
 </template>
 
 <style scoped>

@@ -128,8 +128,14 @@ const formatearFecha = (fecha?: string | null) => {
 }
 
 const cantidadProducto = (producto: IProducto) => {
-    return `${producto.cantidad ?? 0} ${producto.unidad_stock || ''}`
+    return `${producto.cantidad ?? 0} ${producto.unidad_stock || ''} (${producto.medida || ''})`
 }
+
+const cantidadPorVencer = computed(() => {
+    return props.productos.reduce((total, producto) => {
+        return total + Number(producto.cantidad_por_vencer || 0)
+    }, 0)
+})
 </script>
 
 <template>
@@ -274,9 +280,10 @@ const cantidadProducto = (producto: IProducto) => {
                 Mostrando {{ productosFiltrados.length }} de {{ totalProductos }} productos
             </div>
         </div>
+        <!--fin tabla-->
 
-        <!-- Métricas -->
-        <div class="grid grid-cols-3 gap-4 mt-5">
+        <!-- metricas -->
+        <div class="grid grid-cols-4 gap-4 mt-5">
             <Contenedor>
                 <div class="flex items-center gap-4">
                     <div
@@ -328,7 +335,24 @@ const cantidadProducto = (producto: IProducto) => {
                     </div>
                 </div>
             </Contenedor>
+            <Contenedor>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-red-100 text-red-700 flex items-center justify-center">
+                        <i class="pi pi-calendar-clock text-xl"></i>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-bold text-gray-700">
+                        {{ cantidadPorVencer }}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                        Artículos por vencer
+                        </span>
+                    </div>
+                </div>
+            </Contenedor>
         </div>
+        <!--fin metricas-->
     </div>
 </template>
 

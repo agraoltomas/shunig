@@ -41,12 +41,13 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="w-3/4 m-auto mt-5">
+    <div class="mt-10 mb-15">
+    <div class="w-3/4 m-auto mb-5">
         <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold rounded-2xl">
             <span class="text-white">Solicitudes</span></div>
     </div>
     
-    <div class="max-h-[60vh] max-w-screen min-h-screen w-3/4 m-auto mt-5 mb-15">
+    <div class="max-w-screen min-h-screen w-3/4 m-auto">
         <div v-if="loading">
             <ProgressSpinner></ProgressSpinner>
         </div>
@@ -56,12 +57,12 @@ onMounted(() => {
         <div v-else class="overflow-y-auto  flex flex-col gap-3 p-3">
             <ItemSolicitud v-for="solicitud in solicitudes" :solicitud="solicitud">
                 <template #nav-button>
-                    <Button label="Ver Detalle" icon="pi pi-arrow-right" variant="outlined" 
+                    <Button label="Ver Detalle" icon="pi pi-arrow-right" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
                     @click="() => router.push(`/refugio/solicitud/${solicitud.id_solicitud}`)"></Button>
                 </template>
             </ItemSolicitud>
         </div>
-    </div>
+    </div></div>
 </template>
 
 <style scoped>

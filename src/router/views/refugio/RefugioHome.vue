@@ -33,7 +33,7 @@ const loadSolicitudes = async () => {
 </script>
 
 <template>
-    <div class="w-full px-10">
+    <div class="w-full px-10 mt-10 mb-15">
             <DashboardRefugio></DashboardRefugio>
     </div>
 </template>

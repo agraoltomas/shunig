@@ -30,11 +30,12 @@ const eventosPasados = computed(() => {
 </script>
 
 <template>
-    <div class="w-3/4 m-auto mt-5">
+    <div class="mt-10 mb-15">    
+    <div class="w-3/4 m-auto">
         <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold rounded-2xl">
             <span class="text-white">Eventos de vacunación</span></div>
     </div>
-    <Contenedor class="w-[75%] m-auto mt-10 mb-15">
+    <Contenedor class="w-[75%] m-auto mt-10">
         <Tabs value="1">
             <TabList value="1">
                 <Tab value="1">
@@ -73,7 +74,7 @@ const eventosPasados = computed(() => {
                 </TabPanel>
             </TabPanels>
         </Tabs>
-    </Contenedor>
+    </Contenedor></div>
     <Modal nombre="editar_evento_vacunacion">
         <template #header>
             <div class="text-xl font-semibold text-white p-5">

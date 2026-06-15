@@ -16,6 +16,7 @@ export interface IProducto{
     medida: Maybe<string>,
     cantidad_alerta_baja: Maybe<number>,
     cantidad_alerta_moderada: Maybe<number>,
-    alerta_stock_activa: boolean
+    alerta_stock_activa: boolean,
+    cantidad_por_vencer: number
 }
 

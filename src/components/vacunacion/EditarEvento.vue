@@ -27,8 +27,8 @@ const data = reactive({
         </FormCol>
     </FormRow>
     <div class="flex flex-row gap-3 justify-end py-3">
-        <Button label="Cancelar" variant="outlined" icon="pi pi-times" @click="$emit('close')"></Button>
-        <Button label="Guardar" icon="pi pi-save"></Button>
+        <Button label="Cancelar" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-times" @click="$emit('close')"></Button>
+        <Button label="Guardar" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-save"></Button>
     </div>
 </template>
 

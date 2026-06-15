@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import type { IPatrocinador } from '@/lib/tipos/patrocinadores'
 import moment from 'moment'
 import FormRow from '@/components/forms/FormRow.vue'
@@ -27,7 +27,26 @@ const emits = defineEmits<{
 }>()
 
 const editando = ref(false)
-const donaciones = ref<IDonacionPatrocinador[]>([])
+const donaciones = ref<IDonacionPatrocinador[]>([]);
+
+const totalDonacionesAceptadas = computed(() => {
+    return donaciones.value.filter((donacion) => {
+        return Number(donacion.id_estado_solicitud) === 1
+    }).length
+})
+
+const totalDonacionesRecibidas = computed(() => {
+    return donaciones.value.filter((donacion) => {
+        return Number(donacion.id_estado_solicitud) === 1
+            && donacion.fecha_recepcion
+    }).length
+})
+
+const totalDonacionesPendientes = computed(() => {
+    return donaciones.value.filter((donacion) => {
+        return Number(donacion.id_estado_solicitud) === 2
+    }).length
+})
 
 const valores = reactive({
     nombre: props.patrocinador.nombre,
@@ -118,50 +137,45 @@ const formatearFecha = (fecha?: string | null) => {
     return fecha ? moment.utc(fecha).format('DD-MM-YYYY') : '-'
 }
 </script>
-
+<!--Vista del detalle de cada patrocinador-->
 <template>
-    <div class="w-[80vw] m-auto flex flex-col gap-4 mt-6 mb-15">
-        <!-- HEADER / DETALLE PRINCIPAL -->
-        <div
-            v-if="patrocinador"
-            class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
-        >
+    <div class="w-3/4 m-auto flex flex-col gap-4 mt-10 mb-15">
+        <div v-if="patrocinador" class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white">
             <div v-if="!editando" class="gap-6">
+                <!-- Sector de botones -->
                 <div class="flex flex-row justify-between items-center gap-4 pb-4 mb-5 border-b border-gray-200">
-        <span class="font-bold text-2xl">
-            Detalle del producto
-        </span>
+                    <span class="font-bold text-2xl">Detalle del patrocinador</span>
+                    <div class="flex flex-row gap-3">
+                        <Button
+                        class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
+                        outlined
+                        severity="secondary"
+                        icon="pi pi-undo"
+                        label="Volver"
+                        @click="$router.go(-1)"></Button>
 
-        <div class="flex flex-row gap-3">
-            <Button
-                class="!bg-transparent !border-refugio-500 !text-refugio-500 hover:!bg-refugio-200"
-                outlined
-                severity="secondary"
-                icon="pi pi-undo"
-                label="Volver"
-                @click="$router.go(-1)"
-            />
+                        <Button
+                        outlined
+                        severity="success"
+                        icon="pi pi-pencil"
+                        label="Editar"
+                        @click="editando = true"
+                        ></Button>
 
-            <Button
-                outlined
-                severity="success"
-                icon="pi pi-pencil"
-                label="Editar"
-                @click="editando = true"
-            />
-
-            <DangerButton
-                outlined
-                icon="pi pi-trash"
-                label="Eliminar"
-                @click="modalesStore.abrir('eliminar', {
-                   nombre: patrocinador.nombre,
+                        <DangerButton
+                        outlined
+                        icon="pi pi-trash"
+                        label="Eliminar"
+                        @click="modalesStore.abrir('eliminar', {
+                        nombre: patrocinador.nombre,
                             endpoint: `/patrocinador/${patrocinador.id_patrocinador}`,
                             volverPrincipal: '/refugio/patrocinadores'
-                })"
-            />
-        </div>
-    </div>
+                        })"></DangerButton>
+                        
+                    </div>
+                </div>
+                <!--fin sector de botones-->
+                <!--Detalles-->
                 <div class="flex flex-row gap-5 grow">
                     <div class="rounded-full bg-primary-200/30 w-28 h-28 flex items-center justify-center shrink-0">
                         <div class="text-primary-500 text-4xl font-bold">
@@ -209,11 +223,10 @@ const formatearFecha = (fecha?: string | null) => {
                         </div>
                     </div>
                 </div>
-
-               
+                <!--fin detalles-->               
             </div>
 
-            <!-- EDICIÓN -->
+            <!-- edicion -->
             <div v-else>
                 <div class="flex flex-row justify-between items-center mb-5">
                     <div>
@@ -262,7 +275,7 @@ const formatearFecha = (fecha?: string | null) => {
                             </div>
                         </div>
 
-                        <FormRow class="w-full">
+                        <FormRow class="w-full mb-5">
                             <FormCol :span="6">
                                 <Label for="nombre" required>Nombre</Label>
                                 <InputText id="nombre" fluid name="nombre" />
@@ -318,7 +331,7 @@ const formatearFecha = (fecha?: string | null) => {
 
                         <FormRow class="w-full">
                             <FormCol :span="12">
-                                <Label for="descripcion" required>Descripción</Label>
+                                <Label class="sr-only" for="descripcion" required>Descripción</Label>
                                 <Textarea
                                     id="descripcion"
                                     fluid
@@ -356,7 +369,7 @@ const formatearFecha = (fecha?: string | null) => {
             </div>
         </div>
 
-        <!-- DESCRIPCIÓN -->
+        <!-- descripcion -->
         <div
             v-if="patrocinador && !editando"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -380,8 +393,65 @@ const formatearFecha = (fecha?: string | null) => {
                 />
             </div>
         </div>
+        <!--fin descripcion-->
+        <!--metricas-->
 
-        <!-- DONACIONES -->
+        <div class="grid grid-cols-3 gap-4 ">         
+
+            <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4 bg-white">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
+                        <i class="pi pi-inbox text-xl"></i>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-bold text-gray-700">
+                        {{ totalDonacionesRecibidas }}/{{ totalDonacionesAceptadas }}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                         Donaciones recibidas de las aceptadas
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+               <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4 bg-white">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                        <i class="pi pi-check-circle text-xl"></i>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-bold text-gray-700">
+                        {{ totalDonacionesAceptadas }}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                        Donaciones aceptadas
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shadow-[0_0_10px_rgba(0,0,0,0.10)] rounded-2xl p-4 bg-white">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center">
+                        <i class="pi pi-clock text-xl"></i>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-bold text-gray-700">
+                        {{ totalDonacionesPendientes }}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                        Donaciones pendientes
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--fin metricas-->
+
+        <!-- donaciones -->
         <div
             v-if="patrocinador && !editando"
             class="shadow-[0_0_10px_rgba(0,0,0,0.18)] rounded-2xl p-5 bg-white"
@@ -432,6 +502,7 @@ const formatearFecha = (fecha?: string | null) => {
                 </Column>
             </DataTable>
         </div>
+        <!--fin donaciones-->
     </div>
 </template>
 

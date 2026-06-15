@@ -34,6 +34,7 @@ const showImage = (i: string, e: Event) => {
 }
 </script>
 
+
 <template>
     <div class="flex flex-col gap-3">
         <DataTable class="grow!" :value="reportes">

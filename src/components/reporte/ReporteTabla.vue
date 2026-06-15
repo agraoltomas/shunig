@@ -32,6 +32,7 @@ const showImage = (i: string, e: Event) => {
     fotoReportePopover.value?.show(e)
 }
 </script>
+<!--Componente del detalle de reporte de la gestión del animal en transito-->
 
 <template>
     <div class="flex flex-col gap-3">
@@ -60,7 +61,7 @@ const showImage = (i: string, e: Event) => {
             </Column>
         </DataTable>
         <div class="flex flex-row justify-end p-3">
-            <Button label="Cargar reporte" icon="pi pi-plus" class="bg-refugio-500 border-refugio-500"
+            <Button label="Cargar reporte" icon="pi pi-plus" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
                     @click=" () => modalStore.abrir('reporte', props.mascota)"></Button>
 
         </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const props = defineProps<{ value: number|string, icon?: string, title: string, subtitle?: string }>()
+const props = defineProps<{ value: number|string, icon?: string, title: string, subtitle?: string, to?: string }>()
 </script>
 
 <template>
@@ -8,12 +8,13 @@ const props = defineProps<{ value: number|string, icon?: string, title: string, 
         <div class="flex flex-row justify-start gap-3 items-center pb-3">
             <div class="bg-refugio-100 rounded-full p-1 h-fit my-auto">
                 <slot name="icon">
-                    <i :class="['text-refugio-500 p-1 text-xl',icon]"></i>
+                    <i :class="['text-refugio-500 p-1 text-xl',icon]" aria-hidden="true"></i>
                 </slot>
             </div>
             <div class="font-bold text-4xl px-3">{{ value }}</div>
         </div>
-        <div class="w-fit font-bold text-center">{{ title }}</div>
+        <RouterLink v-if="to" :to="to" class="w-fit font-bold text-center text-refugio-500 hover:underline text-md">{{ title }}</RouterLink>
+        <div v-else class="w-fit font-bold text-center">{{ title }}</div>
         <div class="text-gray-500 text-sm w-fit">{{ subtitle }}</div>
     </div>
 </template>

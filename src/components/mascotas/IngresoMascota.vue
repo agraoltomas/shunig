@@ -300,12 +300,12 @@ const cancelar = () => {
         >
             <FormRow class="w-full">
                 <FormCol :span="12">
-                    <Label for="observaciones">
+                    <Label for="observaciones" class="sr-only">
                         Observaciones
                     </Label>
 
                     <Textarea
-                        id="observaciones"
+                        id="observaciones" 
                         name="observaciones"
                         fluid
                         :auto-resize="true"
@@ -326,13 +326,13 @@ const cancelar = () => {
         </ContenedorTitulo>
 
         <ContenedorTitulo
-            title="Imagen"
+            title="Imagen del animal"
             icon="pi pi-image"
             class="m-1"
         >
             <FormRow class="w-full">
                 <FormCol :span="12">
-                    <Label for="foto">
+                    <Label for="foto" class="sr-only">
                         Imagen del animal
                     </Label>
 

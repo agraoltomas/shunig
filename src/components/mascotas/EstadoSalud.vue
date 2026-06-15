@@ -98,7 +98,7 @@ const registrar = async () =>{
             </template>
         </Timeline>
         <div class="flex flex-row justify-end gap-3 py-3">
-            <Button label="Registrar" icon="pi pi-plus" @click="() => modal.abrir('estado_salud',mascota)"></Button>
+            <Button label="Registrar" icon="pi pi-plus" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="() => modal.abrir('estado_salud',mascota)"></Button>
         </div>
     </Contenedor>
     <Modal nombre="estado_salud" class="w-1/4">
@@ -106,18 +106,18 @@ const registrar = async () =>{
             <div>
                 <FormRow>
                     <FormCol :span="12">
-                        <Label required>
+                        <Label for="estado_salud" required>
                             <i class="pi pi-heart p-1"></i>Estado de salud
                         </Label>
-                        <TableSelect v-model="nuevoRegistro.estado_salud" :tipo="TablaEstatica.EstadoSalud"></TableSelect>
+                        <TableSelect id="estado_salud" v-model="nuevoRegistro.estado_salud" :tipo="TablaEstatica.EstadoSalud"></TableSelect>
                     </FormCol>
                     <FormCol :span="12">
-                        <Label required><i class="pi pi-clipboard p-1 text-grey-300! font-normal!"></i>Observación</Label>
-                        <Textarea required v-model="nuevoRegistro.observacion" :maxlength="150"></Textarea>
+                        <Label for="observaciones" required><i class="pi pi-clipboard p-1 text-grey-300! font-normal!"></i>Observación</Label>
+                        <Textarea id="observaciones" required v-model="nuevoRegistro.observacion" :maxlength="150"></Textarea>
                     </FormCol>
                 </FormRow>
                 <div class="flex flex-row justify-end w-full py-3">
-                    <Button label="Cargar" @click="registrar"></Button>
+                    <Button label="Cargar" @click="registrar" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"></Button>
                 </div>
             </div>
         </template>
