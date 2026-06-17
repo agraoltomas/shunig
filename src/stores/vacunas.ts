@@ -22,7 +22,8 @@ export interface InscripcionEvento{
     especie: string,
     nombre_usuario: string,
     email: string,
-    telefono: string
+    telefono: string,
+    aplicada: boolean
 }
 
 export const useEventosVacunacionStore = defineStore('eventos-vacunacion', () => {

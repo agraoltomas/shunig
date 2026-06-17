@@ -11,6 +11,7 @@ onMounted(() => {
     console.log(props.evento)
 })
 const date = computed(() => {
+    // TODO: ARREGLAR UTC
     return moment(props.evento.fecha_evento)
 })
 

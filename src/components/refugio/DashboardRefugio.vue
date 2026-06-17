@@ -34,7 +34,7 @@ interface Dashboard {
         solicitudes: number,
     },
     graficos:{
-        movimientos: { dia: string, ingresos: number, egresos: number }[],
+        movimientos: { dia: string, ingresos: number, egresos: number, total: number }[],
         solicitudes_x_estado: { estado: string, count: number }[],
         stock_critico: {
     "nombre": string,
@@ -79,7 +79,7 @@ const ingresosVsEgresos = computed(() => ({
     ) || [],
     datasets: [
         {
-            label: 'Ingresos',
+            label: 'Ingresos ',
             data: dashboard.value?.graficos.movimientos.map(
                 (m: any) => m.ingresos
             ) || []
@@ -89,6 +89,12 @@ const ingresosVsEgresos = computed(() => ({
             data: dashboard.value?.graficos.movimientos.map(
                 (m: any) => m.egresos
             ) || []
+        },
+        {
+            label: 'Total',
+            data: dashboard.value?.graficos.movimientos.map(
+                (m: any) => m.total,
+            )|| []
         }
     ]
 }));
@@ -235,7 +241,7 @@ const solicitudesPorEstado =computed(() => ({
         <div class="flex flex-row flex-wrap gap-3 justify-between w-[90vw] m-auto">
             <ContenedorTitulo class="w-[40%] mb-5" title="Ingresos vs egresos de animales">
                 <div class="text-sm text-gray-500">Última semana</div>
-                <Chart class="m-auto w-full" type="bar" :data="ingresosVsEgresos" :options="optionsIngresosVsEgresos"/>
+                <Chart class="m-auto w-full" type="line" :data="ingresosVsEgresos" :options="optionsIngresosVsEgresos"/>
             </ContenedorTitulo>
             <ContenedorTitulo class="mb-5" title="Animales por especie">
                 <div class="text-sm text-gray-500">Distribución actual</div>

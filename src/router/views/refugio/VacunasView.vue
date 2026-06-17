@@ -38,13 +38,13 @@ const eventosPasados = computed(() => {
     <Contenedor class="w-[75%] m-auto mt-10">
         <Tabs value="1">
             <TabList value="1">
-                <Tab value="1">
+                <Tab value="1" :disabled="eventosStore.eventos.length == 0">
                     Todos
                 </Tab>
-                <Tab value="2">
+                <Tab value="2" :disabled="eventosProximos.length == 0">
                     Próximos
                 </Tab>
-                <Tab value="3">
+                <Tab value="3" :disabled="eventosProximos.length == 0">
                     Pasados
                 </Tab>
             </TabList>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, type Ref, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useResponse } from '@/lib/utils/response.ts'
 import { useAxios } from '@/lib/axios.ts'
 import { rutas_api } from '@/rutas_api.ts'
@@ -26,6 +26,7 @@ const evento: Ref<Maybe<IEventoVacunacion>> = ref(null)
 const { loading, startLoading, stopLoading } = useLoadingComposable()
 const { refugio } = useRefugioStore()
 const eventoStore = useEventosVacunacionStore()
+const router = useRouter()
 onMounted(() => {
     if (!route.params.id) return
     loadEvento(route.params.id.toString())
@@ -50,9 +51,17 @@ const cupos = computed(() => {
     return evento.value.cupo_maximo - inscriptos
 })
 
-const confirmarVacunacion = (i: InscripcionEvento) => {
+const confirmarVacunacion = async (i: InscripcionEvento) => {
     if (!confirm('¿Quiere confirmar que se aplico esta vacuna?')) return
     console.log(i)
+    try{
+        const r = await unwrap(axios.value.post(rutas_api.vacunas.APLICAR(i.id_evento_vacunacion, i.id_animal)))
+
+    }catch (error){
+
+    }finally{
+
+    }
 }
 
 </script>
@@ -78,20 +87,18 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
                                 severity="secondary"
                                 icon="pi pi-undo"
                                 label="Volver"
-                            class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
+                                class="!bg-transparent !border !border-refugio-500 !text-refugio-500
                             hover:!bg-refugio-200 rounded-md px-4 py-2 flex flex-row gap-2 items-center no-underline">
                         </Button>
-
                         <Button
                             outlined
                             severity="success"
                             icon="pi pi-pencil"
                             label="Editar evento"
                         />
-
                         <DangerButton outlined
-                            icon="pi pi-trash"
-                            label="Cancelar evento"
+                                      icon="pi pi-trash"
+                                      label="Cancelar evento"
                         />
                     </div>
                 </div>
@@ -152,33 +159,31 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
                             </div>
                         </div>
 
-                        
+
                     </div>
                 </div>
             </div>
         </Contenedor>
         <!--KPIs-->
-        <div class="grid grid-cols-4 gap-4 mb-5">
-                <Contenedor class="w-full">
-                    <KPI title="Cantidad inscriptos"  :value="evento.inscriptos" icon="pi pi-clipboard" subtitle="Animales registrados">
-                    </KPI>
-                </Contenedor>
-                <Contenedor class="w-full">
-                    <KPI title="Cantidad vacunados"  :value="0" icon="pi pi-check-circle" subtitle="Animales con vacuna">
-                    </KPI>
-                </Contenedor>
-                <Contenedor class="w-full">
-                    <KPI title="Cupos ocupados"  :value="`${evento.inscriptos}/${evento.cupo_maximo}`" icon="pi pi-chart-pie" subtitle="Sobre total">
-                    </KPI>
-                </Contenedor>
-                <Contenedor class="w-full">
-                    <KPI title="Cupos libres"  :value="`${evento.cupo_maximo - parseInt(evento.inscriptos)}`" icon="pi pi-user-plus" subtitle="Disponibilidad">
-                    </KPI>
-                </Contenedor>
+        <div class="grid grid-cols-3 gap-4 mb-5">
+            <Contenedor class="w-full">
+                <KPI title="Animales inscriptos" :value="`${evento.inscriptos}/${evento.cupo_maximo}`"
+                     icon="pi pi-chart-pie" subtitle="sobre el total">
+                </KPI>
+            </Contenedor>
+            <Contenedor class="w-full">
+                <KPI title="Cupos libres" :value="`${evento.cupo_maximo - parseInt(evento.inscriptos)}`"
+                     icon="pi pi-user-plus" subtitle="Disponibilidad">
+                </KPI>
+            </Contenedor>
+            <Contenedor class="w-full">
+                <KPI title="Cantidad vacunados" :value="0" icon="pi pi-check-circle" subtitle="Animales con vacuna">
+                </KPI>
+            </Contenedor>
         </div>
         <!--fin KPIs-->
-       
-        <div class="grid grid-cols-12 gap-5 items-start">            
+
+        <div class="grid grid-cols-12 gap-5 items-start">
             <!--Animales para inscribir al evento-->
             <Contenedor class="col-span-8 h-fit">
                 <DataTable :value="eventoStore.inscripcionesEvento">
@@ -209,11 +214,10 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
                         <template #body="{data}">
                             <div class="flex flex-row gap-3">
                                 <Button icon="pi pi-eye" aria-label="Ver detalle del animal" outlined
-                                        class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
-                            hover:!bg-refugio-200"></Button>
-                                <Button aria-label="Confirmar vacunación" icon="pi pi-check" 
-                                outlined class="!bg-transparent !border !border-refugio-500 !text-refugio-500 
-                            hover:!bg-refugio-200"
+                                        class=" border-refugio-500! text-refugio-500! hover:bg-refugio-200!"
+                                @click="() => router.push(`/refugio/mascota/${data['id_animal']}`)"></Button>
+                                <Button v-if="!data['aplicada']" aria-label="Confirmar vacunación" icon="pi pi-check"
+                                        outlined class=" border-refugio-500! text-refugio-500! hover:bg-refugio-200!"
                                         @click="() => confirmarVacunacion(data)"></Button>
                             </div>
                         </template>
@@ -265,7 +269,7 @@ const confirmarVacunacion = (i: InscripcionEvento) => {
         <Contenedor>
             <div class="text-center">
                 Evento inexistente
-            </div>            
+            </div>
         </Contenedor>
     </div>
 </template>

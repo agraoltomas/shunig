@@ -9,6 +9,7 @@ import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import cryingDog from "@/assets/images/crying_dog.jpg"
 import { AxiosError } from 'axios'
 import ProgressSpinner from 'primevue/progressspinner';
+import Contenedor from '@/components/generales/Contenedor.vue'
 
 const route = useRoute()
 const mascota: Ref<Maybe<IMascota>> = ref(null)
@@ -46,12 +47,12 @@ watch(() => route.params.id, async () => {
         <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
     </Panel>
     <Mascota  v-if="mascota" :mascota="mascota" @actualizado="loadMascota"></Mascota>
-    <Panel class="m-auto! text-center max-w-fit" v-else-if="!loading">
+    <Contenedor class="m-auto! text-center max-w-fit" v-else-if="!loading">
         <div class="p-5">
             <Image pt:root="m-auto text-center" class="" :src="cryingDog"/>
         </div>
         <span class="text-2xl text-semibold text-red-500 p-3">Animal no encontrado</span>
-    </Panel>
+    </Contenedor>
 </template>
 
 <style scoped>
