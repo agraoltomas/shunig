@@ -425,7 +425,7 @@ const actualizarArticulo = async (e: FormSubmitEvent) => {
                             <InputNumber
                                 id="cantidad"
                                 fluid
-                                name="cantidad"
+                                name="cantidad" :allow-empty="true"
                             />
 
                             <Message
