@@ -24,7 +24,7 @@ const toAlertaInfo = (a: AlertaGroup): AlertaInfo => {
         case 'AnimalEnTratamiento':
             return {prioridad: 2, tipo_alerta: a.type, titulo: `${a.count} animal${a.count == 1 ? '' : 'es'} en tratamiento`, descripcion: ''}
         case 'AnimalSinReporte':
-            return {prioridad: 3, tipo_alerta: a.type, titulo: `${a.count} animal${a.count == 1 ? '' : 'es'} sin reporte`, descripcion: ''}
+            return {prioridad: 1, tipo_alerta: a.type, titulo: `${a.count} animal${a.count == 1 ? '' : 'es'} sin reporte`, descripcion: ''}
         case 'SolicitudPendiente':
             return {prioridad: 3, tipo_alerta: a.type, titulo: `${a.count} solicitud${a.count == 1 ? '' : 'es'} pendiente${a.count == 1 ? '' : 's'} `, descripcion: ''}
         case 'VacunaVencida':

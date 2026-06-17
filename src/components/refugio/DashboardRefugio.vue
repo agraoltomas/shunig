@@ -15,6 +15,7 @@ import KPI from '@/components/refugio/Dashboard/KPI.vue'
 import { useRouter } from 'vue-router'
 import type { EAlerta } from '@/components/generales/alertas.ts'
 import AlertasResumen, { type IAlerta } from '@/components/refugio/Dashboard/AlertasResumen.vue'
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 const {axios} = useAxios()
 const {unwrap} = useResponse()
@@ -73,6 +74,11 @@ const animalesPorEspecie = computed(() => ({
         }
     ]
 }))
+
+//evolucion, ingresos y egresos 
+
+const pluginsIngresosVsEgresos = [ChartDataLabels]
+
 const ingresosVsEgresos = computed(() => ({
     labels: dashboard.value?.graficos.movimientos.map(
         (m: any) => m.dia
@@ -241,7 +247,7 @@ const solicitudesPorEstado =computed(() => ({
         <div class="flex flex-row flex-wrap gap-3 justify-between w-[90vw] m-auto">
             <ContenedorTitulo class="w-[40%] mb-5" title="Ingresos vs egresos de animales">
                 <div class="text-sm text-gray-500">Última semana</div>
-                <Chart class="m-auto w-full" type="line" :data="ingresosVsEgresos" :options="optionsIngresosVsEgresos"/>
+                <Chart class="m-auto w-full" type="line" :data="ingresosVsEgresos" :options="optionsIngresosVsEgresos" :plugins="pluginsIngresosVsEgresos"/>
             </ContenedorTitulo>
             <ContenedorTitulo class="mb-5" title="Animales por especie">
                 <div class="text-sm text-gray-500">Distribución actual</div>
@@ -253,7 +259,7 @@ const solicitudesPorEstado =computed(() => ({
                 </div>
                 <a @click="router.push('/refugio/alertas')" class="font-semibold text-refugio-500 text-sm flex flex-row items-center select-none cursor-pointer">
                     <div class="h-fit font-bold my-auto hover:underline text-md">Ver todas las alertas</div>
-                    <i class="my-auto pi pi-arrow-right text-sm px-2"></i>
+                    <i class="my-auto pi pi-arrow-right px-2 " style="font-size:10px;"></i>
                 </a>
             </ContenedorTitulo>
             <ContenedorTitulo class="w-[40%] mb-5" title="Adopciones por mes">
@@ -285,7 +291,7 @@ const solicitudesPorEstado =computed(() => ({
                 </div>
                 <div class=" flex flex-row justify-start p-1">
                     <a @click="router.push('/refugio/inventario')" class="font-semibold text-refugio-500 text-sm flex flex-row items-center select-none cursor-pointer"> 
-                        <div class="h-fit font-bold my-auto hover:underline text-md">Ver inventario completo</div> <i class="my-auto pi pi-arrow-right text-sm px-2"></i>
+                        <div class="h-fit font-bold my-auto hover:underline text-md">Ver inventario completo</div> <i class="my-auto pi pi-arrow-right px-2" style="font-size:10px;"></i>
                     </a>
                 </div>
             </ContenedorTitulo>

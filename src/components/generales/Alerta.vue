@@ -30,6 +30,8 @@ const iconoAlerta = (a: EAlerta) => {
             return 'pi pi-box'
         case EAlerta.StockAlto:
             return 'pi pi-box'
+        case EAlerta.ProductoAVencer:
+            return 'pi pi-box'
     }
 }
 const routeAlerta = (a: IAlerta) => {
@@ -49,6 +51,8 @@ const routeAlerta = (a: IAlerta) => {
         case EAlerta.StockModerado:
             return `/refugio/inventario/producto/${a.id_referencia}/`
         case EAlerta.StockAlto:
+            return `/refugio/inventario/producto/${a.id_referencia}/`
+        case EAlerta.ProductoAVencer:
             return `/refugio/inventario/producto/${a.id_referencia}/`
     }
 }

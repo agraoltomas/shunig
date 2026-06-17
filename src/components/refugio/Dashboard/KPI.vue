@@ -13,7 +13,9 @@ const props = defineProps<{ value: number|string, icon?: string, title: string, 
             </div>
             <div class="font-bold text-4xl px-3">{{ value }}</div>
         </div>
-        <RouterLink v-if="to" :to="to" class="w-fit font-bold text-center text-refugio-500 hover:underline text-md">{{ title }}</RouterLink>
+        <RouterLink v-if="to" :to="to" class="w-fit font-bold text-center text-refugio-500 hover:underline text-md">{{ title }}
+            <i class="my-auto pi pi-arrow-right" style="font-size:10px;"></i>
+        </RouterLink>
         <div v-else class="w-fit font-bold text-center">{{ title }}</div>
         <div class="text-gray-500 text-sm w-fit">{{ subtitle }}</div>
     </div>

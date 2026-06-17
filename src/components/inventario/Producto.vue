@@ -106,20 +106,7 @@ const ultimaActualizacionProducto = computed(() => {
     })
 })
 
-const articulosPorVencer = computed(() => {
-    return articulosDelStock.value.filter((articulo) => {
-        if (!articulo.fecha_vencimiento) {
-            return false
-        }
-
-        const fechaVencimiento = moment.utc(articulo.fecha_vencimiento)
-        const hoy = moment.utc()
-
-        return fechaVencimiento.isSameOrAfter(hoy) && fechaVencimiento.diff(hoy, 'days') <= 30
-    }).length
-})
-
-const cantidadPorVencer = computed(() => {
+const cantidadVencidaOPorVencer = computed(() => {
     return articulosDelStock.value
         .filter((articulo) => {
             if (!articulo.fecha_vencimiento) {
@@ -127,9 +114,9 @@ const cantidadPorVencer = computed(() => {
             }
 
             const fechaVencimiento = moment.utc(articulo.fecha_vencimiento)
-            const hoy = moment.utc()
+            const limite = moment.utc().add(30, 'days')
 
-            return fechaVencimiento.isSameOrAfter(hoy) && fechaVencimiento.diff(hoy, 'days') <= 30
+            return fechaVencimiento.isSameOrBefore(limite, 'day')
         })
         .reduce((total, articulo) => {
             return total + Number(articulo.cantidad || 0)
@@ -660,9 +647,9 @@ const resolver = ({ values }: FormResolverOptions) => {
                     />
 
                     <Tag
-                        v-if="articulosPorVencer > 0"
+                        v-if="cantidadVencidaOPorVencer > 0"
                         severity="warn"
-                        :value="`${cantidadPorVencer} por vencer`"
+                        :value="`${cantidadVencidaOPorVencer} vencido/por vencer`"
                     />
                 </div>
             </div>
