@@ -5,6 +5,7 @@ import type { Maybe } from '@/lib/tipos/generics'
 import Dialog from '@/volt/Dialog.vue'
 import paw from '@/assets/images/paw-solid-full.svg'
 import { useRouter } from 'vue-router'
+import { useModalStore } from '@/stores/modales.ts'
 
 const props = defineProps<{ animales: IMascota[] }>()
 
@@ -35,7 +36,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
     if (interval.value) clearInterval(interval.value)
 })
-const showDialog = ref(false)
+const modales = useModalStore()
 
 </script>
 <template>
@@ -51,7 +52,7 @@ const showDialog = ref(false)
                         <div class="p-7 flex flex-col text-center">
                             <h2 class="text-2xl text-white">{{ currentPet.nombre }}</h2>
                             <span class="text-white">{{ currentPet.especie }}</span>
-                            <Button class="my-3 w-fit text-center mx-auto" @click="() => showDialog = true">
+                            <Button class="my-3 w-fit text-center mx-auto" @click="() => modales.abrir('registro')">
                                 Quiero adoptar
                             </Button>
                         </div>
@@ -65,29 +66,29 @@ const showDialog = ref(false)
             </div>
         </div>
     </div>
-    <Dialog v-model:visible="showDialog" pt:content="p-3 flex flex-col gap-3" modal class="w-96">
-        <div class="rounded-full bg-surface-500 w-10 m-auto">
-            <span class="text-center ">
-                <img :src="paw" />
-            </span>
-        </div>
-        <h1 class="text-2xl semibold py-3 text-wrap text-center">Para adoptar necesitas una cuenta</h1>
-        <div class="text-center m-auto text-slate-500">¿Ya tenés una cuenta?</div>
-        <Button class="w-fit m-auto" icon="pi pi-sign-in px-1" label="Iniciar sesión"
-                @click="() => router.push('/login')"></Button>
-        <div class="flex flex-row">
-            <div class="grow pt-6 mr-3">
-                <hr>
-            </div>
-            <div class="py-3 text-center">o</div>
-            <div class="grow pt-6 ml-3">
-                <hr>
-            </div>
-        </div>
-        <div class="text-center m-auto text-slate-500">¿No tenés cuenta aún?</div>
-        <Button :outlined="true" class="w-fit m-auto" icon="pi pi-user px-1" label="Registrarme"
-                @click="() => router.push('/register?t=adopcion')"></Button>
-    </Dialog>
+<!--    <Dialog v-model:visible="showDialog" pt:content="p-3 flex flex-col gap-3" modal class="w-96">-->
+<!--        <div class="rounded-full bg-surface-500 w-10 m-auto">-->
+<!--            <span class="text-center ">-->
+<!--                <img :src="paw" />-->
+<!--            </span>-->
+<!--        </div>-->
+<!--        <h1 class="text-2xl semibold py-3 text-wrap text-center">Para adoptar necesitas una cuenta</h1>-->
+<!--        <div class="text-center m-auto text-slate-500">¿Ya tenés una cuenta?</div>-->
+<!--        <Button class="w-fit m-auto" icon="pi pi-sign-in px-1" label="Iniciar sesión"-->
+<!--                @click="() => router.push('/login')"></Button>-->
+<!--        <div class="flex flex-row">-->
+<!--            <div class="grow pt-6 mr-3">-->
+<!--                <hr>-->
+<!--            </div>-->
+<!--            <div class="py-3 text-center">o</div>-->
+<!--            <div class="grow pt-6 ml-3">-->
+<!--                <hr>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="text-center m-auto text-slate-500">¿No tenés cuenta aún?</div>-->
+<!--        <Button :outlined="true" class="w-fit m-auto" icon="pi pi-user px-1" label="Registrarme"-->
+<!--                @click="() => router.push('/register?t=adopcion')"></Button>-->
+<!--    </Dialog>-->
 </template>
 
 

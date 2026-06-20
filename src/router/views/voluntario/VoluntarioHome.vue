@@ -14,6 +14,8 @@ import moment from 'moment'
 import Contenedor from '@/components/generales/Contenedor.vue'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 import { useUsuarioStore } from '@/stores/usuario.ts'
+import SinImagen from '@/components/generales/SinImagen.vue'
+import Calendario from '@/components/usuario/Calendario.vue'
 
 const adopciones: Ref<IMascota[]> = ref([])
 const transitos: Ref<IMascota[]> = ref([])
@@ -29,53 +31,33 @@ onMounted(async () => {
     await userStore.loadAnimalesUsuario()
     cargarAnimales()
 })
-const events = [
-    {
-        title: 'Advanced algebra',
-        with: 'Chandler Bing',
-        time: { start: moment().add('2days').format('YYYY-MM-DD'), end: moment().add('7days').format('YYYY-MM-DD') },
-        color: 'yellow',
-        isEditable: true,
-        id: '753944708f0f',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores assumenda corporis doloremque et expedita molestias necessitatibus quam quas temporibus veritatis. Deserunt excepturi illum nobis perferendis praesentium repudiandae saepe sapiente voluptatem!'
-    },
-    {
-        title: 'Evento de vacunación antirrábica',
-        time: { start: '2026-04-10', end: '2026-04-22' },
-        color: 'green',
-        isEditable: true,
-        id: '5602b6f589fc'
-    }
-    // ...
-]
-const config = {
-    locale: 'es-AR',
-    defaultMode: 'month',
-
-    style: {
-        colorSchemes: {
-            meetings: {
-                color: '#fff',
-                backgroundColor: '#131313'
-            },
-            sports: {
-                color: '#fff',
-                backgroundColor: '#ff4081'
-            }
-        }
-    }
-}
 
 </script>
 
 <template>
     <div class="grid grid-cols-4 grid-rows-12 max-h-[80vw] gap-5 shadow-amber-50 ">
         <div class="col-span-2 flex flex-col justify-around gap-3">
-            <ContenedorTitulo   title="Mis adopciones" >
+            <ContenedorTitulo title="Mis adopciones">
+<!--                <div class="flex flex-row gap-3 justify-start">-->
+<!--                    <Contenedor v-for="adopcion in adopciones"-->
+<!--                                class=" border rounded-xl p-3 bg-primary-200/80 border-primary-200 flex flex-col items-center hover:bg-primary-100 cursor-pointer" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)">-->
+<!--                        <img v-if="adopcion.imagen" :src="adopcion.imagen" class="w-20 rounded" />-->
+<!--                        <SinImagen v-else class="w-20"></SinImagen>-->
+<!--                        <div class="font-semibold">{{ adopcion.nombre }}</div>-->
+<!--                        <div class="text-gray-500 text-sm"><i :class="['pi',adopcion.id_sexo == 2 ?'pi-venus' : 'pi-mars']"></i></div>-->
+<!--                        <div class="text-gray-500 text-wrap text-sm max-w-20 text-center">{{ adopcion.raza }}</div>-->
+<!--                    </Contenedor>-->
+<!--                </div>-->
                 <DataTable :value="adopciones" class="bg-transparent!" :loading="userStore.loading">
                     <template #empty>
                         <div class="text-center  py-3text-slate-300">No tiene mascotas adoptadas actualmente</div>
                     </template>
+                    <Column>
+                        <template #body="{data}">
+                            <img v-if="data['imagen']" :src="data['imagen']" class="w-20 rounded" />
+                            <SinImagen v-else class="w-20"></SinImagen>
+                        </template>
+                    </Column>
                     <Column header="Nombre" field="nombre">
                     </Column>
                     <Column header="Sexo" field="sexo">
@@ -83,7 +65,8 @@ const config = {
                     <Column header="Raza" field="raza"></Column>
                     <Column>
                         <template #body="{data}">
-                            <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                            <Button icon="pi pi-eye"
+                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
                         </template>
                     </Column>
                 </DataTable>
@@ -91,6 +74,12 @@ const config = {
 
             <ContenedorTitulo title="Mis tránsitos">
                 <DataTable :value="transitos" :loading="userStore.loading">
+                    <Column>
+                        <template #body="{data}">
+                            <img v-if="data['imagen']" :src="data['imagen']" class="w-20 rounded" />
+                            <SinImagen v-else class="w-20"></SinImagen>
+                        </template>
+                    </Column>
                     <Column header="Nombre" field="nombre">
                     </Column>
                     <Column header="Sexo" field="sexo">
@@ -98,20 +87,16 @@ const config = {
                     <Column header="Raza" field="raza"></Column>
                     <Column>
                         <template #body="{data}">
-                            <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                            <Button icon="pi pi-eye"
+                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
                         </template>
                     </Column>
                 </DataTable>
             </ContenedorTitulo>
         </div>
-        <Panel class="col-span-2 col-start-3 row-span-6 h-full   overflow-y-scroll!">
-            <div class=" flex flex-col gap-3">
-                <Qalendar
-                    :events="events"
-                    :config="config"
-                />
-            </div>
-        </Panel>
+        <Contenedor class="col-span-2 col-start-3 row-span-6 h-full   overflow-y-scroll!">
+            <Calendario></Calendario>
+        </Contenedor>
     </div>
 </template>
 

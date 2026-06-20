@@ -9,12 +9,13 @@ import InputMask from '@/volt/InputMask.vue'
 import { Form } from '@primevue/forms'
 import FormCol from '@/components/forms/FormCol.vue'
 import FormRow from '@/components/forms/FormRow.vue'
-import { reactive, type Reactive } from 'vue'
+import { reactive, type Reactive, ref, type Ref } from 'vue'
 import type { Maybe, MessageResponse } from '@/lib/tipos/generics'
 import type { User } from '@/lib/tipos/usuarios'
 import { useToast } from '@/lib/toast/toast.ts'
 import Domicilio from '@/components/forms/Domicilio.vue'
 import { domicilioSchema } from '@/validations/domicilio.ts'
+import type { IDomicilio } from '@/lib/tipos/domicilio'
 
 const props = defineProps<{ admin: User }>()
 const toast = useToast()
@@ -22,7 +23,6 @@ const yupRefugioSchema = yup.object().shape({
     cuit: yup.string().required('Campo obligatorio').test('valid-cuil', 'El CUIT es invalido', value => CUILValidator(value)).transform(value => value ? value.replaceAll('-', '') : value),
     nombre: yup.string().required('Campo obligatorio'),
     email: yup.string().email('Ingrese un mail valido').required('Campo obligatorio'),
-    domicilio: domicilioSchema,
     telefono: yup.object().shape({
         numero: yup.string().transform(value => String(value).replace('-', '')).matches(/(\d)+/g),
         codigo: yup.number()
@@ -59,6 +59,7 @@ const emits = defineEmits<{ ingresado: [refugio: any] }>()
 
 const ingresarRefugio = async (e: FormSubmitEvent) => {
     if(!e.valid)return
+    if(!domicilio.value || !domicilio.value.direccion)return
     console.log(e, props.admin)
     if (!props.admin) {
         return
@@ -66,6 +67,7 @@ const ingresarRefugio = async (e: FormSubmitEvent) => {
     const r = await axios.post('/refugio', {
         id_usuario_adm: props.admin.id_usuario,
         ...e.values,
+        domicilio: domicilio.value,
         telefono: e.values.telefono.numero ? `${e.values.telefono.codigo} ${e.values.telefono.numero}` : null
     })
     if (r.status == 200) {
@@ -74,6 +76,12 @@ const ingresarRefugio = async (e: FormSubmitEvent) => {
         toast.add({ detail: `'${e.values.nombre}' ingresado correctamente `, severity: 'success' })
     }
 }
+const domicilio: Ref<IDomicilio> = ref({
+    direccion: null,
+    localidad: null,
+    provincia: null,
+    no_tiene_altura: false
+})
 </script>
 
 <template>
@@ -104,16 +112,7 @@ const ingresarRefugio = async (e: FormSubmitEvent) => {
             <!--                </Message>-->
             <!--            </FormCol>-->
         </FormRow>
-        <Domicilio name="domicilio"></Domicilio>
-        <div class="flex flex-row flex-wrap gap-2">
-            <div v-for="field in ['direccion','codigo_postal','localidad','ciudad','provincia']">
-                <Message v-if="$form.domicilio ? !!$form.domicilio[field].invalid : false " severity="error" pt:content="min-w-fit!" variant="outlined">
-                    {{ $form.domicilio ? $form.domicilio[field].error?.message : 'error' }}
-                </Message>
-            </div>
-
-        </div>
-
+        <Domicilio v-model:value="domicilio"></Domicilio>
         <FormRow>
             <FormCol :span="12">
                 <Label required>CUIT</label>

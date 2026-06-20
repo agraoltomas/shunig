@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T = any">
 import { ref } from 'vue'
 import ProgressSpinner from '@/volt/ProgressSpinner.vue'
+import Contenedor from '@/components/generales/Contenedor.vue'
 
 const props = withDefaults(defineProps<{ data: T[], loading?: boolean }>(),{ loading: false})
 const emit = defineEmits<{ selected: [T] }>()
@@ -8,12 +9,12 @@ const selected = ref(null);
 </script>
 
 <template>
-    <Panel>
+    <Contenedor>
         <div v-if="loading">
             <ProgressSpinner></ProgressSpinner>
         </div>
         <div v-else-if="!selected" v-for="t in data"
-             class="border-b border-surface-300 flex flex-row gap-3 justify-between">
+             class="border-b border-surface-300 flex flex-row gap-3 justify-between last:border-none">
             <slot name="default" :item="t">
                 <div class="text-xl font-semibold px-3 py-4  ">
                     {{ t }}
@@ -21,7 +22,7 @@ const selected = ref(null);
             </slot>
             <Button icon="pi pi-arrow-right" class=" my-auto" @click="() => {$emit('selected', t); selected = t}"></Button>
         </div>
-    </Panel>
+    </Contenedor>
 </template>
 
 <style scoped>

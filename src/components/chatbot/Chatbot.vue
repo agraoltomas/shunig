@@ -30,7 +30,7 @@ const toggleChat = () => {
 </script>
 
 <template>
-    <div class="fixed bottom-5 left-5 m-3 z-9999">
+    <div class="fixed bottom-5 left-5 m-3 z-[calc(infinity)]">
         <div ref="icono" class="rounded-full bg-transparent cursor-pointer" @click="toggleChat">
             <div v-if="showDialog"
                  class="relative bg-refugio-500 text-white font-semibold p-3 w-fit  rounded-lg bottom-0 left-9 after:content-[''] after:absolute after:bottom-[-1em] after:left-1 after:left-10 after:w-5 after:h-5 after:border-t-20 after:border-t-refugio-500 after:border-r-20 after:border-r-transparent">

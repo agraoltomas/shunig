@@ -13,6 +13,8 @@ import Eliminar from './generales/Eliminar.vue'
 import IngresoProducto from './inventario/IngresoProducto.vue'
 import ArticuloStock from "./inventario/ArticuloStock.vue"
 import IngresoArticuloStock from "./inventario/IngresoArticuloStock.vue"
+import paw from '@/assets/images/paw-solid-full.svg'
+import RegistroModal from '@/components/generales/RegistroModal.vue'
 
 const store = useModalStore()
 const data = ref('')
@@ -119,6 +121,7 @@ const data = ref('')
             store.cerrar('verArticuloStock')}"></ArticuloStock>
     </Dialog>
 
+    <RegistroModal></RegistroModal>
 
 </template>
 
