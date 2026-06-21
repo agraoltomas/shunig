@@ -9,6 +9,7 @@ import { useRefugioStore } from '@/stores/refugio.ts'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useModalStore } from '@/stores/modales.ts'
 import Settings from '@/router/views/Settings.vue'
+import Notificaciones from '@/components/menu/Notificaciones.vue'
 
 const router = useRouter()
 
@@ -77,6 +78,7 @@ if (!authStore.user) {
 <!--                    <Settings title="Configuración"></Settings>-->
 <!--                    <Logout title="Cerrar sesión"></Logout>-->
                 </div>
+                <Notificaciones></Notificaciones>
                 <Button :title="`ir a pantalla de usuario`" v-if="authStore.user" icon="pi pi-user" class="flex-col! h-fit my-auto" @click="() => router.push('/usuario')" ></Button>
                 <UsuarioTag v-if="authStore.user" :user="authStore.user"></UsuarioTag>
             </div>

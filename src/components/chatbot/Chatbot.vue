@@ -6,11 +6,11 @@ import ChatBox from '@/components/chatbot/ChatBox.vue'
 const showing = ref(false);
 const showDialog = ref(true);
 
-// onMounted(() => {
-//     setTimeout(() => {
-//         showDialog.value = false;
-//     },5000)
-// })
+onMounted(() => {
+    setTimeout(() => {
+        showDialog.value = false;
+    },5000)
+})
 const icono = useTemplateRef("icono")
 onBeforeMount(() => {
     console.log(icono)

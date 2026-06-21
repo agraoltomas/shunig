@@ -1,4 +1,4 @@
-<script setup lang="ts">
+1<script setup lang="ts">
 import { onMounted, type Ref, ref } from 'vue'
 import { useAxios } from '@/lib/axios.ts'
 import type { IDatosSolicitud } from '@/components/adopcion/FormAdopcion.vue'

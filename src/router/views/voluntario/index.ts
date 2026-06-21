@@ -19,7 +19,8 @@ const routes = [
     { path: 'solicitud/:id', component: SolicitudDetalleView },
     { path: 'eventos', component: EventosView },
     { path: 'adoptar', component: InicioAdopcionView},
-    {  path: 'transitar', component: InicioTransitoView}
+    {  path: 'transitar', component: InicioTransitoView},
+    {path: 'notificaciones', component: () => import('@/router/views/NotificacionesView.vue') }
 ]
 
 export default routes

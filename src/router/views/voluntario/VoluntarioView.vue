@@ -34,11 +34,6 @@ const itemsMenuAccesoRapido: Ref<MenuItem[]> = ref([
             {
                 label: 'Inscripción a eventos',
                 command: () => router.push('/usuario/eventos')
-            },
-            {
-                label: 'Notificaciones',
-                command: () => {
-                }
             }
         ]
     }
