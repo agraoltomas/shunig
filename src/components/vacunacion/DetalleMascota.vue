@@ -55,26 +55,26 @@ const deshabilitado = computed(() => tieneVacuna.value || estaInscripto.value)
 <template>
     <div :class="['flex flex-row p-3 gap-3 justify-around', deshabilitado ? 'bg-gray-100':'']">
         <Checkbox :disabled="tieneVacuna || estaInscripto" class="m-auto" v-model="selected" :value="animal.id_animal"></Checkbox>
-        <div v-if="animal.imagen" class="flex items-center overflow-x-hidden rounded-lg">
-            <img class="w-30 my-auto" :src="animal.imagen" />
+        <div v-if="animal.imagen" class="flex items-center overflow-x-hidden rounded-lg shrink-0">
+            <img class="w-30 my-auto" :src="animal.imagen" :alt="`Foto de ${animal.nombre}`"/>
         </div>
         <SinImagen v-else></SinImagen>
-        <div class="flex flex-col gap-3">
-            <div class="py-1 text-2xl font-semibold">
+        <div class="flex flex-col gap-3 grow min-w-0">
+            <div class="py-1 text-2xl font-semibold break-words">
                 {{ animal.nombre }}
             </div>
-            <div class="flex flex-row gap-3 items-center">
+            <div class="flex flex-row flex-wrap gap-3 items-center">
                 <div>{{ animal.especie }}</div>
-                <i class="pi pi-circle-fill text-[4px]"></i>
+                <i class="pi pi-circle-fill text-[4px]" aria-hidden="true"></i>
                 <div>{{ animal.sexo }}</div>
-                <i class="pi pi-circle-fill text-[4px]"></i>
+                <i class="pi pi-circle-fill text-[4px]" aria-hidden="true"></i>
                 <div>{{ animal.raza }}</div>
             </div>
             <div>
                 {{ animal.edad }} {{ animal.edad > 1 ? 'años' : 'año' }}
             </div>
         </div>
-        <div>
+        <div class="">
             <div>
                 <div v-if="tieneVacuna">
                     <Tag severity="warn" value="Ya aplicada"></Tag>

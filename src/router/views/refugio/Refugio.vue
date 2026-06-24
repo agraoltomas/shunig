@@ -10,6 +10,7 @@ import { useAuthStore } from '@/stores/auth.ts'
 import { useModalStore } from '@/stores/modales.ts'
 import Settings from '@/router/views/Settings.vue'
 import Notificaciones from '@/components/menu/Notificaciones.vue'
+import Footer from '@/components/generales/Footer.vue'
 
 const router = useRouter()
 
@@ -104,7 +105,7 @@ if (!authStore.user) {
     </div>
     <RouterView>
     </RouterView>
-
+<Footer></Footer>
 </template>
 
 <style scoped>

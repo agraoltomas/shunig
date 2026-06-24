@@ -60,21 +60,21 @@ const routeAlerta = (a: IAlerta) => {
 const mensajeSeverity = (a: IAlerta) => {
     switch (a.prioridad) {
         case 1:
-            return 'border-red-400  bg-red-200/20 '
+            return 'border-blue-400  bg-blue-200/20 '
         case 2:
             return 'border-orange-400  bg-orange-200/20 '
         case 3:
-            return 'border-blue-400  bg-blue-200/20 '
+            return 'border-red-400  bg-red-200/20 '
     }
 }
 const textSeverity = (a: IAlerta) => {
     switch (a.prioridad) {
         case 1:
-            return 'text-red-700'
+            return 'text-blue-700'
         case 2:
             return 'text-orange-700'
         case 3:
-            return 'text-blue-700'
+            return 'text-red-700'
     }
 }
 const props = withDefaults(defineProps<{ alerta: IAlerta }>(), {})

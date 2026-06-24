@@ -47,7 +47,6 @@ onMounted(() => {
            pt:header="m-auto text-xl font-semibold w-fit py-3">
         <RefugioIngreso v-if="newUser" :admin="newUser"></RefugioIngreso>
     </Contenedor>
-
 </template>
 
 <style scoped></style>

@@ -8,11 +8,12 @@ onMounted(async () => {
 
 })
 </script>
+<!--header-->
 <template>
     <Menubar>
         <template #end>
             <div class="w-full flex flex-row justify-end h-full">
-                <Button class="self-center border-refugio-500 shadow-lg mr-3" label="Ingresar" @click="() => router.push('/login')"></Button>
+                <Button class="self-center border-refugio-500 shadow-lg" label="Ingresar" @click="() => router.push('/login')"></Button>
             </div>
         </template>
     </Menubar>

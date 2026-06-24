@@ -21,6 +21,7 @@ import { useRoute } from 'vue-router'
 import Contenedor from '@/components/generales/Contenedor.vue'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 import type { IDomicilio } from '@/lib/tipos/domicilio'
+import FooterInterno from '../generales/FooterInterno.vue'
 
 
 interface DatosUsuario {
@@ -116,76 +117,90 @@ watch(() => route.query.t, () => {
     parseTipo()
 })
 </script>
-
+<!--form de registro usuario-->
 <template>
     <Form v-slot="$form" :initialValues="datosUsuario" :resolver="userResolver"
           @submit="ingresarUsuario"
           class="flex flex-col gap-4 w-full">
-        <div class=" flex flex-row gap-3">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <ContenedorTitulo :cols="12" :gap="3" title="Datos generales" icon="pi pi-clipboard">
-                <div class="flex flex-col gap-3">
-                    <Label required>Nombre</Label>
-                    <InputText required name="nombre" placeholder="Nombre" :maxlength="11"></InputText>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-3">
+                    <Label required for="nombre">Nombre</Label>
+                    <InputText id="nombre" required name="nombre" placeholder="Nombre" :maxlength="11"></InputText>
                     <Message v-if="$form.nombre?.invalid" severity="error" size="small" variant="simple">
                         {{ $form.nombre?.error?.message }}
                     </Message>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <Label required>Apellido</Label>
-                    <InputText name="apellido" placeholder="Apellido" :maxlength="11"></InputText>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                    <Label required for="apellido">Apellido</Label>
+                    <InputText id="apellido" name="apellido" placeholder="Apellido" :maxlength="11"></InputText>
                     <Message v-if="$form.apellido?.invalid" severity="error" size="small" variant="simple">
                         {{ $form.apellido?.error?.message }}
                     </Message>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <Label required>CUIL</Label>
-                    <InputMask
+                    </div>
+                    <div class="flex flex-col gap-3 sm:col-span-2">
+                    <Label for="cuil" required>CUIL</Label>
+                    <InputMask id="cuil"
                         name="cuit"
                         mask="99-99999999-9" :auto-clear="false"></InputMask>
-                </div>
+                    </div>
+                </div>               
+                
             </ContenedorTitulo>
+
             <ContenedorTitulo title="Contacto" icon="pi pi-phone">
-                <div class="flex flex-col">
-                    <Label required>Mail</label>
-                    <InputText name="email" placeholder="E-mail"></InputText>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-3">
+                    <Label for="email" required>Mail</label>
+                    <InputText id="email" name="email" placeholder="E-mail"></InputText>
                     <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
                         {{ $form.email?.error?.message }}
                     </Message>
-                </div>
-                <div class="flex flex-col">
-                    <Label required>Teléfono</label>
-                    <FormRow class="w-full grid grid-cols-12 gap-3">
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                    <Label for="telefono" required>Teléfono</label>
+                    <div class="grid grid-cols-12 gap-3">
                         <!--                        <Select class="col-span-3" :options="[]"></Select>-->
                         <InputMask name="telefono.codigo" class="col-span-4" :autoClear="false" placeholder="11"
                                    mask="99?99" fluid></InputMask>
-                        <InputMask name="telefono.numero" class="col-span-8" :autoClear="false" placeholder="1234-5678"
+                        <InputMask id="telefono" name="telefono.numero" class="col-span-8" :autoClear="false" placeholder="1234-5678"
                                    mask="9999-9999" fluid></InputMask>
-                    </FormRow>
+                    </div>
                     <Message v-if="$form.telefono?.numero?.invalid || $form.telefono?.codigo?.invalid" severity="error"
                              size="small" variant="simple">
                         {{ $form.telefono?.error?.message }}
                     </Message>
                 </div>
-            </ContenedorTitulo>
+                </div>                
+            </ContenedorTitulo>            
         </div>
+
         <ContenedorTitulo title="Seguridad" icon="pi pi-lock">
-            <Label required>Contraseña</label>
-            <Password name="password" fluid placeholder="Contraseña"></Password>
+            <div class="flex flex-col gap-3">
+            <Label for="password" required>Contraseña</label>
+            <Password id="password" name="password" fluid placeholder="Contraseña"></Password>
             <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
                 {{ $form.password?.error?.message }}
             </Message>
+            </div>
         </ContenedorTitulo>
+
         <Contenedor>
             <Domicilio v-model:value="domicilio" :border="false"></Domicilio>
         </Contenedor>
+
         <Contenedor>
-            <FormCol :span="12">
+            <div class="flex flex-col gap-3">
                 <Label required>Registrarme como</Label>
-                <Select :disabled="defered" class="max-w-fit" v-model="tipo" option-label="descripcion"
+                <Select :disabled="defered" class="w-full sm:max-w-fit" v-model="tipo" option-label="descripcion"
                         option-value="id"
                         placeholder="Seleccione una opción"
                         :options="[ {id: TipoUsuario.Adoptante, descripcion: 'Adoptante'},{id: TipoUsuario.VoluntarioTransito, descripcion: 'Voluntario de Tránsito'},{ id: TipoUsuario.Refugio, descripcion: 'Refugio'}]"></Select>
-            </FormCol>
+            
+            </div>
         </Contenedor>
         <div>
             <Button :disabled="!tipo" type="submit" fluid label="Registrarse"></Button>

@@ -26,15 +26,15 @@ const mensajeAlerta = (a: EAlerta) => {
 const mensajeSeverity = (a: EAlerta) => {
     switch (a) {
         case EAlerta.VacunaVencida:
-            return 'info'
-        case EAlerta.AnimalSinReporte:
             return 'warn'
+        case EAlerta.AnimalSinReporte:
+            return 'info'
         case EAlerta.AnimalCritico:
             return 'error'
         case EAlerta.AnimalEnTratamiento:
             return 'warn'
         case EAlerta.SolicitudPendiente:
-            return 'success'
+            return 'error'
         case EAlerta.StockBajo:
             return 'error'
         case EAlerta.StockModerado:

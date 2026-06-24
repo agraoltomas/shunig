@@ -30,7 +30,7 @@ onMounted(async () => {
     }
 })
 
-const alertasCriticas = computed(() => {
+const alertasInformativas = computed(() => {
     return alertas.value.filter((alerta) => Number(alerta.prioridad) === 1)
 })
 
@@ -38,7 +38,7 @@ const alertasModeradas = computed(() => {
     return alertas.value.filter((alerta) => Number(alerta.prioridad) === 2)
 })
 
-const alertasInformativas = computed(() => {
+const alertasCriticas = computed(() => {
     return alertas.value.filter((alerta) => Number(alerta.prioridad) === 3)
 })
 </script>

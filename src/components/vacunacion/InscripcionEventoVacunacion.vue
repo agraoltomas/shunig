@@ -51,28 +51,30 @@ const inscribir = async () => {
 </script>
 
 <template>
-    <div class="flex flex-row border-b-gray-200 border-b">
-        <i class="pi pi-calendar text-3xl text-blue-500 p-5 bg-blue-100/20 rounded-full h-fit m-auto"></i>
+    <div class="flex flex-row border-b-gray-200 border-b gap-3 pb-3">
+        <i class="pi pi-calendar text-3xl text-blue-500 p-5 bg-blue-100/20 rounded-full h-fit m-auto sm:my-auto" aria-hidden="true"></i>
         <EventoCardDetalle :evento="evento"></EventoCardDetalle>
     </div>
     <div v-if="animalStore.loading">
         <ProgressSpinner></ProgressSpinner>
     </div>
     <div v-else-if="animalStore.animales.length > 0">
+        <div class="flex flex-col gap-3">
         <DetalleMascota v-for="animal in animalStore.animales" :animal="animal" :evento="evento"
                         v-model="animalesInscriptos">
         </DetalleMascota>
-        <div class="flex flex-row gap-3 justify-end">
-            <div v-if="loading">
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 justify-end mt-4">
+            <div v-if="loading" class="flex justify-center sm:justify-end">
                 <ProgressSpinner class="w-10"></ProgressSpinner>
             </div>
-            <Button class="bg-refugio-500! border-refugio-500" v-else icon="pi pi-save"
+            <Button class="bg-refugio-500! border-refugio-500 w-full sm:w-fit" v-else icon="pi pi-save"
                     :label="animalesInscriptos.length == 0 ? 'Seleccione un animal': `Inscribir ${animalesInscriptos.length} animales`"
                     :disabled="animalesInscriptos.length == 0" @click="inscribir">
             </Button>
         </div>
     </div>
-    <div v-else>
+    <div v-else class="text-center text-gray-500 p-4">
         No tenes animales para vacunar
     </div>
 

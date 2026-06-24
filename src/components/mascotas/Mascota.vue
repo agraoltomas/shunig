@@ -377,7 +377,6 @@ const formatearFecha = (fecha?: string | null) => {
             pt:root="p-progressspinner w-full!"
             pt:spin="p-progressspinner-spin" />
     </Panel>
-    <Footer></Footer>
 
 </template>
 
