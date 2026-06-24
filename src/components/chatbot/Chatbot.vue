@@ -47,7 +47,7 @@ const toggleChat = () => {
         </div>
     </div>
     <div :hidden="!showing">
-        <ChatBox @close="() => showing = false"></ChatBox>
+        <ChatBox @close="() => showing = false" :showing="showing"></ChatBox>
     </div>
 </template>
 

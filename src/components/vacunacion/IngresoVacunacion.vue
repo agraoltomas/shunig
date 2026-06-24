@@ -54,21 +54,6 @@ const vacunasTipo = [
 
 
 const emits = defineEmits<{close: []}>();
-/*
-const ingresar = async (d: any) => {
-        let foto = null;
-        if(data.foto){
-             foto = await toBase64(data.foto)
-        }
-        const r = await axios.post(`/animal/`, {
-            ...d.values,
-            foto
-        });
-        if([200,201].includes(r.status)){
-            toast.add({severity:"success", summary:"Éxito!", detail: `${d.values.nombre} se ha dado de alta exitosamente`})
-            emits('close')
-        }
-}*/
 
 const resolver = ({ values }: { values: Partial<Optional<IEventoVacunacion>> }) => {
     const errors: { [K in keyof EventoVacunacionData]: { message: string }[] } = {

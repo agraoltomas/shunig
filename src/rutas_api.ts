@@ -5,6 +5,7 @@ export const rutas_api = {
         SESSION: () => '/auth/session'
     },
     usuario: {
+        BASE: '/usuario',
         UPDATE: ({ id_usuario }: { id_usuario: string | number }) => `/usuario/${id_usuario}`,
         GET: ({ id_usuario }: { id_usuario: string | number }) => `/usuario/${id_usuario}`
     },

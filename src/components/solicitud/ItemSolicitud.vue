@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import paw from '@/assets/images/paw-solid-full-purple.svg'
-import moment from 'moment/moment'
+import moment from 'moment'
 import type { IDatosSolicitud } from '@/lib/tipos/solicitud.ts'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
