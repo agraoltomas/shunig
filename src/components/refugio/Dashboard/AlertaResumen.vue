@@ -16,15 +16,15 @@ interface AlertaGroup {
     count: number
 }
 const props = defineProps<{ alerta: AlertaInfo}>()
-const bgColor = (a: AlertaInfo)  => {
-    console.log('bgColor', a.prioridad)
+const mensajeSeverity = (a: AlertaInfo)  => {
+    console.log('mensajeSeverity', a.prioridad)
     switch (a.prioridad){
         case 1:
-            return 'bg-green-300/20'
+            return 'border-blue-400 bg-blue-200/20'
         case 2:
-            return 'bg-orange-300/20'
+            return 'border-orange-400 bg-orange-200/20 '
         case 3:
-            return 'bg-red-300/20'
+            return 'border-red-400 bg-red-200/20'
     }
 }
 const icon = (a: AlertaInfo) => {
@@ -46,7 +46,7 @@ const icon = (a: AlertaInfo) => {
 </script>
 
 <template>
-    <div :class="['flex flex-row rounded-lg p-3', bgColor(alerta)]" >
+    <div :class="['flex flex-row rounded-lg p-3 border', mensajeSeverity(alerta)]" >
         <div class="w-10 ">
             <i :class="['p-1', icon(alerta)]" aria-hidden="true"></i>
         </div>

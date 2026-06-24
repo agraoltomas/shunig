@@ -280,7 +280,7 @@ watch(() => props.showing, () => {
                             </div>
                         </div>
                     </div>
-                   <TextMessage v-else :mensaje="mensaje">
+                   <TextMessage v-else :mensaje="mensaje"></TextMessage>
                 </div>
                 <div v-if="loading">
                     <div class="p-6 rounded-lg flex flex-col bg-refugio-100/60 w-fit">

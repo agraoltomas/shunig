@@ -219,7 +219,7 @@ const solicitudesPorEstado =computed(() => ({
     </div>
     <div v-else-if="dashboard" class=" flex flex-col gap-3">
         <!--KPIs principales-->
-        <div class="flex flex-row gap-3 w-[90vw] m-auto mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 w-full max-w-8xl mx-auto px-4 mb-8">
             <Contenedor class="grow">
                 <KPI title="Animales actuales" subtitle="en el refugio" :value="dashboard.kpis.animales_activos" icon="pi pi-home" to="/refugio/mascotas">
                 </KPI>
@@ -254,6 +254,23 @@ const solicitudesPorEstado =computed(() => ({
                 <Chart class="w-full" type="doughnut" :data="animalesPorEspecie" />
             </ContenedorTitulo>
             <ContenedorTitulo class="mb-5" title="Alertas importantes">
+                <div class="flex flex-row flex-wrap gap-3 mb-3 text-xs text-gray-600">
+                    <div class="flex flex-row items-center gap-1">
+                        <span class="w-9 h-3 border-2 border-red-400 bg-red-200/40"></span>
+                        <span>Crítica</span>
+                    </div>                   
+
+                    <div class="flex flex-row items-center gap-1">
+                        <span class="w-9 h-3 border-2 border-orange-400 bg-orange-200/40"></span>
+                        <span>Moderada</span>
+                    </div>
+                    <div class="flex flex-row items-center gap-1">
+                        <span class="w-9 h-3 border-2 border-blue-400 bg-blue-200/40"></span>
+                        <span>Informativa</span>
+                    </div>
+
+                    
+                </div>
                 <div class=" flex flex-col gap-1 h-full">
                     <AlertasResumen :alertas="dashboard.alertas"></AlertasResumen>
                 </div>

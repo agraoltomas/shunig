@@ -89,35 +89,33 @@ const loadDire = (e: AutoCompleteOptionSelectEvent) => {
 <template>
     <Label v-if="label" :class="['text-2xl! m-auto  w-full text-center rounded-lg', background ? 'bg-surface-50' : ''] ">{{ typeof label == 'string' ? label : ''}}</Label>
     <div :class="[' rounded-lg py-3 flex flex-col gap-6',props.class,border ? 'border border-surface-300 px-3' : '']">
-        <FormRow>
-            <FormCol :span="6" :gap="4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-3">
                 <Label required>Dirección</Label>
-                <div class="flex flex-row">
                     <AutoComplete fluid v-model="dire" :suggestions="direcciones"  option-label="nomenclatura" class="grow" pt:root="rounded-e-none!"
                                placeholder="Ej. Palpa 2453" @complete="buscar" @option-select="loadDire">
                         <template #option="{option}">
                             <p v-if="dire" v-html="highlight(dire,option.nomenclatura)"></p>
                         </template>
                     </AutoComplete>
+                <div class="flex flex-row gap-3 items-center min-h-12.5">
+                    <Label for="sinAltura" required class="text-sm!">Mi domicilio no tiene altura</Label>
+                    <CheckBox id="sinAltura" class="my-auto" v-model="domicilio.no_tiene_altura" binary></CheckBox>
                 </div>
-                <div class="flex flex-row gap-3 min-h-12.5">
-                    <Label required class="text-sm!">Mi domicilio no tiene altura</Label>
-                    <CheckBox class="my-auto" v-model="domicilio.no_tiene_altura" binary></CheckBox>
-                </div>
-            </FormCol>
-            <FormCol :span="6">
-                <Label required>Localidad</Label>
-                <InputText disabled placeholder="Ej. CABA" :value="domicilio.localidad"></InputText>
+            </div>
+                
+           <div class="flex flex-col gap-3">
+                <Label for="localidad" required>Localidad</Label>
+                <InputText id="localidad" disabled placeholder="Ej. CABA" :value="domicilio.localidad"></InputText>
                 <div class="pb-7 text-white">.</div>
-
-            </FormCol>
-        </FormRow>
-        <FormRow>
-            <FormCol :span="6">
-                <Label required>Provincia</Label>
-                <InputText disabled v-model="domicilio.provincia" placeholder="Ej. Buenos Aires"></InputText>
-            </FormCol>
-        </FormRow>
+           </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-3">
+                <Label for="provincia" required>Provincia</Label>
+                <InputText id="provincia" disabled v-model="domicilio.provincia" placeholder="Ej. Buenos Aires"></InputText>
+            </div>
+        </div>
     </div>
 
 </template>

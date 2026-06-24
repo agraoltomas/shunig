@@ -61,7 +61,6 @@ const rechazarSolicitud = async () => {
     <LoadingOverlay :loading="loading">
         <SolicitudDetalle v-if="solicitud" :solicitud="solicitud" context="refugio" @aceptar="aceptarSolicitud" @rechazar="rechazarSolicitud"/>
     </LoadingOverlay>
-    <Footer></Footer>
 </template>
 
 <style scoped>

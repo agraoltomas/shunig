@@ -61,10 +61,12 @@ const login = async () => {
 
 }
 </script>
-
+<!--Pantalla de ingreso-->
 <template>
-    <Panel class="w-[28vw] m-auto bg-white">
-        <div v-if="!ingresando" class="flex flex-col  m-auto py-3 gap-3 px-10">
+    <ContenedorPagina>
+    <div class="flex items-center justify-center my-10">
+    <Panel class="w-full max-w-md bg-white">
+        <div v-if="!ingresando" class="flex flex-col m-auto py-3 gap-3 px-10">
             <div class="text-3xl font-semibold px-2 py-3 m-auto">Ingresar</div>
             <InputText size="large" required placeholder="Mail" v-model="usuario"></InputText>
             <Password size="large" required :feedback="false" placeholder="Contraseña" v-model="password"
@@ -83,6 +85,8 @@ const login = async () => {
                              pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin"></ProgressSpinner>
         </div>
     </Panel>
+    </div>
+    </ContenedorPagina>
 </template>
 
 <style scoped></style>
