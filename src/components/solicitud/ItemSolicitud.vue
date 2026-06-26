@@ -7,6 +7,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EstadoSolicitud from '@/components/solicitud/EstadoSolicitud.vue'
 import TipoSolicitud from '@/components/solicitud/TipoSolicitud.vue'
+import SinImagen from '@/components/generales/SinImagen.vue'
 const props = defineProps<{ solicitud: IDatosSolicitud}>()
 
 
@@ -15,7 +16,8 @@ const props = defineProps<{ solicitud: IDatosSolicitud}>()
 <template>
     <div class=" shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-lg flex flex-row gap-3 justify-between">
         <div class="max-h-50 overflow-hidden my-3 rounded-lg text-center flex items-center mx-auto">
-            <img class="w-40 rounded-lg " :src="solicitud.imagen" />
+            <img v-if="solicitud.imagen" class="w-40 rounded-lg " :src="solicitud.imagen" />
+            <SinImagen v-else class="w-20"></SinImagen>
         </div>
         <div class="flex flex-col justify-start gap-2 my-5 items-start w-1/2">
             <h1 class="text-3xl font-bold">{{ solicitud.animal_nombre }}</h1>

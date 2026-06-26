@@ -176,6 +176,8 @@ export const useNotificationStore = defineStore('notificaciones', () => {
             ids: ns,
             process: pr.id
         }))
+        notificaciones.value.forEach((n) => n.leida = true)
+
         return pr.promise
     }
 
@@ -186,6 +188,7 @@ export const useNotificationStore = defineStore('notificaciones', () => {
             ids: ns,
             process: pr.id
         }))
+        notificaciones.value = []
         return pr.promise
     }
 

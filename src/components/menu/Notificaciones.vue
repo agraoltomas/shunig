@@ -36,10 +36,10 @@ const borrarTodas = async () => {
     <Popover ref="notificaciones" class=" bg-[#f7f8f9]!" pt:content="py-3 px-0!">
         <div class="flex flex-col  max-w-100">
             <div class="flex flex-row justify-end gap-3 py-1 px-3">
-                <div class="text-primary-600 hover:text-primary-400 font-semibold cursor-pointer">Marcar todas como
+                <div class="text-primary-600 hover:text-primary-400  cursor-pointer" @click="leerTodas">Marcar todas como
                     leídas
                 </div>
-                <div class="text-red-600 hover:text-red-400 font-semibold cursor-pointer">Borrar todas</div>
+                <div class="text-red-600 hover:text-red-400  cursor-pointer" @click="borrarTodas">Borrar todas</div>
             </div>
             <div v-if="notificacionesStore.sortedNotifications.length == 0" class="flex flex-col h-[40vh] overflow-y-auto gap-1 py-3 px-2 border-t border-surface-200 mx-5 mt-2">
                 <span class="self-center text-gray-500">

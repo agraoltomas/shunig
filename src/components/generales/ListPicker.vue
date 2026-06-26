@@ -14,7 +14,7 @@ const selected = ref(null);
             <ProgressSpinner></ProgressSpinner>
         </div>
         <div v-else-if="!selected" v-for="t in data"
-             class="border-b border-surface-300 flex flex-row gap-3 justify-between last:border-none">
+             class="border-b border-gray-300 flex flex-row gap-3 justify-between last:border-none">
             <slot name="default" :item="t">
                 <div class="text-xl font-semibold px-3 py-4  ">
                     {{ t }}

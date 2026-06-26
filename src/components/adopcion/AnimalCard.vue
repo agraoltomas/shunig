@@ -11,16 +11,19 @@ const props = withDefaults(defineProps<{ animal: IMascota, label?: string }>(), 
     label: 'Seleccionar',
 })
 const modal = useModalStore()
+const mostrarAnimal = () => {
+    modal.abrir('mostrarAnimal', animal)
+}
 </script>
 
 <template>
 
     <Contenedor
-        class="p-3 border rounded-lg bg-primary-400/60 flex flex-col justify-between gap-1 min-h-96 hover:bg-primary-300 hover:cursor-pointer"
-        title="Click en la imagen para más detalles">
+        class="p-3 border rounded-lg  flex flex-col justify-between gap-1 min-h-96 hover:bg-primary-300 hover:cursor-pointer"
+        title="Click en la imagen para más detalles" @click="mostrarAnimal">
         <div class="text-center font-semibold text-2xl pb-3">{{ animal.nombre }}</div>
-        <div class="w-45 my-auto text-center relavite" @click="() => modal.abrir('mostrarAnimal', animal)">
-            <Image class="m-auto!" pt:image="rounded-xl object-cover" :src="animal.imagen"
+        <div class="w-45 my-auto flex items-center relavite">
+            <Image class="m-auto!" pt:image="rounded-xl object-cover text-" :src="animal.imagen"
                    v-if="animal.imagen"></Image>
             <SinImagen v-else></SinImagen>
         </div>

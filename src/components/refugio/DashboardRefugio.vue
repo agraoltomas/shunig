@@ -254,22 +254,22 @@ const solicitudesPorEstado =computed(() => ({
                 <Chart class="w-full" type="doughnut" :data="animalesPorEspecie" />
             </ContenedorTitulo>
             <ContenedorTitulo class="mb-5" title="Alertas importantes">
-                <div class="flex flex-row flex-wrap gap-3 mb-3 text-xs text-gray-600">
-                    <div class="flex flex-row items-center gap-1">
+                <div class="flex flex-row flex-wrap gap-3 mb-3 text-xs text-gray-600 justify-around">
+                    <div class="flex flex-col items-center gap-1">
                         <span class="w-9 h-3 border-2 border-red-400 bg-red-200/40"></span>
                         <span>Crítica</span>
-                    </div>                   
+                    </div>
 
-                    <div class="flex flex-row items-center gap-1">
+                    <div class="flex flex-col items-center gap-1">
                         <span class="w-9 h-3 border-2 border-orange-400 bg-orange-200/40"></span>
                         <span>Moderada</span>
                     </div>
-                    <div class="flex flex-row items-center gap-1">
+                    <div class="flex flex-col items-center gap-1">
                         <span class="w-9 h-3 border-2 border-blue-400 bg-blue-200/40"></span>
                         <span>Informativa</span>
                     </div>
 
-                    
+
                 </div>
                 <div class=" flex flex-col gap-1 h-full">
                     <AlertasResumen :alertas="dashboard.alertas"></AlertasResumen>
@@ -300,14 +300,14 @@ const solicitudesPorEstado =computed(() => ({
                         <tbody>
                             <tr v-for="stock in dashboard.graficos.stock_critico" class="border-b-gray-200 border-b pb-3">
                                 <td><div class="w-[70%]" aria-label="producto">{{ stock.nombre}}</div></td>
-                                <td><div class="text-red-500 w-[30%]" aria-label="cantidad">{{ stock.stock_actual}}</div></td>                        
+                                <td><div class="text-red-500 w-[30%]" aria-label="cantidad">{{ stock.stock_actual}}</div></td>
                             </tr>
-                        </tbody>                  
-                       
-                    </table>                   
+                        </tbody>
+
+                    </table>
                 </div>
                 <div class=" flex flex-row justify-start p-1">
-                    <a @click="router.push('/refugio/inventario')" class="font-semibold text-refugio-500 text-sm flex flex-row items-center select-none cursor-pointer"> 
+                    <a @click="router.push('/refugio/inventario')" class="font-semibold text-refugio-500 text-sm flex flex-row items-center select-none cursor-pointer">
                         <div class="h-fit font-bold my-auto hover:underline text-md">Ver inventario completo</div> <i class="my-auto pi pi-arrow-right px-2" style="font-size:10px;"></i>
                     </a>
                 </div>

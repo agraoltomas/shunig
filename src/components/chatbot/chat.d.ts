@@ -1,4 +1,4 @@
-import { ref, type Ref, useTemplateRef } from 'vue'
+import { type Component, ref, type Ref, useTemplateRef } from 'vue'
 import { useModalStore } from '@/stores/modales.ts'
 import moment from 'moment'
 import type { Maybe } from '@/lib/tipos/generics'
@@ -23,7 +23,8 @@ export interface BasicMessage {
     type: ('message' | 'content'),
     mascotas?: any[]
     vacunas?: any[]
-    botones?: ChatButton[]
+    botones?: ChatButton[],
+    component?: Component
 }
 
 export interface TextMessage extends BasicMessage {
@@ -43,6 +44,9 @@ export interface VacunaMessage extends BasicMessage {
 export interface ButtonMessage extends BasicMessage {
     botones: ChatButton[]
 }
+export interface ComponentMessage extends BasicMessage {
+    component: Component
+}
 
 export interface ChatResponse {
     modulo: ('interaccion_basica' | 'mascotas' | 'vacunacion' | 'solicitudes_adopcion'),
@@ -50,4 +54,4 @@ export interface ChatResponse {
     results: Maybe<(IMascota | EventoResumen)[]>
 }
 
-export type Message = TextMessage | MascotaMessage | VacunaMessage | ButtonMessage
+export type Message = TextMessage | MascotaMessage | VacunaMessage | ButtonMessage | ComponentMessage

@@ -13,6 +13,7 @@ export const rutas_api = {
         GET: ({ id_refugio }: { id_refugio: string | number }) => `/refugio/${id_refugio}/`,
         LIST: () => `/refugio/`,
         USUARIOS: (id_refugio: string) => `/refugio/${id_refugio}/usuarios/`,
+        PERSONAL: (id_refugio: string) => `/refugio/${id_refugio}/personal/`,
         RECHAZAR_USUARIO: (id_refugio: string) => `/refugio/${id_refugio}/usuarios/rechazar/`,
     },
     animales: {

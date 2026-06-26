@@ -17,18 +17,18 @@ const props = defineProps<{ solicitud: ISolicitudCompleta }>()
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Tuvo mascotas?</div>
             <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3  pr-3 flex justify-start font-semibold">
-                <div>{{ solicitud.detalle.tipo_vivienda}}</div>
+                <div>{{ solicitud.detalle.tuvo_mascotas ? 'Si' : 'No'}}</div>
             </div>
             <!--            2-->
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Tiene mascotas actualmente?</div>
             <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 flex justify-start font-semibold">
-                {{ solicitud.detalle.tiene_patio ? 'Sí' :'No' }}
+                {{ solicitud.detalle.tiene_mascotas_actualmente ? 'Sí' :'No' }}
             </div>
             <!--            3-->
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Están vacunadas?</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.vive_adentro ? 'Sí' :'No' }}</span></div>
+            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.mascotas_vacunadas ? 'Sí' :'No' }}</span></div>
             <!--            4-->
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Están castradas?</div>
@@ -36,7 +36,7 @@ const props = defineProps<{ solicitud: ISolicitudCompleta }>()
             <!--            5-->
             <i class="pi pi-check-circle  py-3  border-b-slate-200 border-b w-fit col-span-1"></i>
             <div class="col-span-9 border-b-slate-200 border-b py-2 h-fit my-auto">¿Tiene experiencia transitando?</div>
-            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.hay_ninios ? 'Sí' :'No' }}</span></div>
+            <div class="border-b-slate-200 border-b py-2 h-fit my-auto col-span-2 pl-3 text-end pr-3 font-semibold  flex justify-start"><span>{{ solicitud.detalle.experiencia_transito ? 'Sí' :'No' }}</span></div>
         </div>
     </div>
 </template>

@@ -60,9 +60,12 @@ const urlExterna = ref('https://youtu.be/qJ2WHyCY4PA?si=AZgkN3VRpUO5QHNC');
         <ContenedorPagina>
             <!--titulo + sliders-->
             <Panel class="m-auto w-full bg-transparent border-0!">
-            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-                <div class="w-full lg:basis-1/2 flex flex-col gap-5 lg:mt-20">
-                    <h1 class="text-4xl py-3 pb-4 text-center font-bold">Adoptá. Rescatá. <p class="text-primary">Transitá</p></h1>               
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+                <div class="w-full lg:basis-1/2 flex flex-col gap-5 mt-20">
+                    <h1 class="text-4xl py-3 pb-4 text-center font-bold">Adoptá. Rescatá. <p class="text-primary">Transitá</p></h1>
+                    <div class="text-xl text-gray-500 text-center max-w-1/2 m-auto">
+                        Conectamos a las personas con refugios para que más animales encuentren un cálido hogar, cuidados y una mejor atención
+                    </div>
                     <div class="flex flex-col sm:flex-row gap-4 sm:gap-10 justify-center">
                     <Button label="Quiero ayudar" icon="pi pi-heart-fill" @click="() => router.push('register?t=transito')"></Button>
                     <Button variant="outlined" label="¿Sos un refugio?" @click="() => refugioBanner?.scrollIntoView({behavior: 'smooth'})"></Button>
@@ -104,7 +107,7 @@ const urlExterna = ref('https://youtu.be/qJ2WHyCY4PA?si=AZgkN3VRpUO5QHNC');
                         <a class="text-refugio-500! hover:bg-refugio-200! p-2" :href="urlExterna" target="_blank" rel="noopener noreferrer">Más información<i class="pi pi-arrow-right pl-2"></i></a>
                     </div>
                 </div>
-                <div class="my-auto justify-center shrink-0 p-4">
+                <div class="my-auto justify-center shrink-0 p-4 hidden lg:visible!">
                     <Image :src="banner"></Image>
                 </div>            
             </div>

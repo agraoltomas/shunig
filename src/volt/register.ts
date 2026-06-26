@@ -22,6 +22,8 @@ import Tag from '@/volt/Tag.vue'
 import DataTable from '@/volt/DataTable.vue'
 import ProgressSpinner from '@/volt/ProgressSpinner.vue'
 import { Icon } from "@iconify/vue";
+import Badge from "@/volt/Badge.vue"
+
 
 export const registerAll = (app: App): App => {
     app.component('InputText', InputText)
@@ -46,6 +48,7 @@ export const registerAll = (app: App): App => {
     app.component('DataTable',DataTable)
     app.component('ProgressSpinner',ProgressSpinner)
     app.component('Icon',Icon)
+    app.component('Badge',Badge)
 
 
     return app;

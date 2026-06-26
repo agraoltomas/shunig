@@ -18,6 +18,7 @@ import DataListGroup, { type DataListItem } from '@/components/generales/DataLis
 import { type InscripcionEvento, useEventosVacunacionStore } from '@/stores/vacunas.ts'
 import InscripcionEventoVacunacion from '@/components/vacunacion/InscripcionEventoVacunacion.vue'
 import KPI from '@/components/refugio/Dashboard/KPI.vue'
+import SinImagen from '@/components/generales/SinImagen.vue'
 
 const route = useRoute()
 const { unwrap } = useResponse()
@@ -191,7 +192,8 @@ const confirmarVacunacion = async (i: InscripcionEvento) => {
                         <template #body="{data}">
                             <div class="flex flex-row items-center gap-3">
                                 <div class="overflow-hidden ">
-                                    <img class="w-15 h-15  rounded-full object-cover" :src="data['imagen']" />
+                                    <img v-if="data['imagen']" class="w-15 h-15  rounded-full object-cover" :src="data['imagen']" />
+                                    <SinImagen v-else class="w-15"></SinImagen>
                                 </div>
                                 <div class="flex flex-col gap-3">
                                     <div class="px-1 font-semibold h-fit">{{ data['nombre'] }}</div>

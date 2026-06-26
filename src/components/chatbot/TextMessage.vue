@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{ mensaje: }>()
+import type { TextMessage } from '@/components/chatbot/chat'
+
+const props = defineProps<{ mensaje: TextMessage }>();
 </script>
 
 <template>

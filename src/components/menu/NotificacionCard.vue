@@ -29,8 +29,8 @@ const borrar = () => {
 <template>
     <div  :class="['p-2 rounded border  border-primary-400 flex flex-row justify-between',notificacion.leida ? '':'']">
         <div class="flex flex-col cursor-pointer hover:bg-primary-50 grow" @click="abrir">
-            <div :class="['flex flex row justify-between text-sm ', notificacion.leida ? 'text-gray-500' : 'font-semibold']">{{ notificacion.titulo }}</div>
-            <div :class="['text-xl',notificacion.leida ? 'text-gray-500 ' : '']">{{ notificacion.descripcion }}</div>
+            <div :class="['flex flex row justify-between text-xs', notificacion.leida ? 'text-gray-500' : 'font-semibold']">{{ notificacion.titulo }}</div>
+            <div :class="['',notificacion.leida ? 'text-gray-500 ' : '']">{{ notificacion.descripcion }}</div>
             <div :class="['self-end text-gray-400 text-xs w-fit'] ">
                 {{ notificacion.fecha_creacion ? moment(notificacion.fecha_creacion).fromNow() : '-' }}
             </div>
@@ -42,7 +42,7 @@ const borrar = () => {
                     <Icon icon="ph:envelope-open" class=" hidden group-hover:block group-hover:"></Icon>
                     <Icon icon="ph:envelope-light" class="group-hover:hidden text-gray-500"></Icon>
                 </div>
-                <Icon v-if="!loading" class="text-xl text-red-400 hover:text-red-600 cursor-pointer" icon="ph:trash" @click="borrar"></Icon>
+                <Icon v-if="!loading" class="text-xl text-gray-400 hover:text-red-600 cursor-pointer" icon="ph:trash" @click="borrar"></Icon>
                 <ProgressSpinner v-else class="w-10 h-10"></ProgressSpinner>
             </div>
         </div>

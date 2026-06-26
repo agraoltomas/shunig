@@ -39,7 +39,7 @@ const toggleChat = () => {
                 <div>¿En qué puedo ayudarte?</div>
             </div>
             <div v-if="!showing" class="bg-white rounded-full ">
-                <img   class="w-20" :src="shuni"  alt="SHUNI"/>
+                <img class="w-20" :src="shuni"  alt="SHUNI"/>
             </div>
             <div v-else class="rounded-full bg-refugio-500 text-white font-semibold p-3 w-fit">
                 <i class="pi pi-times text-3xl"></i>

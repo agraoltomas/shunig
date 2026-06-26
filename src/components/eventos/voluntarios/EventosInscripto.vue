@@ -10,6 +10,7 @@ import { useEventosVacunacionStore } from '@/stores/vacunas.ts'
 import { computed, onMounted } from 'vue'
 import moment from 'moment'
 import { useUsuarioStore } from '@/stores/usuario.ts'
+import SinImagen from '@/components/generales/SinImagen.vue'
 
 const props = defineProps<{ eventos: IEventoVacunacion[]}>()
 
@@ -56,6 +57,7 @@ onMounted(async () => {
                                     <div v-for="a in animalesInscriptos(e)" class="py-1 px-3 border-gray-100 rounded-lg bg-gray-200">
                                         <div>{{a.nombre}}</div>
                                         <img :alt="a.id_animal" class="w-15" v-if="a.imagen" :src="a.imagen"/>
+                                        <SinImagen v-else class="w-15"></SinImagen>
                                     </div>
                                 </div>
                             </div>

@@ -36,7 +36,7 @@ const borrarTodas = async () => {
 </script>
 
 <template>
-    <Contenedor class="m-auto w-1/2">
+    <Contenedor class="m-auto w-3/4">
         <div class="flex flex-row py-3 justify-end gap-3">
             <Button @click="leerTodas">
                 <div v-if="loading">

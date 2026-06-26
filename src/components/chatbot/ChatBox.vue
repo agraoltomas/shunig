@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import logo from '@/assets/images/logo_shunig_blanco_trans.png'
-import { onMounted, type Ref, ref, useTemplateRef, watch } from 'vue'
+import { type Component, onMounted, type Ref, ref, useTemplateRef, watch } from 'vue'
 import moment, { type Moment } from 'moment/moment'
+import 'moment/locale/es'; // Loads French localization data into memory
 import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import { useResponse } from '@/lib/utils/response.ts'
@@ -14,13 +15,22 @@ import { useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modales.ts'
 import type { IEventoVacunacion } from '@/lib/tipos/vacunacion.ts'
 import type {
-    ButtonMessage,
-    ChatResponse,
+    ButtonMessage, ChatButton,
+    ChatResponse, ComponentMessage,
     EventoResumen,
     MascotaMessage,
     Message,
     VacunaMessage
 } from '@/components/chatbot/chat'
+import TextMessage from '@/components/chatbot/TextMessage.vue'
+import TipsChatbot from '@/components/chatbot/TipsChatbot.vue'
+import SobreAdopciones from '@/components/chatbot/preguntas_frecuentes/SobreAdopciones.vue'
+import SobreTransitos from '@/components/chatbot/preguntas_frecuentes/SobreTransitos.vue'
+import SobreVacunacion from '@/components/chatbot/preguntas_frecuentes/SobreVacunacion.vue'
+import SobreInventario from '@/components/chatbot/preguntas_frecuentes/SobreInventario.vue'
+import SobrePerfil from '@/components/chatbot/preguntas_frecuentes/SobrePerfil.vue'
+import SobreShunig from '@/components/chatbot/preguntas_frecuentes/SobreShunig.vue'
+import SobrePatrocinadores from '@/components/chatbot/preguntas_frecuentes/SobrePatrocinadores.vue'
 
 const props = defineProps<{ showing: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -30,14 +40,14 @@ const { unwrap } = useResponse()
 const { axios } = useAxios()
 const { loading, stopLoading, startLoading } = useLoadingComposable()
 
-moment.locale('es-ar')
+moment.locale('es')
 
 const messages: Ref<Message[]> = ref([])
 const modales = useModalStore()
 const firstOpen = ref(false)
 const messageWindow = useTemplateRef('messageWindow')
 const currentMessage = ref(null)
-type Contexts = ('main'|'buscar'|'cuidado'|'vacunacion')
+type Contexts = ('main'|'buscar'|'cuidado'|'vacunacion'|'frecuentes')
 const context = ref('main')
 
 const isMascotaMessage = (m: Message): m is MascotaMessage => {
@@ -49,7 +59,9 @@ const isVacunasMessage = (m: Message): m is VacunaMessage => {
 const isButtonMessage = (m: Message): m is ButtonMessage => {
     return !!m.botones
 }
-
+const isComponentMessage = (m: Message): m is ComponentMessage => {
+    return !!m.component
+}
 
 const saveNewMessage = (message: string) => {
     messages.value.push({
@@ -101,13 +113,7 @@ const sendMessage = async () => {
                         mascotas: <IMascota[]>response.results
                     })
                 } else {
-                    messages.value.push({
-                        content: 'Parece que no hay resultados para tu busqueda, te recomiendo ampliar la busqueda un poco',
-                        type: 'content',
-                        role: 'chat',
-                        time: moment(),
-                        mascotas: []
-                    })
+                    addChatMessage('Parece que no hay resultados para tu busqueda, te recomiendo ampliar la busqueda un poco')
                 }
                 break
             case 'vacunacion':
@@ -155,6 +161,7 @@ onMounted(async () => {
 })
 const showButtons = (botones: ChatButton[]) => {
 
+
     messages.value.push({
         content: '',
         role: 'chat',
@@ -171,38 +178,86 @@ const addChatMessage = (message: string) => {
         type: 'message'
     })
 }
+
+const addComponentMessage = (component: Component) => {
+    messages.value.push({
+        content: '',
+        role: 'chat',
+        time: moment(),
+        type: 'content',
+        component
+    })
+}
+
+const botonesPreguntasFrecuentes = [
+    { label: 'Adopcion', action: () => {
+            addComponentMessage(SobreAdopciones)
+        } },
+    { label: 'Transito', action: () => {
+            addComponentMessage(SobreTransitos)
+        } },
+    { label: 'Vacunacion', action: () => {
+            addComponentMessage(SobreVacunacion)
+        } },
+    { label: 'Inventario', action: () => {
+            addComponentMessage(SobreInventario)
+        } },
+    { label: 'Perfil', action: () => {
+            addComponentMessage(SobrePerfil)
+        } },
+    { label: 'Shunig', action: () => {
+            addComponentMessage(SobreShunig)
+        } },
+    { label: 'Patrocinadores', action: () => {
+            addComponentMessage(SobrePatrocinadores)
+        } },
+]
+const botonesTemasGenerales = [{
+    action: () => {
+        if(context.value != 'main')return;
+        context.value = 'buscar'
+        addChatMessage('¡Qué alegría enorme que estés pensando en dar este paso!')
+        addChatMessage('Ya sea que decidas adoptar para darle un hogar definitivo o transitar para ser su puente hacia una vida mejor, le estás cambiando el destino a un animal que lo necesita un montón. El mundo necesita más corazones dispuestos como el tuyo.')
+        if (!userStore.user) {
+            addChatMessage('Te recomendamos registrarte primero.')
+            showButtons([{
+                label: 'Registrarme', action:  () => {
+                    modales.abrir('registro', { to: `/usuario/adoptar` })
+                    emit('close')
+                }
+            }])
+        }
+        addChatMessage('Contame un poco sobre la mascota que estas buscando')
+    }, label: 'Buscar mascotas'
+},
+    {
+        action: () => {
+            addChatMessage('Dale! vamos a hablar sobre tips de cuidado')
+            addComponentMessage(TipsChatbot)
+            addChatMessage("Si queres saber algo mas, preguntame")
+            showButtons(botonesTemasGenerales)
+        }, label: 'Tips de cuidado'
+    },
+    {
+        action: () => {
+        }, label: 'Eventos de vacunacion'
+    },
+    {
+        label: 'Preguntas frecuentes',
+        action: () => {
+            if(context.value != 'main')return;
+            context.value = 'frecuentes'
+            addChatMessage("Seguro! aca tenes algunas de nuestras preguntas frecuentes")
+            showButtons(botonesPreguntasFrecuentes)
+        }
+    }]
 watch(() => props.showing, () => {
     if (props.showing && !firstOpen.value) {
         startLoading()
         setTimeout(() => {
             addChatMessage('Hola, soy Shuni! en que te puedo ayudar?')
             addChatMessage('Podes preguntarme sobre los siguientes temas')
-            showButtons([{
-                action: () => {
-                    if(context.value != 'main')return;
-                    context.value = 'buscar'
-                    addChatMessage('¡Qué alegría enorme que estés pensando en dar este paso!')
-                    addChatMessage('Ya sea que decidas adoptar para darle un hogar definitivo o transitar para ser su puente hacia una vida mejor, le estás cambiando el destino a un animal que lo necesita un montón. El mundo necesita más corazones dispuestos como el tuyo.')
-                    if (!userStore.user) {
-                        addChatMessage('Te recomendamos registrarte primero.')
-                        showButtons([{
-                            label: 'Registrarme', action:  () => {
-                                modales.abrir('registro', { to: `/usuario/adoptar` })
-                                emit('close')
-                            }
-                        }])
-                    }
-                    addChatMessage('Contame un poco sobre la mascota que estas buscando')
-                    }, label: 'Buscar mascotas'
-                },
-                {
-                    action: () => {
-                    }, label: 'Tips de cuidado'
-                },
-                {
-                    action: () => {
-                    }, label: 'Eventos de vacunacion'
-                }])
+            showButtons(botonesTemasGenerales)
             firstOpen.value = true
             stopLoading()
         }, 1000)
@@ -280,7 +335,10 @@ watch(() => props.showing, () => {
                             </div>
                         </div>
                     </div>
-                   <TextMessage v-else :mensaje="mensaje"></TextMessage>
+                    <div v-else-if="isComponentMessage(mensaje)">
+                        <component :is="mensaje.component"></component>
+                    </div>
+                   <TextMessage v-else :mensaje="mensaje"/>
                 </div>
                 <div v-if="loading">
                     <div class="p-6 rounded-lg flex flex-col bg-refugio-100/60 w-fit">

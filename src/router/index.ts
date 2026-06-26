@@ -18,21 +18,31 @@ const router = createRouter({
     routes: [
         {
             path: '/', component: OutsideView, children: [
-                {path: "/", component: MainView, meta: { external: true} },
-                { path: '/login', component: Login, meta: { external: true} },
-                { path: '/register', component: Register, meta: { external: true} },
-                { path: '/recuperar-pass', component: RecoverPassword, meta: { external: true} },
-                { path: '/cambiar-pass', component: ChangePassword, meta: { external: true} },
+                { path: '/', component: MainView, meta: { external: true } },
+                { path: '/login', component: Login, meta: { external: true } },
+                { path: '/register', component: Register, meta: { external: true } },
+                { path: '/recuperar-pass', component: RecoverPassword, meta: { external: true } },
+                { path: '/cambiar-pass', component: ChangePassword, meta: { external: true } },
+                {
+                    path: '/planes/suscripcion',
+                    component: () => import('@/router/views/planes/Suscripciones.vue'),
+                    meta: { external: true }
+                },
+                {
+                    path: '/planes/patrocinadores',
+                    component: () => import('@/router/views/planes/Patrocinadores.vue'),
+                    meta: { external: true }
+                }
             ]
         },
         { path: '/swap', component: Swap },
         {
             path: '/refugio', component: Refugio, children: [
-              ...refugioRoutes
+                ...refugioRoutes
             ]
         }, {
             path: '/usuario', component: VoluntarioView, children: [
-              ...usuarioRoutes
+                ...usuarioRoutes
             ]
         }
     ]
@@ -41,18 +51,18 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
     const authStore = useAuthStore()
 
-    if(!to.meta.external && from.path != '/login'){
-        if(!authStore.user){
+    if (!to.meta.external && from.path != '/login') {
+        if (!authStore.user) {
             const r = await authStore.revalidarUsuario()
-            if(!r){
-                return { path: '/login'};
-            }else{
+            if (!r) {
+                return { path: '/login' }
+            } else {
                 const refugioStore = useRefugioStore()
-                await refugioStore.loadContextRefugio(r);
+                await refugioStore.loadContextRefugio(r)
             }
         }
     }
-});
+})
 
 
 export default router
