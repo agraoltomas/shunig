@@ -39,6 +39,7 @@ const tipo: Ref<Maybe<{ label: string, id: number }>> = ref(null)
 const animales: Ref<IMascota[]> = ref([])
 const mascota: Ref<Maybe<IMascota>> = ref(null)
 const route = useRoute()
+const mostrandoAnimal = ref(false)
 
 const loadRefugios = async () => {
     if (!authStore.user) return
@@ -57,6 +58,7 @@ const loadRefugios = async () => {
         tryLogError(<Error>err, toast)
     }
 }
+
 const loadAnimales = async () => {
     animales.value = []
     startLoading()
@@ -96,6 +98,33 @@ const loadMascota = async () => {
     stopLoading()
 }
 
+
+watch(() => tipo.value, () => {
+    loadAnimales()
+})
+watch(() => refugio.value, () => {
+    if (!refugio.value) animales.value = []
+})
+
+watch(() => route.query.m, async () => {
+    if (route.query.m) {
+        if(mostrandoAnimal.value)return
+        await loadMascota()
+        if (mascota.value) {
+            mostrandoAnimal.value = false
+            modal.abrir('mostrarAnimal', mascota.value)
+        } else {
+            modal.cerrar('mostrarAnimal')
+        }
+    } else {
+        modal.cerrar('mostrarAnimal')
+    }
+})
+
+const mostrarAnimal = (a: IMascota) => {
+    mostrandoAnimal.value=true
+    route.query.m = a.id_animal
+}
 onMounted(async () => {
     const _ =loadRefugios()
     if (route.query.m) {
@@ -107,25 +136,6 @@ onMounted(async () => {
         }
     } else {
         await loadRefugios()
-    }
-})
-watch(() => tipo.value, () => {
-    loadAnimales()
-})
-watch(() => refugio.value, () => {
-    if (!refugio.value) animales.value = []
-})
-
-watch(() => route.query.m, async () => {
-    if (route.query.m) {
-        await loadMascota()
-        if (mascota.value) {
-            modal.abrir('mostrarAnimal', mascota.value)
-        } else {
-            modal.cerrar('mostrarAnimal')
-        }
-    } else {
-        loadRefugios()
     }
 })
 </script>
@@ -186,7 +196,7 @@ watch(() => route.query.m, async () => {
         <div v-if="refugio && tipo" class="mt-3">
             <div class="flex flex-row w-full flex-wrap gap-3 justify-center m-auto">
                 <ProgressSpinner v-if="loading"></ProgressSpinner>
-                <AnimalCard v-for="animal in animales" :animal="animal" label="Adoptar">
+                <AnimalCard v-for="animal in animales" :animal="animal" label="Adoptar" @mostrar-animal="(a) => mostrarAnimal(a)">
                     <slot name="actionButton" v-bind="{animal, accion: () => modal.abrir(action, { mascota: animal, usuario: authStore.user })}">
                     </slot>
                 </AnimalCard>

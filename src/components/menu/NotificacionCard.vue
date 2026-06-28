@@ -27,10 +27,12 @@ const borrar = () => {
 </script>
 
 <template>
-    <div  :class="['p-2 rounded border  border-primary-400 flex flex-row justify-between',notificacion.leida ? '':'']">
+    <div  :class="['p-2 rounded border  flex flex-row justify-between',notificacion.leida ? '':'', notificacion.id_refugio ? 'border-refugio-400' : 'border-primary-400']">
         <div class="flex flex-col cursor-pointer hover:bg-primary-50 grow" @click="abrir">
-            <div :class="['flex flex row justify-between text-xs', notificacion.leida ? 'text-gray-500' : 'font-semibold']">{{ notificacion.titulo }}</div>
-            <div :class="['',notificacion.leida ? 'text-gray-500 ' : '']">{{ notificacion.descripcion }}</div>
+            <div :class="['flex flex-row justify-start text-xs', notificacion.leida ? 'text-gray-500' : 'font-semibold']">
+                <i :class="['pi pr-2 text-[15px]',notificacion.id_refugio ? 'pi-home text-refugio-500' : 'pi-user text-primary-500'] "/>{{ notificacion.titulo }}
+            </div>
+            <div :class="['text-center',notificacion.leida ? 'text-gray-500 ' : '']">{{ notificacion.descripcion }}</div>
             <div :class="['self-end text-gray-400 text-xs w-fit'] ">
                 {{ notificacion.fecha_creacion ? moment(notificacion.fecha_creacion).fromNow() : '-' }}
             </div>

@@ -10,9 +10,11 @@ import Contenedor from '@/components/generales/Contenedor.vue'
 const props = withDefaults(defineProps<{ animal: IMascota, label?: string }>(), {
     label: 'Seleccionar',
 })
+const emit = defineEmits<{ mostrarAnimal: [IMascota]}>()
 const modal = useModalStore()
 const mostrarAnimal = () => {
-    modal.abrir('mostrarAnimal', animal)
+    modal.abrir('mostrarAnimal', props.animal)
+    emit('mostrarAnimal', props.animal)
 }
 </script>
 

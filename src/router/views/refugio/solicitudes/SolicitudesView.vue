@@ -12,6 +12,7 @@ import type { MessageResponse } from '@/lib/tipos/generics'
 import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { useRouter } from 'vue-router'
 import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
+import Contenedor from '@/components/generales/Contenedor.vue'
 
 
 const { loading, startLoading, stopLoading } = useLoadingComposable()
@@ -39,7 +40,7 @@ onMounted(() => {
     loadSolicitudes()
 })
 type Filters = ('todos' | 'pendientes' | 'aceptadas' | 'rechazadas')
-const filter: Ref<Filters> = ref('todos')
+const filter: Ref<Filters> = ref('pendientes')
 const solicitudesFiltradas = computed(() => {
     switch (filter.value){
         case 'todos': return solicitudes.value
@@ -51,38 +52,41 @@ const solicitudesFiltradas = computed(() => {
 </script>
 
 <template>
-    <div class="w-[60%] m-auto">
-        <div class=" m-auto mb-5 mt-10 mb-15">
+    <div class="w-3/4 m-auto">
+        <div class=" mb-5 mt-10">
             <div class="bg-refugio-500 px-7 py-5 w-full h-full text-center text-4xl font-bold rounded-2xl">
                 <span class="text-white">Solicitudes</span>
             </div>
         </div>
-        <div class="flex flex-row gap-1">
-            <div :class="['p-3 border rounded-lg text-2xl', filter == 'todos' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'todos'">Todos</div>
-            <div :class="['p-3 border rounded-lg text-2xl', filter == 'pendientes' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'pendientes'">Pendientes</div>
-            <div :class="['p-3 border rounded-lg text-2xl', filter == 'aceptadas' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'aceptadas'">Aceptadas</div>
-            <div :class="['p-3 border rounded-lg text-2xl', filter == 'rechazadas' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'rechazadas'">Rechazadas</div>
-        </div>
-        <div class="max-w-screen min-h-screen m-auto">
-            <div v-if="loading">
-                <ProgressSpinner></ProgressSpinner>
+
+        <Contenedor class="m-auto">
+            <div class="max-w-screen min-h-screen m-auto">
+                <div v-if="loading">
+                    <ProgressSpinner></ProgressSpinner>
+                </div>
+                <div v-else-if="solicitudes.length == 0" class="m-auto w-fit text-slate-400">
+                    No tiene solicitudes. ¡Adopte hoy!
+                </div>
+                <div v-else class="overflow-y-auto  flex flex-col gap-3 p-3">
+                    <div class="flex flex-row gap-1 cursor-pointer">
+                        <div :class="['px-3 py-2 border rounded-lg text-xl border-gray-400 text-gray-500', filter == 'todos' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'todos'">Todos</div>
+                        <div :class="['px-3 py-2 border rounded-lg text-xl border-gray-400 text-gray-500', filter == 'pendientes' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'pendientes'">Pendientes</div>
+                        <div :class="['px-3 py-2 border rounded-lg text-xl border-gray-400 text-gray-500', filter == 'aceptadas' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'aceptadas'">Aceptadas</div>
+                        <div :class="['px-3 py-2 border rounded-lg text-xl border-gray-400 text-gray-500', filter == 'rechazadas' ? 'border-primary-500 text-primary-500':'']" @click="() => filter = 'rechazadas'">Rechazadas</div>
+                    </div>
+                    <div v-if="solicitudesFiltradas.length == 0" class="p-3 text-center">
+                        No hay solicitudes en esta categoria
+                    </div>
+                    <ItemSolicitud v-for="solicitud in solicitudesFiltradas" :solicitud="solicitud" class="p-3">
+                        <template #nav-button>
+                            <Button label="Ver Detalle" icon="pi pi-arrow-right"
+                                    class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
+                                    @click="() => router.push(`/refugio/solicitud/${solicitud.id_solicitud}`)"></Button>
+                        </template>
+                    </ItemSolicitud>
+                </div>
             </div>
-            <div v-else-if="solicitudes.length == 0" class="m-auto w-fit text-slate-400">
-                No tiene solicitudes. ¡Adopte hoy!
-            </div>
-            <div v-else-if="solicitudesFiltradas.length == 0" class="p-3 text-center">
-                No hay nada acá
-            </div>
-            <div v-else class="overflow-y-auto  flex flex-col gap-3 p-3">
-                <ItemSolicitud v-for="solicitud in solicitudesFiltradas" :solicitud="solicitud" class="p-3">
-                    <template #nav-button>
-                        <Button label="Ver Detalle" icon="pi pi-arrow-right"
-                                class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500"
-                                @click="() => router.push(`/refugio/solicitud/${solicitud.id_solicitud}`)"></Button>
-                    </template>
-                </ItemSolicitud>
-            </div>
-        </div>
+        </Contenedor>
     </div>
 </template>
 

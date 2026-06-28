@@ -14,7 +14,7 @@ const props = defineProps<{ solicitud: IDatosSolicitud}>()
 </script>
 
 <template>
-    <div class=" shadow-[0_0_10px_rgba(0,0,0,0.25)] rounded-lg flex flex-row gap-3 justify-between">
+    <div class=" rounded-lg flex flex-row gap-3 justify-between border border-gray-300">
         <div class="max-h-50 overflow-hidden my-3 rounded-lg text-center flex items-center mx-auto">
             <img v-if="solicitud.imagen" class="w-40 rounded-lg " :src="solicitud.imagen" />
             <SinImagen v-else class="w-20"></SinImagen>
