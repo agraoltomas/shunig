@@ -100,7 +100,7 @@ const mascotasFiltradas = computed(() => {
             </Column>
             <Column>
                 <template #body="{data}">
-                    <Button class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
+                    <Button class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}/`)"></Button>
                 </template>
             </Column>
         </DataTable>

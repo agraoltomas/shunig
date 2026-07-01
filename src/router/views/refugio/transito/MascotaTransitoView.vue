@@ -85,7 +85,7 @@ console.log(route)
                                 severity="success"
                                 icon="pi pi-arrow-up-right"
                                 label="Ver animal"
-                                @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}`)"></Button>
+                                @click="() => router.push(`/refugio/mascota/${transito.animal.id_animal}/`)"></Button>
                     </div>
                 </div>
                 <!--fin sector de botones-->

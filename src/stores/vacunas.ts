@@ -49,7 +49,6 @@ export const useEventosVacunacionStore = defineStore('eventos-vacunacion', () =>
             stopLoading()
         }
     }
-
     const cargarInscripcionesEvento = async (id_evento: string) => {
         console.info('cargarInscripcionesEvento')
         if(inscripcionesEvento.value.length > 0)return;
@@ -88,6 +87,20 @@ export const useEventosVacunacionStore = defineStore('eventos-vacunacion', () =>
     }
     const getInscripcionesForEvento = (id_evento: string) => {
         return inscripcionesEvento.value.filter(inscripcion  => inscripcion.id_evento_vacunacion = id_evento)
+    }
+    const actualizarEvento = async (id_evento: string|number, data: {
+        fecha_evento?: string,
+        cupo_maximo?: string|number
+    }) => {
+        try{
+            const r = await unwrap(axios.value.put(rutas_api.eventos_vacunacion.UPDATE(id_evento),{
+                ...data
+            }))
+            return r.ok
+        }catch(e){
+            console.log(e)
+            return false
+        }
     }
     return {
         eventos,

@@ -15,6 +15,7 @@ import ArticuloStock from "./inventario/ArticuloStock.vue"
 import IngresoArticuloStock from "./inventario/IngresoArticuloStock.vue"
 import paw from '@/assets/images/paw-solid-full.svg'
 import RegistroModal from '@/components/generales/RegistroModal.vue'
+import EditarEvento from '@/components/vacunacion/EditarEvento.vue'
 
 const store = useModalStore()
 const data = ref('')
@@ -122,7 +123,17 @@ const data = ref('')
     </Dialog>
 
     <RegistroModal></RegistroModal>
-
+    <Modal nombre="editar_evento_vacunacion">
+        <template #header>
+            <div class="text-xl font-semibold text-white p-5">
+                <i class="pi pi-pen-to-square p-1"></i>Editar evento de vacunación
+            </div>
+        </template>
+        <template #default="{context: {editar_evento_vacunacion}, closeFn}">
+            <EditarEvento v-if="editar_evento_vacunacion" :evento="editar_evento_vacunacion"
+                          @close="closeFn"></EditarEvento>
+        </template>
+    </Modal>
 </template>
 
 <style scoped>

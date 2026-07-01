@@ -47,7 +47,7 @@ const emits = defineEmits<{ aceptar: [], rechazar: []}>()
                     severity="success"
                     icon="pi pi-arrow-up-right"
                     label="Ver animal"
-                    @click="$router.push(`/refugio/mascota/${solicitud.animal.id_animal}`)"
+                    @click="$router.push(`/refugio/mascota/${solicitud.animal.id_animal}/`)"
                 />
             </div>
         </div>

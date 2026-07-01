@@ -18,6 +18,7 @@ import FormCol from '@/components/forms/FormCol.vue'
 import Modal from '@/components/modal/Modal.vue'
 import Label from '@/components/forms/Label.vue'
 import { useToast } from '@/lib/toast/toast'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
 
 const props = defineProps<{ mascota: IMascota }>()
 const { axios } = useAxios()
@@ -76,14 +77,8 @@ const registrar = async () =>{
 </script>
 
 <template>
-    <Contenedor class="w-1/3">
-        <div class="flex flex-row text-xl gap-3 pb-3">
-            <div class="bg-primary-200/30 rounded-full p-1 min-w-9 text-center">
-                <i class="text-primary-500 text-center pi pi-heart"></i>
-            </div>
-            <div class="font-semibold h-fit my-auto pr-2">Estado de salud</div>
-        </div>
-        <Timeline :value="into" align="left" class="w-full" pt:eventopposite="hidden">
+    <ContenedorTitulo title="Estado de salud" icon="pi pi-heart" class="w-1/3 flex flex-col">
+        <Timeline :value="into" align="left" class="w-full grow" pt:eventopposite="hidden">
             <template #marker="{item}">
                 <i :class="['text-primary-500 text-center p-1 bg-primary-50 rounded-full',item.icon]"></i>
             </template>
@@ -97,10 +92,10 @@ const registrar = async () =>{
                 </div>
             </template>
         </Timeline>
-        <div class="flex flex-row justify-end gap-3 py-3">
+        <div class="flex flex-row justify-end gap-3 pt-3">
             <Button label="Registrar" icon="pi pi-plus" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" @click="() => modal.abrir('estado_salud',mascota)"></Button>
         </div>
-    </Contenedor>
+    </ContenedorTitulo>
     <Modal nombre="estado_salud" class="w-1/4">
         <template #default="{context}">
             <div>

@@ -42,10 +42,10 @@ watch(() => route.params.id, async () => {
 </script>
 
 <template>
-    <Panel v-if="loading" class="overflow-auto m-3" pt:header="p-0! text-center">
+    <Contenedor v-if="loading" class="overflow-auto m-3">
         <div class="text-center align-middle p-3">Cargando</div>
         <ProgressSpinner class="m-auto h-20! text-center" pt:circle="stroke-red-100 p-progressspinner-circle" pt:root="p-progressspinner w-full!" pt:spin="p-progressspinner-spin" />
-    </Panel>
+    </Contenedor>
     <Mascota  v-if="mascota" :mascota="mascota" @actualizado="loadMascota"></Mascota>
     <Contenedor class="m-auto! text-center max-w-fit" v-else-if="!loading">
         <div class="p-5">

@@ -45,6 +45,7 @@ export const rutas_api = {
         INSCRIPCIONES_USUARIO: ()  => `/vacunas/inscripciones/`,
         INSCRIPCIONES_EVENTO: () => `/vacunas/inscripciones/`,
         GET: (id_evento: string|number) => `/vacunas/eventos/${id_evento}/`,
+        UPDATE: (id_evento: string|number) => `/vacunas/eventos/${id_evento}/`,
         CREAR: (id_refugio: string|number) => `/refugio/${id_refugio}/eventos/`,
     },
     vacunas: {

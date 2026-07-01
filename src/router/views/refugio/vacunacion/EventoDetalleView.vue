@@ -19,6 +19,7 @@ import { type InscripcionEvento, useEventosVacunacionStore } from '@/stores/vacu
 import InscripcionEventoVacunacion from '@/components/vacunacion/InscripcionEventoVacunacion.vue'
 import KPI from '@/components/refugio/Dashboard/KPI.vue'
 import SinImagen from '@/components/generales/SinImagen.vue'
+import { useModalStore } from '@/stores/modales.ts'
 
 const route = useRoute()
 const { unwrap } = useResponse()
@@ -28,6 +29,7 @@ const { loading, startLoading, stopLoading } = useLoadingComposable()
 const { refugio } = useRefugioStore()
 const eventoStore = useEventosVacunacionStore()
 const router = useRouter()
+const modales = useModalStore()
 onMounted(() => {
     if (!route.params.id) return
     loadEvento(route.params.id.toString())
@@ -52,7 +54,13 @@ const cupos = computed(() => {
     return evento.value.cupo_maximo - inscriptos
 })
 
+
 const confirmarVacunacion = async (i: InscripcionEvento) => {
+    if(!evento.value)return
+    if(moment(evento.value.fecha_evento).isAfter(moment())){
+        alert("No se puede aplicar la vacuna antes del evento")
+        return
+    }
     if (!confirm('¿Quiere confirmar que se aplico esta vacuna?')) return
     console.log(i)
     try{
@@ -96,6 +104,7 @@ const confirmarVacunacion = async (i: InscripcionEvento) => {
                             severity="success"
                             icon="pi pi-pencil"
                             label="Editar evento"
+                            @click="() => modales.abrir('editar_evento_vacunacion',evento)"
                         />
                         <DangerButton outlined
                                       icon="pi pi-trash"
@@ -217,7 +226,7 @@ const confirmarVacunacion = async (i: InscripcionEvento) => {
                             <div class="flex flex-row gap-3">
                                 <Button icon="pi pi-eye" aria-label="Ver detalle del animal" outlined
                                         class=" border-refugio-500! text-refugio-500! hover:bg-refugio-200!"
-                                @click="() => router.push(`/refugio/mascota/${data['id_animal']}`)"></Button>
+                                @click="() => router.push(`/refugio/mascota/${data['id_animal']}/`)"></Button>
                                 <Button v-if="!data['aplicada']" aria-label="Confirmar vacunación" icon="pi pi-check"
                                         outlined class=" border-refugio-500! text-refugio-500! hover:bg-refugio-200!"
                                         @click="() => confirmarVacunacion(data)"></Button>

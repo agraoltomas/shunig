@@ -7,6 +7,7 @@ import type { IMascota } from '@/lib/tipos/mascotas'
 import type { MessageResponse } from '@/lib/tipos/generics'
 import { useRouter } from 'vue-router'
 import { useRefugioStore } from '@/stores/refugio.ts'
+import SinImagen from '@/components/generales/SinImagen.vue'
 
 const router = useRouter()
 const props = defineProps<{ mascotas: IMascota[]}>()
@@ -63,6 +64,14 @@ const mascotasFiltradas = computed(() => {
                     />-->
                 </div></div>
             </template>
+            <Column>
+                <template #body="{data}">
+                    <div class="p-3 w-fit m-auto">
+                    <img v-if="data['imagen']" class="w-15 " :src="data['imagen']"/>
+                    <SinImagen v-else class="w-15"></SinImagen>
+                    </div>
+                </template>
+            </Column>
             <Column header="Nombre" field="nombre">
             </Column>
             <Column header="Especie" field="especie">
@@ -72,7 +81,7 @@ const mascotasFiltradas = computed(() => {
             <Column header="Raza" field="raza"></Column>
             <Column>
                 <template #body="{data}">
-                    <Button aria-label="Ver detalle del animal" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}`)"></Button>
+                    <Button aria-label="Ver detalle del animal" class="bg-refugio-500 hover:bg-refugio-300! hover:border-refugio-500 border-refugio-500" icon="pi pi-eye" @click="() => router.push(`/refugio/mascota/${data.id_animal}/`)"></Button>
                 </template>
             </Column>
         </DataTable>

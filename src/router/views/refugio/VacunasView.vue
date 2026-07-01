@@ -82,17 +82,6 @@ const eventosPasados = computed(() => {
         </Contenedor>
     </div>
     </ContenedorPagina>
-    <Modal nombre="editar_evento_vacunacion">
-        <template #header>
-            <div class="text-xl font-semibold text-white p-5">
-                <i class="pi pi-pen-to-square p-1"></i>Editar evento de vacunación
-            </div>
-        </template>
-        <template #default="{context: {editar_evento_vacunacion}, closeFn}">
-            <EditarEvento v-if="editar_evento_vacunacion" :evento="editar_evento_vacunacion"
-                          @close="closeFn"></EditarEvento>
-        </template>
-    </Modal>
 </template>
 
 <style scoped>

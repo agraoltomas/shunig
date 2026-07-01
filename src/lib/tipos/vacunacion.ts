@@ -25,5 +25,6 @@ export interface IVacuna {
     observaciones: string,
     id_evento_vacunacion: string,
     fecha_vacunacion: string,
-    vacuna: string
+    vacuna: string,
+    evento: Maybe<IEventoVacunacion>
 }

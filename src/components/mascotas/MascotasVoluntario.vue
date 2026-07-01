@@ -44,7 +44,7 @@ const props = defineProps<{ mascotas: IMascotaTransito[]}>()
             </Column>
             <Column>
                 <template #body="{data}">
-                    <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                    <Button icon="pi pi-eye" @click="() => router.push(`/usuario/mascota/${data.id_animal}/`)"></Button>
                 </template>
             </Column>
         </DataTable>

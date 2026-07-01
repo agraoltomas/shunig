@@ -66,7 +66,7 @@ onMounted(async () => {
                     <Column>
                         <template #body="{data}">
                             <Button icon="pi pi-eye"
-                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}/`)"></Button>
                         </template>
                     </Column>
                 </DataTable>
@@ -88,7 +88,7 @@ onMounted(async () => {
                     <Column>
                         <template #body="{data}">
                             <Button icon="pi pi-eye"
-                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}`)"></Button>
+                                    @click="() => router.push(`/usuario/mascota/${data.id_animal}/`)"></Button>
                         </template>
                     </Column>
                 </DataTable>
