@@ -78,7 +78,12 @@ const registrar = async () =>{
 
 <template>
     <ContenedorTitulo title="Estado de salud" icon="pi pi-heart" class="w-1/3 flex flex-col">
-        <Timeline :value="into" align="left" class="w-full grow" pt:eventopposite="hidden">
+        <div v-if="into.length == 0" class="grow">
+            <div class="text-gray-400">
+                No hay registros del estado de salud
+            </div>
+        </div>
+        <Timeline v-else :value="into" align="left" class="w-full grow" pt:eventopposite="hidden">
             <template #marker="{item}">
                 <i :class="['text-primary-500 text-center p-1 bg-primary-50 rounded-full',item.icon]"></i>
             </template>

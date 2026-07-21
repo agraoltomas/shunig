@@ -22,6 +22,7 @@ import { type IModalesContext, useModalStore } from '@/stores/modales.ts'
 import { useLoadingComposable } from '@/lib/utils/loading.ts'
 import { rutas_api } from '@/rutas_api.ts'
 import { AxiosError } from 'axios'
+import cryingDog from '@/assets/images/crying_dog.jpg'
 
 const { unwrap,  tryLogError } = useResponse()
 const { loading, startLoading, stopLoading } = useLoadingComposable()
@@ -65,7 +66,8 @@ const loadAnimales = async () => {
     if (!tipo.value || !refugio.value) return
     const filtros = {
         ...props.filtros,
-        id_especie: tipo.value.id
+        id_especie: tipo.value.id,
+        id_refugio: refugio.value.id_refugio
     }
     try {
         const r = await unwrap<IMascota[]>(axios.value.get(rutas_api.animales.LIST(), {
@@ -196,10 +198,17 @@ onMounted(async () => {
         <div v-if="refugio && tipo" class="mt-3">
             <div class="flex flex-row w-full flex-wrap gap-3 justify-center m-auto">
                 <ProgressSpinner v-if="loading"></ProgressSpinner>
-                <AnimalCard v-for="animal in animales" :animal="animal" label="Adoptar" @mostrar-animal="(a) => mostrarAnimal(a)">
+                <Contenedor class="m-auto! text-center max-w-fit select-none" v-else-if="animales.length == 0">
+                    <div class="p-5 flex flex-row items-center">
+                        <Image pt:root="m-auto text-center" class="" :src="cryingDog"/>
+                    </div>
+                    <span class="text-xl text-semibold text-red-500/80 p-3">No hay animales para este filtro</span>
+                </Contenedor>
+                <AnimalCard v-else v-for="animal in animales" :animal="animal" label="Adoptar" @mostrar-animal="(a) => mostrarAnimal(a)">
                     <slot name="actionButton" v-bind="{animal, accion: () => modal.abrir(action, { mascota: animal, usuario: authStore.user })}">
                     </slot>
                 </AnimalCard>
+
             </div>
         </div>
     </div>

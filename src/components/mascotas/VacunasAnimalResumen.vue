@@ -34,7 +34,12 @@ onMounted(async () => {
 
 <template>
     <div class="flex flex-col h-full">
-        <Timeline :value="vacunas" align="left" class="w-full grow" pt:eventopposite="hidden">
+        <div v-if="vacunas.length == 0" class="grow text-center">
+            <div class="text-gray-400">
+                No hay registros de vacunas
+            </div>
+        </div>
+        <Timeline v-else :value="vacunas" align="left" class="w-full grow" pt:eventopposite="hidden">
             <template #marker="{item}">
                 <i :class="['text-primary-500 text-center p-1 bg-primary-50 rounded-full',item.icon]"></i>
             </template>

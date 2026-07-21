@@ -10,6 +10,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useToRedirection } from '@/lib/to_redirection.ts'
 import Contenedor from '@/components/generales/Contenedor.vue'
 import type { RouteLocationRaw } from 'vue-router/dist/router-BbqN7H95'
+import ContenedorTitulo from '@/components/generales/ContenedorTitulo.vue'
+import { useAuthStore } from '@/stores/auth.ts'
 
 const tipo = ref(null)
 const router = useRouter()
@@ -21,6 +23,7 @@ enum EForm {
 }
 
 const ingresando = ref(EForm.Usuario)
+const authStore = useAuthStore()
 const newUser: Ref<Maybe<User>> = ref(null)
 const ingresadoUsuario = (u: User) => {
    newUser.value = u;
@@ -36,17 +39,26 @@ const ingresadoUsuario = (u: User) => {
 }
 onMounted(() => {
     parseRoute()
+    if(authStore.user){
+        newUser.value = authStore.user
+        ingresando.value = EForm.Refugio
+    }
 })
 </script>
 
 <template>
     <div v-if="ingresando == EForm.Usuario" class="flex flex-col gap-3 w-[75%] m-auto p-5!">
+        <div v-if="!newUser">
+            <Message icon="pi pi-info-circle" class=" bg-refugio-200! text-black! w-fit m-auto ">
+                Ya tenés usuario y querés registrar un refugio? <RouterLink class="text-refugio-500 underline font-semibold" :to="{ path: '/login', query: { to: encodeURIComponent('/register?r=refugio')} }">Ingresá</RouterLink> y registrá el refugio directamente
+            </Message>
+        </div>
         <UsuarioIngreso @ingresado="(user) => ingresadoUsuario(user)" v-model:tipo="tipo"></UsuarioIngreso>
     </div>
-    <Contenedor v-else class="bg-white flex flex-col gap-3 w-[75%] m-auto p-5!" header="Registro de refugio"
+    <ContenedorTitulo v-if="newUser" :title="`Hola, ${newUser.nombre}! Registrá tu refugio`" class="bg-white flex flex-col gap-3 w-[75%] m-auto p-5!" header="Registro de refugio"
            pt:header="m-auto text-xl font-semibold w-fit py-3">
         <RefugioIngreso v-if="newUser" :admin="newUser"></RefugioIngreso>
-    </Contenedor>
+    </ContenedorTitulo>
 </template>
 
 <style scoped></style>

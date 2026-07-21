@@ -51,6 +51,7 @@ export const rutas_api = {
     vacunas: {
         ANIMAL: (id_animal: string|number) => `/animal/${id_animal}/vacunas/`,
         APLICAR: (id_evento: string|number, id_animal: string|number) => `/vacunas/eventos/${id_evento}/${id_animal}/aplicar/`,
+        APLICAR_VACUNA:  (id_animal: string|number) => `/animal/${id_animal}/vacunas/`,
     },
     chatbot: {
         PREGUNTAR: () => `/ai/`

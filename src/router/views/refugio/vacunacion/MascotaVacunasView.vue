@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAxios } from '@/lib/axios.ts'
 import { AxiosError } from 'axios'
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, reactive, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Maybe } from '@/lib/tipos/generics'
 import type { IMascota } from '@/lib/tipos/mascotas'
@@ -18,14 +18,16 @@ import TableSelect from '@/components/forms/TableSelect.vue'
 import { TablaEstatica } from '@/lib/tipos/estaticos.ts'
 import FormCol from '@/components/forms/FormCol.vue'
 import DatePicker from "@/volt/DatePicker.vue"
+import { useToast } from '@/lib/toast/toast.ts'
 
 const route = useRoute()
 const { loading, stopLoading, startLoading } = useLoadingComposable()
 const vacunas: Ref<IVacuna[]> = ref([])
-const { unwrap } = useResponse()
+const { unwrap, tryLogError } = useResponse()
 const { axios } = useAxios()
 const mascota: Ref<Maybe<IMascota>> = ref(null)
 const agregarVacuna = ref(false)
+const toast = useToast()
 const loadMascota = async () => {
     startLoading();
     try{
@@ -46,7 +48,7 @@ const getVacunas = async ()  => {
     startLoading()
     try {
         const r = await unwrap<IVacuna[]>(axios.value.get(rutas_api.vacunas.ANIMAL(route.params.id.toString())))
-        vacunas.value = [...r.data, ...r.data]
+        vacunas.value = r.data
         return r.data
     } catch (error) {
         return []
@@ -58,6 +60,27 @@ onMounted(async () => {
     await getVacunas()
     await loadMascota()
 })
+const nuevaVacuna = reactive({
+        tipo_vacuna: null,
+    veterinario_responsable: null,
+    fecha: null,
+    observaciones: null
+    })
+
+const cargar = async () => {
+    if(!mascota.value)return
+    if(!(nuevaVacuna.tipo_vacuna && nuevaVacuna.veterinario_responsable && nuevaVacuna.fecha))return
+    try{
+        const r = await unwrap(axios.value.post(rutas_api.vacunas.APLICAR_VACUNA(mascota.value.id_animal),{
+            ...nuevaVacuna,
+            fecha: moment(nuevaVacuna.fecha).format('DD/MM/YYYY')
+        }));
+        toast.add({ detail: r.message, severity: r.ok ? 'success' : 'error' })
+        agregarVacuna.value = false
+    }catch(error){
+        tryLogError(<Error>error, toast)
+    }
+}
 </script>
 
 <template>
@@ -108,29 +131,29 @@ onMounted(async () => {
                         <Icon icon="material-symbols:syringe-outline" class="m-1"></Icon>
                         Vacuna
                     </Label>
-                    <TableSelect :tipo="TablaEstatica.Vacuna" fluid></TableSelect>
+                    <TableSelect v-model="nuevaVacuna.tipo_vacuna" :tipo="TablaEstatica.Vacuna" fluid></TableSelect>
                 </FormCol>
                 <FormCol :span="6">
                     <Label required>
                         Fecha de aplicación
                     </Label>
-                    <DatePicker></DatePicker>
+                    <DatePicker v-model="nuevaVacuna.fecha"></DatePicker>
                 </FormCol>
             </FormRow>
             <FormRow>
                 <FormCol :span="6">
-                    <Label>Veterinario responsable</Label>
-                    <InputText></InputText>
+                    <Label required>Veterinario responsable</Label>
+                    <InputText v-model="nuevaVacuna.veterinario_responsable"></InputText>
                 </FormCol>
             </FormRow>
             <FormRow>
                 <FormCol :span="12">
                     <Label>Observaciones</Label>
-                    <Textarea></Textarea>
+                    <Textarea v-model="nuevaVacuna.observaciones" :maxlength="100"></Textarea>
                 </FormCol>
             </FormRow>
-            <div clasS=" flex flex-row justify-end gap-3">
-                <Button class="bg-refugio-500 border-refugio-500" label="Cargar" icon="pi pi-save"></Button>
+            <div class="flex flex-row justify-end gap-3">
+                <Button class="bg-refugio-500 border-refugio-500" label="Cargar" icon="pi pi-save" @click="cargar"></Button>
             </div>
         </div>
     </Dialog>

@@ -51,9 +51,10 @@ const buscar = debounce(async (d: Event) => {
                 direccion: dire.value
             }
         })
-        console.log(r)
         direcciones.value = r.data.direcciones
     }catch (error){
+        console.log("domicilio",dire.value )
+        domicilio.value.direccion = dire.value
         validationFailed.value = true
     }
 }, 1000,{trailing: true})
@@ -114,7 +115,7 @@ const validationFailed = ref(false)
             </FormCol>
             <FormCol :span="6">
                 <Label required>Localidad</Label>
-                <InputText :disabled="!validationFailed" placeholder="Ej. CABA" :value="domicilio.localidad"></InputText>
+                <InputText :disabled="!validationFailed" placeholder="Ej. CABA" v-model="domicilio.localidad"></InputText>
                 <div class="pb-7 text-white">.</div>
             </FormCol>
         </FormRow>

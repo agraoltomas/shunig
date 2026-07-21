@@ -96,11 +96,12 @@ const userResolver = yupResolver(yupUserSchema)
 
 const emits = defineEmits<{ ingresado: [e: User] }>()
 const ingresarUsuario = async (e: FormSubmitEvent) => {
-    console.log("!",e, domicilio.value)
+    console.log("!",e, domicilio.value, e.valid)
     if (!e.valid) return
+    console.log(domicilio.value, domicilio.value.direccion)
     if(!domicilio.value || !domicilio.value.direccion) return
 
-    console.log(e)
+    console.log(1,e)
     const r = await axios.post('/auth', {
         ...e.values,
         domicilio: domicilio.value,

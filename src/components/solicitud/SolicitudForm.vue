@@ -83,7 +83,7 @@ const schemaSolicitud = yup.object().shape({
     mascotas_castradas: yup.boolean().default(false),
     horas_solo: yup.number().required(),
     puede_cubrir_gastos: yup.boolean().default(false),
-    motivo: yup.string().required().length(200),
+    motivo: yup.string().required().max(200),
     experiencia_transito: yup.boolean().default(false),
     tiempo_disponible_dias: yup.number().required(),
     animales_transitados: yup.number().required()
@@ -217,7 +217,7 @@ const resolver = yupResolver(schemaSolicitud)
             <FormRow :gap="6">
                 <FormCol :span="12">
                     <Label required>¿Por qué querés adoptar este animal?</Label>
-                    <Textarea name="motivo" v-model="datosForm.motivo"></Textarea>
+                    <Textarea name="motivo" v-model="datosForm.motivo" :max="200"></Textarea>
                 </FormCol>
             </FormRow>
         </Contenedor>
